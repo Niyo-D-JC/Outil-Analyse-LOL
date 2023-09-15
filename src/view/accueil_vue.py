@@ -28,6 +28,8 @@ class AccueilVue(VueAbstraite):
                 "message": "Faites votre choix",
                 "choices": [
                     "Ré-initialiser la base de données",
+                    "Afficher les statistiques d'un champion",
+                    "Trier les champions",
                     "Se connecter",
                     "Quitter",
                 ],
@@ -54,3 +56,7 @@ class AccueilVue(VueAbstraite):
                 "Ré-initilisation de la base de données terminée" if succes else None
             )
             return AccueilVue(message)
+        elif reponse["choix"] == "Afficher les statistiques d'un champion":
+            return ConnexionVue()
+        elif reponse["choix"] == "Trier les champions":
+            return ConnexionVue()

@@ -6,7 +6,7 @@ class VueAbstraite(ABC):
         self.message = message
 
     def nettoyer_console(self):
-        for i in range(30):
+        for i in range(5):
             print("")
 
     def afficher(self) -> None:

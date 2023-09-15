@@ -15,7 +15,7 @@ class ResetDatabase(metaclass=Singleton):
 
         #pop_db = open("data/pop_db.sql", encoding="utf-8")
         #pop_db_as_string = pop_db.read()
-
+        
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -24,7 +24,6 @@ class ResetDatabase(metaclass=Singleton):
         except Exception as e:
             print(e)
             raise
-
         return True
 
 
