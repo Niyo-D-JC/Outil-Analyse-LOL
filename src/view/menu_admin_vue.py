@@ -1,12 +1,10 @@
 from InquirerPy import prompt
 
 from view.vue_abstraite import VueAbstraite
-from view.connexion_vue import ConnexionVue
-from utils.reset_database import ResetDatabase
 
 
-class AccueilVue(VueAbstraite):
-    """Vue de l'accueil de l'application du Jeu de Rôle.
+class MenuAdminVue(VueAbstraite):
+    """Vue du menu de l'admin
 
     Attributes
     ----------
@@ -26,12 +24,7 @@ class AccueilVue(VueAbstraite):
                 "type": "list",
                 "name": "choix",
                 "message": "Faites votre choix",
-                "choices": [
-                    "Afficher les statistiques d'un champion",
-                    "Trier les champions",
-                    "Se connecter",
-                    "Quitter",
-                ],
+                "choices": ["Réinitialiser la base de données", "Se déconnecter","Changer un mot de passe"],
             }
         ]
 
@@ -45,11 +38,16 @@ class AccueilVue(VueAbstraite):
         """
         reponse = prompt(self.questions)
 
-        if reponse["choix"] == "Quitter":
-            pass
-        elif reponse["choix"] == "Se connecter":
-            return ConnexionVue()
-        elif reponse["choix"] == "Afficher les statistiques d'un champion":
-            return ConnexionVue()
-        elif reponse["choix"] == "Trier les champions":
-            return ConnexionVue()
+        if reponse["choix"] == "Se déconnecter":
+            from view.accueil_vue import AccueilVue
+
+        elif reponse["choix"] == "Ré-initialiser la base de données":
+            succes = ResetDatabase().lancer()
+            message = (
+                "Ré-initilisation de la base de données terminée" if succes else None
+            )
+            return AccueilVue(message)
+
+            return AccueilVue()
+        elif reponse["choix"] == "Changer un mot de passe":
+            pass #à coder

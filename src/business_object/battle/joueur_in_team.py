@@ -19,4 +19,4 @@ class JoueurInTeam:
         self._team_position : TeamPosition = team_position
         self._champion : AbsTools = champion
         self._items : List[AbsTools] = None
-        self._stat_joueur : StatJoeur = None
+        self._stat_joueur : StatJoueur = None
