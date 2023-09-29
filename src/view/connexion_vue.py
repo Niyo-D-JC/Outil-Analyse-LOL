@@ -24,6 +24,13 @@ class ConnexionVue(VueAbstraite):
         joueur = None #JoueurService().se_connecter_bad(answers["pseudo"], answers["mdp"])
         # ' OR 1=1;--
         message = ""
+        admin = None
+
+        if admin :
+            message = f"Vous êtes connecté sous le pseudo {admin.pseudo}"
+            from view.menu_admin_vue import MenuAdminVue
+
+            return MenuAdminVue(message)
 
         if joueur:
             message = f"Vous êtes connecté sous le pseudo {joueur.pseudo}"
@@ -32,7 +39,7 @@ class ConnexionVue(VueAbstraite):
             return MenuJoueurVue(message)
 
         else:
-            message = "erreur de connexion"
+            message = "Erreur de connexion"
             from view.accueil_vue import AccueilVue
 
             return AccueilVue(message)
