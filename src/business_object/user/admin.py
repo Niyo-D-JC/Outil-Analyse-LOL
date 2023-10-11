@@ -1,6 +1,9 @@
-from business_object.user.joueur import Joueur
+from .user import User
 
 
-class Admin(Joueur):
-    def __init__(self, puuid, name):
-        super().__init__(puuid, name)
+class Admin(User):
+    def __init__(self, username, password):
+        super().__init__(username, password)
+
+    def add_user(self, joueur):
+        pass

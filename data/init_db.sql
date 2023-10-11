@@ -7,11 +7,55 @@ CREATE SCHEMA projet;
 -----------------------------------------------------
 DROP TABLE IF EXISTS projet.user CASCADE ;
 CREATE TABLE projet.user(
-    puuid    TEXT PRIMARY KEY,
+    user_id    SERIAL PRIMARY KEY,
     name       TEXT UNIQUE,
     password          TEXT,
     role          TEXT
 );
+
+
+-----------------------------------------------------
+-- Joueur
+-----------------------------------------------------
+DROP TABLE IF EXISTS projet.joueur CASCADE ;
+CREATE TABLE projet.joueur(
+    puuid    TEXT PRIMARY KEY,
+    user_id  INT REFERENCES projet.user(user_id),
+    name       TEXT UNIQUE,
+    rang          INT
+);
+
+
+
+-----------------------------------------------------
+-- Item
+-----------------------------------------------------
+DROP TABLE IF EXISTS projet.item CASCADE ;
+CREATE TABLE projet.item(
+    item_id  INT PRIMARY KEY,
+    name   TEXT UNIQUE
+);
+
+
+-----------------------------------------------------
+-- Champion
+-----------------------------------------------------
+DROP TABLE IF EXISTS projet.champion CASCADE ;
+CREATE TABLE projet.champion(
+    champion_id  INT PRIMARY KEY,
+    name   TEXT UNIQUE
+);
+
+
+-----------------------------------------------------
+-- Lane
+-----------------------------------------------------
+DROP TABLE IF EXISTS projet.lane CASCADE ;
+CREATE TABLE projet.lane(
+    lane_id  INT PRIMARY KEY,
+    name   TEXT UNIQUE
+);
+
 
 -----------------------------------------------------
 -- Team
@@ -19,58 +63,38 @@ CREATE TABLE projet.user(
 DROP TABLE IF EXISTS projet.team CASCADE ;
 CREATE TABLE projet.team(
     team_id  INT PRIMARY KEY,
-    match_id   INT UNIQUE
+    side   TEXT UNIQUE
 );
+
 
 -----------------------------------------------------
 -- Match
 -----------------------------------------------------
 DROP TABLE IF EXISTS projet.match CASCADE ;
 CREATE TABLE projet.match(
-    match_id    INT PRIMARY KEY,
-    duration   INT,
-    team_id  INT REFERENCES projet.team(team_id)
+    match_id    TEXT,
+    puuid TEXT REFERENCES projet.joueur(puuid),
+    lane_id  INT REFERENCES projet.lane(lane_id),
+    champion_id  INT REFERENCES projet.champion(champion_id),
+    team_id  INT REFERENCES projet.team(team_id),
+    total_damage_deal   INT,
+    total_damage_take   INT,
+    total_heal   INT,
+    kda   INT,
+    result   BOOLEAN,
+    CONSTRAINT pk_match PRIMARY KEY (match_id, puuid)
 );
 
------------------------------------------------------
--- Item
------------------------------------------------------
-DROP TABLE IF EXISTS projet.item CASCADE ;
-CREATE TABLE projet.item(
-    id  INT PRIMARY KEY,
-    name   TEXT UNIQUE
-);
+
 
 -----------------------------------------------------
--- Champion
+-- ItemMatch
 -----------------------------------------------------
-DROP TABLE IF EXISTS projet.champion CASCADE ;
-CREATE TABLE projet.champion(
-    id  INT PRIMARY KEY,
-    name   TEXT UNIQUE
-);
-
------------------------------------------------------
--- JoueurInTeam
------------------------------------------------------
-DROP TABLE IF EXISTS projet.joueurInTeam CASCADE;
-CREATE TABLE projet.joueurInTeam(
-    puuid TEXT REFERENCES projet.user(puuid),
-    team_id INT REFERENCES projet.team(team_id),
-    champion_id INT REFERENCES projet.champion(id),
-    team_position TEXT NOT NULL,
-    PRIMARY KEY (puuid, team_id)
-);
-
------------------------------------------------------
--- joueurInTeam_Item
------------------------------------------------------
-DROP TABLE IF EXISTS projet.joueurInTeam_Item CASCADE ;
-CREATE TABLE projet.joueurInTeam_Item(
+DROP TABLE IF EXISTS projet.itemmatch CASCADE;
+CREATE TABLE projet.itemmatch(
+    match_id TEXT,
     puuid TEXT,
-    team_id INT,
-    item_id  INT,
-    PRIMARY KEY (puuid, team_id, item_id),
-    FOREIGN KEY (puuid, team_id) REFERENCES projet.joueurInTeam(puuid, team_id),
-    FOREIGN KEY (item_id) REFERENCES projet.Item(id)
+    item_id INT REFERENCES projet.item(item_id),
+    CONSTRAINT fk_puuid_match FOREIGN KEY (match_id, puuid) REFERENCES projet.match(match_id, puuid),
+    PRIMARY KEY (match_id, puuid, item_id)
 );
