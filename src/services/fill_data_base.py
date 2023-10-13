@@ -1,12 +1,19 @@
 # L'objectif est de récupérer des id de joueurs de chaque division
 # On récupère leurs dernières games, puis on stocke tout ça pour faire
 # les stats générales
+import requests, json, dotenv, os
+
+class FillDataBase:
+    def __init__(self):
+        dotenv.load_dotenv(override=True)
+
+        HOST_WEBSERVICE = os.environ["HOST_WEBSERVICE"]
+        API_KEY = os.environ["API_KEY"]
+
+    
 
 
-import requests, json, dotenv
 
-
-api_key = "RGAPI-2e1b078e-0119-4314-96ef-b6dc1771101e"
 
 
 def ListPlayerbyDivisions():
@@ -40,7 +47,7 @@ def get_puuid_with_SummonerName(summonerName):
 
     puuid = account_data.json()['puuid']
 
-    retrun puuid 
+    return puuid 
 
 
 

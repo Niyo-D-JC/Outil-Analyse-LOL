@@ -5,6 +5,7 @@ class Joueur:
         self._name = name
         self._rang = None
         self._champion = None
+        self._team = None
         self._items = None
         self.stat_joueur = None
         self.lane = None
