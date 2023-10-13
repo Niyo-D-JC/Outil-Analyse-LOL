@@ -48,6 +48,5 @@ class MenuAdminVue(VueAbstraite):
             )
             return AccueilVue(message)
 
-            return AccueilVue()
         elif reponse["choix"] == "Changer un mot de passe":
             pass #à coder

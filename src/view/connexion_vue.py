@@ -1,6 +1,7 @@
 from InquirerPy import prompt
 
 from view.vue_abstraite import VueAbstraite
+from view.session import Session
 #from service.joueur_service import JoueurService
 
 

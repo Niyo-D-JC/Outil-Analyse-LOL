@@ -2,6 +2,7 @@ from InquirerPy import prompt
 
 from view.vue_abstraite import VueAbstraite
 from view.connexion_vue import ConnexionVue
+from view.session import Session
 from utils.reset_database import ResetDatabase
 
 
@@ -31,9 +32,13 @@ class AccueilVue(VueAbstraite):
                     "Trier les champions",
                     "Se connecter",
                     "Quitter",
+                    "Créer un compte"
                 ],
             }
         ]
+    def banner(self):
+        with open("src/graphical_assets/banner.txt", "r", encoding="utf-8") as asset:
+            print(asset.read())
 
     def choisir_menu(self):
         """Choix du menu suivant de l'utilisateur
@@ -50,6 +55,8 @@ class AccueilVue(VueAbstraite):
         elif reponse["choix"] == "Se connecter":
             return ConnexionVue()
         elif reponse["choix"] == "Afficher les statistiques d'un champion":
-            return ConnexionVue()
+            return ChampionVue()
         elif reponse["choix"] == "Trier les champions":
-            return ConnexionVue()
+            return ChampionVue()
+        elif reponse["choix"] == "Créer un compte":
+            return CreationCompteVue()

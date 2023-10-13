@@ -7,3 +7,6 @@ class Admin(User):
 
     def add_user(self, joueur):
         pass
+
+    def change_password(self, username, new_password):
+        pass
