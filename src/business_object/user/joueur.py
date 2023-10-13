@@ -3,7 +3,11 @@ class Joueur:
     def __init__(self, puuid, name):
         self._puuid = puuid
         self._name = name
-        self._password = None
+        self._rang = None
+        self._champion = None
+        self._items = None
+        self.stat_joueur = None
+        self.lane = None
     
     def __str__(self):
         return ("Joueur : "+self._name)
@@ -21,10 +25,3 @@ class Joueur:
     @name.setter
     def name(self, new_name):
         self._name = new_name
-
-    @property
-    def password(self):
-        return self._password
-    @password.setter
-    def password(self, new_password):
-        self._password = new_password

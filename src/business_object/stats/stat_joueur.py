@@ -1,11 +1,11 @@
 
 class StatJoeur:
     def __init__(self, total_damage_dealt, total_damage_take, total_heal, 
-                 lane, result) -> None:
+                 kda, result) -> None:
         self._total_damage_dealt = total_damage_dealt
         self._total_damage_take = total_damage_take
         self._total_heal = total_heal
-        self._lane = lane
+        self._kda = kda
         self._result = result
 
     def __str__(self) -> str:
