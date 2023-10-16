@@ -2,7 +2,6 @@ from InquirerPy import prompt
 
 from view.vue_abstraite import VueAbstraite
 from services.user_service import UserService
-#from service.joueur_service import JoueurService
 
 
 class ConnexionVue(VueAbstraite):

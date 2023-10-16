@@ -21,6 +21,8 @@ if __name__ == "__main__":
     nb_erreurs = 0
 
     while vue_courante:
+        with open("src/graphical_assets/border.txt", "r", encoding="utf-8") as asset:
+            print(asset.read())
         if nb_erreurs > 100:
             print("Le programme recense trop d'erreurs et va s'arrêter")
             break
