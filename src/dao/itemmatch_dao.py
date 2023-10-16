@@ -7,7 +7,9 @@ class ItemMatchDao(metaclass=Singleton):
 
         Parameters
         ----------
-        match_id, puuid, item_id
+        match_id : string, 
+        puuid : string, 
+        item_id : int
 
         Returns
         -------
@@ -22,22 +24,18 @@ class ItemMatchDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO projet.match(match_id,puuid,item_id) VALUES "
-                        "(%(match_id)s, %(puuid)s, %(item_id)s)",
+                        "INSERT INTO projet.itemmatch(match_id,puuid,item_id) VALUES "
+                        "(%(match_id)s, %(puuid)s, %(item_id)s) ON CONFLICT (match_id, puuid, item_id) DO NOTHING",
                         {
-                            "match_id": match.match_id,
-                            "puuid": joueur.puuid,
-                            "item_id": joueur.lane.id
+                            "match_id": match_id,
+                            "puuid": puuid,
+                            "item_id": item_id
                         },
                     )
-                    res = cursor.fetchone()
+                    res = True
         except Exception as e:
             print(e)
-
-        created = False
-        if res:
-            created = True
-
-        return created
+            res = False
+        return res
 
     

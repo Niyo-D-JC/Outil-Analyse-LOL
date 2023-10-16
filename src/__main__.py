@@ -1,6 +1,8 @@
 import dotenv
 from view.accueil_vue import AccueilVue
-
+from services.user_service import UserService
+from services.fill_data_base import FillDataBase
+from utils.reset_database import ResetDatabase
 
 """
 Classe de lancement de l'application
@@ -8,8 +10,14 @@ Classe de lancement de l'application
 if __name__ == "__main__":
     # On charge les variables d'envionnement
     dotenv.load_dotenv(override=True)
+    try : 
+        UserService().find_by_name("admin").name
+    except :
+        print("Premiere Ouverture de l'Application")
+        ResetDatabase().lancer()
+        FillDataBase().run(name = "KC NEXT ADKING")
 
-    vue_courante = AccueilVue("Bienvenue")
+    vue_courante = AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
     nb_erreurs = 0
 
     while vue_courante:

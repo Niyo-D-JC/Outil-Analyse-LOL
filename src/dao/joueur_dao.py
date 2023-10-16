@@ -2,12 +2,13 @@ from dao.db_connection import DBConnection
 from utils.singleton import Singleton
 
 class JoueurDao(metaclass=Singleton):
-    def creer(self, joueur, user_id) -> bool:
+    def creer(self, joueur) -> bool:
         """Creation d'un joueur dans la base de données
 
         Parameters
         ----------
-        joueur : joueur
+        joueur : Joueur
+        user_id : int
 
         Returns
         -------
@@ -22,24 +23,19 @@ class JoueurDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO projet.joueur(puuid, user_id, name, rang) VALUES "
-                        "(%(puuid)s, %(user_id)s, %(name)s, %(rang)s)",
+                        "INSERT INTO projet.joueur(puuid, name) VALUES "
+                        "(%(puuid)s,  %(name)s)"
+                        "ON CONFLICT (puuid) DO NOTHING",
                         {
                             "puuid": joueur.puuid,
-                            "user_id": user_id,
                             "name": joueur.name,
-                            "rang": joueur._rang
                         },
                     )
-                    res = cursor.fetchone()
+                    res = True
         except Exception as e:
             print(e)
+            res = False
 
-        created = False
-        if res:
-            joueur.puuid = res["puuid"]
-            created = True
-
-        return created
+        return res
 
     

@@ -2,7 +2,6 @@ from InquirerPy import prompt
 
 from view.vue_abstraite import VueAbstraite
 from view.connexion_vue import ConnexionVue
-from utils.reset_database import ResetDatabase
 
 
 class AccueilVue(VueAbstraite):
@@ -27,9 +26,9 @@ class AccueilVue(VueAbstraite):
                 "name": "choix",
                 "message": "Faites votre choix",
                 "choices": [
-                    "Afficher les statistiques d'un champion",
-                    "Trier les champions",
+                    "Créer un Compte",
                     "Se connecter",
+                    "Trier les champions",
                     "Quitter",
                 ],
             }
@@ -49,7 +48,9 @@ class AccueilVue(VueAbstraite):
             pass
         elif reponse["choix"] == "Se connecter":
             return ConnexionVue()
+        elif reponse["choix"] == "Créer un Compte":
+            pass
         elif reponse["choix"] == "Afficher les statistiques d'un champion":
-            return ConnexionVue()
+            pass
         elif reponse["choix"] == "Trier les champions":
-            return ConnexionVue()
+            pass

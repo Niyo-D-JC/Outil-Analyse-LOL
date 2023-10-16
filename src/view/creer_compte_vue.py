@@ -11,11 +11,12 @@ class ConnexionVue(VueAbstraite):
         self.questions = [
             {"type": "input", "name": "pseudo", "message": "Entrez votre username :"},
             {"type": "input", "name": "mdp", "message": "Entrez votre mot de passe :"},
+            {"type": "input", "name": "joueur", "message": "Nom de votre Joueur (Optionel) :"},
         ]
 
     def afficher(self):
         self.nettoyer_console()
-        print("Connexion à l'application")
+        print("Creez votre compte")
         print()
 
     def choisir_menu(self):
