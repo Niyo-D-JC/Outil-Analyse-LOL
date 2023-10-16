@@ -4,7 +4,7 @@ from view.vue_abstraite import VueAbstraite
 from view.connexion_vue import ConnexionVue
 from view.session import Session
 from utils.reset_database import ResetDatabase
-
+from view.creer_compte_vue import CreerCompteVue
 
 class AccueilVue(VueAbstraite):
     """Vue de l'accueil de l'application du Jeu de Rôle.
@@ -54,7 +54,7 @@ class AccueilVue(VueAbstraite):
         elif reponse["choix"] == "Se connecter":
             return ConnexionVue()
         elif reponse["choix"] == "Créer un Compte":
-            pass
+            return CreerCompteVue()
         elif reponse["choix"] == "Afficher les statistiques d'un champion":
             return ChampionVue()
         elif reponse["choix"] == "Trier les champions":

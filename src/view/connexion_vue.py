@@ -32,7 +32,7 @@ class ConnexionVue(VueAbstraite):
             return MenuAdminVue(message)
 
         if user.role == "User":
-            message = f"Vous êtes connecté sous le pseudo {user.name}"
+            message = f"Utilisateur : Vous êtes connecté sous le profil de {user.name}"
             from view.menu_joueur_vue import MenuJoueurVue
 
             return MenuJoueurVue(message)

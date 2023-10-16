@@ -1,11 +1,12 @@
 from InquirerPy import prompt
 
 from view.vue_abstraite import VueAbstraite
+from services.joueur_service import JoueurService
+from business_object.user.user import User
 from services.user_service import UserService
-#from service.joueur_service import JoueurService
+import time 
 
-
-class ConnexionVue(VueAbstraite):
+class CreerCompteVue(VueAbstraite):
     def __init__(self, message=""):
         super().__init__(message)
         self.questions = [
@@ -22,25 +23,28 @@ class ConnexionVue(VueAbstraite):
     def choisir_menu(self):
         answers = prompt(self.questions)
         
-        user = UserService().find_by_name(answers["pseudo"])
-        if (user.password != answers["mdp"]) : 
-            return AccueilVue("Vos identifiants sont incorrects")
-        message = ""
+        puuid = ""
+        user = None
+        
+        joueur = JoueurService().find_by_name(answers["pseudo"])
+        if joueur != None :
+            user = User(answers["pseudo"],answers["mdp"],"User",joueur)
+            UserService().creer(user)
+        else :    
+            print("")         
+            print("Aucun Joueur Referencé")
+            user = User(answers["pseudo"],answers["mdp"],"User")    
+            UserService().creer_no_puuid(user)
+        
+        print("")
+        print("-------------------------Votre Compte a été Créé-------------------------")
+        print("")
+        print("-----------------------Retour à la page d'accueil-------------------------")
+        time.sleep(3)
+        from view.accueil_vue import AccueilVue
+        return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL") 
 
-        if user.role == "Admin" :
-            message = f"Administrateur : Vous êtes connecté sous le profil de {user.name}"
-            from view.menu_admin_vue import MenuAdminVue
+       
 
-            return MenuAdminVue(message)
-
-        if user.role == "User":
-            message = f"Vous êtes connecté sous le pseudo {user.name}"
-            from view.menu_joueur_vue import MenuJoueurVue
-
-            return MenuJoueurVue(message)
-
-        else:
-            message = "Erreur de connexion"
-            from view.accueil_vue import AccueilVue
-
-            return AccueilVue(message)
+if __name__ == "__main__":
+     CreerCompteVue("").choisir_menu()

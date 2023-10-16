@@ -42,7 +42,44 @@ class UserDao(metaclass=Singleton):
         return res["user_id"]
 
     
+    def creer_no_puuid(self, user):
+        """Creation d'un utilisateur dans la base de données
 
+        Parameters
+        ----------
+        user : User
+
+        Returns
+        -------
+        user_id : int,  l'identifiant de l'objet créé
+        """
+
+        res = None
+
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "INSERT INTO projet.user(name, password, role) VALUES "
+                        "(%(name)s, %(password)s, %(role)s)             "
+                        "  RETURNING user_id ; ",
+                        {
+                            "name": user.name,
+                            "password": user.password,
+                            "role": user.role
+                        },
+                    )
+                    res = cursor.fetchone()
+        except Exception as e:
+            print(e)
+
+        created = False
+        if res:
+            created = True
+
+        return res["user_id"]
+
+    
     def find_by_name(self, name):
         """trouver un utilisateur grace à son nom
 
