@@ -2,6 +2,7 @@ from dao.db_connection import DBConnection
 from utils.singleton import Singleton
 from business_object.user.user import User
 
+
 class UserDao(metaclass=Singleton):
     def creer(self, user):
         """Creation d'un utilisateur dans la base de données
@@ -28,7 +29,7 @@ class UserDao(metaclass=Singleton):
                             "puuid": user.joueur.puuid,
                             "name": user.name,
                             "password": user.password,
-                            "role": user.role
+                            "role": user.role,
                         },
                     )
                     res = cursor.fetchone()
@@ -41,7 +42,6 @@ class UserDao(metaclass=Singleton):
 
         return res["user_id"]
 
-    
     def creer_no_puuid(self, user):
         """Creation d'un utilisateur dans la base de données
 
@@ -66,7 +66,7 @@ class UserDao(metaclass=Singleton):
                         {
                             "name": user.name,
                             "password": user.password,
-                            "role": user.role
+                            "role": user.role,
                         },
                     )
                     res = cursor.fetchone()
@@ -79,7 +79,6 @@ class UserDao(metaclass=Singleton):
 
         return res["user_id"]
 
-    
     def find_by_name(self, name):
         """trouver un utilisateur grace à son nom
 
@@ -96,22 +95,17 @@ class UserDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT *                           "
-                        "  FROM projet.user               "
+                        " SELECT *                           "
+                        " FROM projet.user               "
                         " WHERE name = %(name)s;  ",
                         {"name": name},
                     )
                     res = cursor.fetchone()
         except Exception as e:
-            print(e)
-            raise
+            pass 
 
         user = None
         if res:
-            user = User(
-                name=res["name"],
-                password=res["password"],
-                role=res["role"]
-            )
+            user = User(name=res["name"], password=res["password"], role=res["role"])
 
         return user
