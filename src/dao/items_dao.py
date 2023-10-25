@@ -23,20 +23,17 @@ class ItemsDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "INSERT INTO projet.item(item_id,name) VALUES "
-                        "(%(item_id)s, %(name)s)",
+                        "(%(item_id)s, %(name)s) "
+                        "ON CONFLICT (item_id) DO NOTHING",
                         {
-                            "item_id": item.id,
+                            "item_id": item.tools_id,
                             "name": item.name
                         },
                     )
-                    res = cursor.fetchone()
+                    res = True
         except Exception as e:
             print(e)
-
-        created = False
-        if res:
-            created = True
-
-        return created
+            res = False
+        return res
 
     

@@ -1,10 +1,12 @@
-from business_object.battle.team import Team
+from business_object.user.joueur import Joueur
 
 
 class Match:
-    def __init__(self, match_id, team1, team2, duration,winner) -> None:
-        self._match_id = match_id
-        self._team1 : Team = team1
-        self._team2 : Team = team2
-        self._duration = duration
-        self._winner = winner
+    def __init__(self, match_id, joueur, champion, items, lane, team, stat_joueur) -> None:
+        self.match_id = match_id
+        self.joueur : Joueur = joueur
+        self.champion = champion
+        self.items = items
+        self.lane = lane
+        self.team = team
+        self.stat_joueur = stat_joueur

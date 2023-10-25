@@ -2,17 +2,6 @@ DROP SCHEMA IF EXISTS projet CASCADE;
 CREATE SCHEMA projet;
 
 
------------------------------------------------------
--- User
------------------------------------------------------
-DROP TABLE IF EXISTS projet.user CASCADE ;
-CREATE TABLE projet.user(
-    user_id    SERIAL PRIMARY KEY,
-    name       TEXT UNIQUE,
-    password          TEXT,
-    role          TEXT
-);
-
 
 -----------------------------------------------------
 -- Joueur
@@ -20,11 +9,21 @@ CREATE TABLE projet.user(
 DROP TABLE IF EXISTS projet.joueur CASCADE ;
 CREATE TABLE projet.joueur(
     puuid    TEXT PRIMARY KEY,
-    user_id  INT REFERENCES projet.user(user_id),
-    name       TEXT UNIQUE,
-    rang          INT
+    name       TEXT UNIQUE
 );
 
+
+-----------------------------------------------------
+-- User
+-----------------------------------------------------
+DROP TABLE IF EXISTS projet.user CASCADE ;
+CREATE TABLE projet.user(
+    user_id    SERIAL PRIMARY KEY,
+    puuid  TEXT REFERENCES projet.joueur(puuid),
+    name       TEXT UNIQUE,
+    password          TEXT,
+    role          TEXT
+);
 
 
 -----------------------------------------------------
@@ -62,8 +61,8 @@ CREATE TABLE projet.lane(
 -----------------------------------------------------
 DROP TABLE IF EXISTS projet.team CASCADE ;
 CREATE TABLE projet.team(
-    team_id  INT PRIMARY KEY,
-    side   TEXT UNIQUE
+    team_id  TEXT PRIMARY KEY,
+    side   TEXT
 );
 
 
@@ -76,11 +75,11 @@ CREATE TABLE projet.match(
     puuid TEXT REFERENCES projet.joueur(puuid),
     lane_id  INT REFERENCES projet.lane(lane_id),
     champion_id  INT REFERENCES projet.champion(champion_id),
-    team_id  INT REFERENCES projet.team(team_id),
+    team_id  TEXT REFERENCES projet.team(team_id),
     total_damage_deal   INT,
     total_damage_take   INT,
     total_heal   INT,
-    kda   INT,
+    kda   FLOAT ,
     result   BOOLEAN,
     CONSTRAINT pk_match PRIMARY KEY (match_id, puuid)
 );
@@ -98,3 +97,11 @@ CREATE TABLE projet.itemmatch(
     CONSTRAINT fk_puuid_match FOREIGN KEY (match_id, puuid) REFERENCES projet.match(match_id, puuid),
     PRIMARY KEY (match_id, puuid, item_id)
 );
+
+
+INSERT INTO projet.lane(lane_id, name) VALUES
+(1, 'TOP'),
+(2, 'JUNGLE'),
+(3,'BOTTOM'),
+(4,'MIDDLE'),
+(5,'NONE');

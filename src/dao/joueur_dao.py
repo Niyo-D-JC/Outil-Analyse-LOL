@@ -1,13 +1,15 @@
 from dao.db_connection import DBConnection
 from utils.singleton import Singleton
+from business_object.user.joueur import Joueur
 
 class JoueurDao(metaclass=Singleton):
-    def creer(self, joueur, user_id) -> bool:
+    def creer(self, joueur) -> bool:
         """Creation d'un joueur dans la base de données
 
         Parameters
         ----------
-        joueur : joueur
+        joueur : Joueur
+        user_id : int
 
         Returns
         -------
@@ -22,24 +24,52 @@ class JoueurDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO projet.joueur(puuid, user_id, name, rang) VALUES "
-                        "(%(puuid)s, %(user_id)s, %(name)s, %(rang)s)",
+                        "INSERT INTO projet.joueur(puuid, name) VALUES "
+                        "(%(puuid)s,  %(name)s)"
+                        "ON CONFLICT (puuid) DO NOTHING",
                         {
                             "puuid": joueur.puuid,
-                            "user_id": user_id,
                             "name": joueur.name,
-                            "rang": joueur._rang
                         },
+                    )
+                    res = True
+        except Exception as e:
+            print(e)
+            res = False
+
+        return res
+
+    def find_by_name(self, name):
+        """trouver un utilisateur grace à son nom
+
+        Parameters
+        ----------
+        name : string
+
+        Returns
+        -------
+        joueur : Joueur
+            renvoie l'utilisateur que l'on cherche par son nom
+        """
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT *                           "
+                        "  FROM projet.joueur               "
+                        " WHERE name = %(name)s;  ",
+                        {"name": name},
                     )
                     res = cursor.fetchone()
         except Exception as e:
             print(e)
+            raise
 
-        created = False
+        joueur = None
         if res:
-            joueur.puuid = res["puuid"]
-            created = True
+            joueur = Joueur(
+                puuid=res["puuid"],
+                name=res["name"]
+            )
 
-        return created
-
-    
+        return joueur

@@ -2,13 +2,12 @@ from dao.db_connection import DBConnection
 from utils.singleton import Singleton
 
 class MatchDao(metaclass=Singleton):
-    def creer(self, match, joueur) -> bool:
+    def creer(self, match) -> bool:
         """Creation d'un item dans la base de données
 
         Parameters
         ----------
         match : Match
-        joueur : Joueur
         
         Returns
         -------
@@ -24,28 +23,24 @@ class MatchDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "INSERT INTO projet.match(match_id,puuid,lane_id,champion_id,team_id,total_damage_deal,total_damage_take,total_heal,kda,result) VALUES "
-                        "(%(match_id)s, %(puuid)s, %(lane_id)s, %(champion_id)s, %(team_id)s, %(total_damage_deal)s, %(total_damage_take)s, %(total_heal)s, %(kda)s, %(result)s)",
+                        "(%(match_id)s, %(puuid)s, %(lane_id)s, %(champion_id)s, %(team_id)s, %(total_damage_deal)s, %(total_damage_take)s, %(total_heal)s, %(kda)s, %(result)s) ON CONFLICT (match_id, puuid) DO NOTHING",
                         {
                             "match_id": match.match_id,
-                            "puuid": joueur.puuid,
-                            "lane_id": joueur.lane.id,
-                            "champion_id": joueur._champion.id,
-                            "team_id": joueur._team._id,
-                            "total_damage_deal": joueur.stat_joueur._total_damage_deal,
-                            "total_damage_take": joueur.stat_joueur._total_damage_take,
-                            "total_heal": joueur.stat_joueur._total_heal,
-                            "kda": joueur.stat_joueur._kda,
-                            "result": joueur.stat_joueur._result
+                            "puuid": match.joueur.puuid,
+                            "lane_id": match.lane.tools_id,
+                            "champion_id": match.champion.tools_id,
+                            "team_id": match.team.team_id,
+                            "total_damage_deal": match.stat_joueur.total_damage_deal,
+                            "total_damage_take": match.stat_joueur.total_damage_take,
+                            "total_heal": match.stat_joueur.total_heal,
+                            "kda": match.stat_joueur.kda,
+                            "result": match.stat_joueur.result
                         },
                     )
-                    res = cursor.fetchone()
+                    res = True
         except Exception as e:
             print(e)
-
-        created = False
-        if res:
-            created = True
-
-        return created
+            res = False
+        return res
 
     

@@ -1,14 +1,14 @@
 from InquirerPy import prompt
 
 from view.vue_abstraite import VueAbstraite
-#from service.joueur_service import JoueurService
+from services.user_service import UserService
 
 
 class ConnexionVue(VueAbstraite):
     def __init__(self, message=""):
         super().__init__(message)
         self.questions = [
-            {"type": "input", "name": "pseudo", "message": "Entrez votre pseudo :"},
+            {"type": "input", "name": "pseudo", "message": "Entrez votre username :"},
             {"type": "input", "name": "mdp", "message": "Entrez votre mot de passe :"},
         ]
 
@@ -19,21 +19,20 @@ class ConnexionVue(VueAbstraite):
 
     def choisir_menu(self):
         answers = prompt(self.questions)
-
-        # On appelle le service pour trouver le joueur
-        joueur = None #JoueurService().se_connecter_bad(answers["pseudo"], answers["mdp"])
-        # ' OR 1=1;--
+        
+        user = UserService().find_by_name(answers["pseudo"])
+        if (user.password != answers["mdp"]) : 
+            return AccueilVue("Vos identifiants sont incorrects")
         message = ""
-        admin = None
 
-        if admin :
-            message = f"Vous êtes connecté sous le pseudo {admin.pseudo}"
+        if user.role == "Admin" :
+            message = f"Administrateur : Vous êtes connecté sous le profil de {user.name}"
             from view.menu_admin_vue import MenuAdminVue
 
             return MenuAdminVue(message)
 
-        if joueur:
-            message = f"Vous êtes connecté sous le pseudo {joueur.pseudo}"
+        if user.role == "User":
+            message = f"Utilisateur : Vous êtes connecté sous le profil de {user.name}"
             from view.menu_joueur_vue import MenuJoueurVue
 
             return MenuJoueurVue(message)

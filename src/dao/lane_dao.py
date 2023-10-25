@@ -25,18 +25,15 @@ class LaneDao(metaclass=Singleton):
                         "INSERT INTO projet.lane(lane_id,name) VALUES "
                         "(%(lane_id)s, %(name)s)",
                         {
-                            "lane_id": lane.id,
+                            "lane_id": lane.tools_id,
                             "name": lane.name
                         },
                     )
-                    res = cursor.fetchone()
+                    res = True
         except Exception as e:
             print(e)
-
-        created = False
-        if res:
-            created = True
-
-        return created
+            res = False
+      
+        return res
 
     

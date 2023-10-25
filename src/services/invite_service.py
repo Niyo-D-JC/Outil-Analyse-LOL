@@ -8,6 +8,11 @@ class stat_champion(JoueurInTeam, Item):
 """
 
 
+class Listeprties:
+    def __init__(self):
+        pass
+
+
 class Invite:
     def __init__(self):
         pass
@@ -21,6 +26,22 @@ class Invite:
             stat (str): 'win rate', 'KDA', 'pick rate', 'item populaire'
             division (str): 1,2,3,4
         """
+        s1 = 0
+        s2 = 0
+        for i in list_partie:
+            for j in i[1]:
+                for k in j:
+                    if champion_id in k and i[3] == 1:
+                        s1 += 1
+                    if champion_id in k:
+                        s2 += 1
+            for j in i[2]:
+                for k in j:
+                    if champion_id in k and i[3] == 2:
+                        s1 += 1
+                    if champion_id in k:
+                        s2 += 1
+        wr = s1 / s2
         if stat == "win rate":
             s1 = 0
             s2 = 0

@@ -41,8 +41,8 @@ class MenuJoueurVue(VueAbstraite):
 
         if reponse["choix"] == "Se déconnecter":
             from view.accueil_vue import AccueilVue
+            return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
 
-            return AccueilVue()
         elif reponse["choix"] == "Afficher les joueurs":
             joueurs_str = None #JoueurService().afficher_tous()
             return MenuJoueurVue(joueurs_str)
