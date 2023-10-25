@@ -102,8 +102,7 @@ class UserDao(metaclass=Singleton):
                     )
                     res = cursor.fetchone()
         except Exception as e:
-            print(e)
-            raise
+            pass 
 
         user = None
         if res:
