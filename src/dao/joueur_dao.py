@@ -63,7 +63,6 @@ class JoueurDao(metaclass=Singleton):
                     res = cursor.fetchone()
         except Exception as e:
             print(e)
-            raise
 
         joueur = None
         if res:

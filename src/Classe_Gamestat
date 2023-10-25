@@ -1,0 +1,35 @@
+import numpy as np
+
+class stats_match(Joueur,Lane,ItemMatch,Champion,Team):
+    def __init__(self,total_kills,total_deaths, total_assists,total_heal, total_dammage_deal,total,dammage_take,duration) :
+      super().__init__()
+      self.total_kills= total_kills
+      self.total_deaths = total_deaths
+      self.total_assists = total_assists
+      self.total_heal = total_heal
+      self.total_dammage_deal = total_dammage_deal
+      self.total_dammage_take
+      self.duration = duration
+
+    def kda_player(self):
+        for joueur in self.joueur:
+            kda = f'KDA: {self.total_kills}/{self.total_deaths}/{self.total_assists}'
+            print(f"Player: {Joueur.summoner_name}, {kda}")
+
+    def kda_team(self) :
+      team_kda = {}
+      for joueur in self.joueur:
+            team_id = joueur.team_id
+            KDA = (total_kills, total_deaths, total_assists)
+            if team_id not in team_kda:
+                team_kda[team_id] = [0, 0, 0]
+            else :
+              team_kda[team_id][0] += KDA[0]  # Somme des kills
+              team_kda[team_id][1] += KDA[1]  # Somme des deaths
+              team_kda[team_id][2] += KDA[2]  # Somme des assists
+
+      for team_id, KDA in team_kda.items():
+            total_team_kills, total_team_deaths, total_team_assists = KDA
+            print(f"Team {team_id}: Total KDA -> {team_kills}/{team_deaths}/{team_assists}")
+
+    # Créer un tableau qui référence dans un tableau a 2 colonnes le nom des joueurs
