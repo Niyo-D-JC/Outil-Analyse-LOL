@@ -1,5 +1,8 @@
 from dao.db_connection import DBConnection
 from dao.joueur_dao import JoueurDao
+from dao.champion_dao import ChampionDao
+from dao.items_dao import ItemsDao
+from dao.itemmatch_dao import ItemMatchDao
 from utils.singleton import Singleton
 from business_object.battle.match import Match
 
@@ -64,10 +67,10 @@ class MatchDao(metaclass=Singleton):
         if res:
             Player_Matches = []
 
-
             for game in res:  # game est un dictionnaire
-
                 joueur = JoueurDao().find_by_puuid(game["puuid"])
+                champion = ChampionDAO().find_by_id(game["champion_id"])
+                items = ItemsDao().
 
 
                 Match_Object = Match(
