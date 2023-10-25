@@ -1,5 +1,7 @@
 from dao.db_connection import DBConnection
 from utils.singleton import Singleton
+from business_object.tools.items import Item
+
 
 class ItemMatchDao(metaclass=Singleton):
     def creer(self, match_id, puuid, item_id) -> bool:
@@ -7,8 +9,8 @@ class ItemMatchDao(metaclass=Singleton):
 
         Parameters
         ----------
-        match_id : string, 
-        puuid : string, 
+        match_id : string,
+        puuid : string,
         item_id : int
 
         Returns
@@ -26,11 +28,7 @@ class ItemMatchDao(metaclass=Singleton):
                     cursor.execute(
                         "INSERT INTO projet.itemmatch(match_id,puuid,item_id) VALUES "
                         "(%(match_id)s, %(puuid)s, %(item_id)s) ON CONFLICT (match_id, puuid, item_id) DO NOTHING",
-                        {
-                            "match_id": match_id,
-                            "puuid": puuid,
-                            "item_id": item_id
-                        },
+                        {"match_id": match_id, "puuid": puuid, "item_id": item_id},
                     )
                     res = True
         except Exception as e:
@@ -38,4 +36,43 @@ class ItemMatchDao(metaclass=Singleton):
             res = False
         return res
 
-    
+    def find_all_by_match_puuid(self, match_id: int, puuid: int):
+        """trouver un utilisateur grace à son nom
+
+        Parameters
+        ----------
+        game_id : int
+        puuid : int
+
+        Returns
+        -------
+        Item : Item
+            renvoie l'utilisateur que l'on cherche par son nom
+        """
+        res = False
+
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        " SELECT *                           "
+                        " FROM projet.itemmatch               "
+                        " WHERE match_id = %(match_id)s AND puuid= %(puuid)s;  ",
+                        {
+                            "match_id": match_id,
+                            "puuid": puuid,
+                        },
+                    )
+                    res = cursor.fetchall()
+        except Exception as e:
+            pass
+
+        if res:
+            List_items = []
+
+            for item in res:
+                item_object = Item(id=res["id"], name=res["name"])
+
+                List_items.append(item_object)
+
+        return List_items

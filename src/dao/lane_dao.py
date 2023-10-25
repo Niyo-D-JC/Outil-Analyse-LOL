@@ -1,5 +1,7 @@
 from dao.db_connection import DBConnection
 from utils.singleton import Singleton
+from business_object.tools.lane import Lane
+
 
 class LaneDao(metaclass=Singleton):
     def creer(self, champion) -> bool:
@@ -24,16 +26,42 @@ class LaneDao(metaclass=Singleton):
                     cursor.execute(
                         "INSERT INTO projet.lane(lane_id,name) VALUES "
                         "(%(lane_id)s, %(name)s)",
-                        {
-                            "lane_id": lane.tools_id,
-                            "name": lane.name
-                        },
+                        {"lane_id": lane.tools_id, "name": lane.name},
                     )
                     res = True
         except Exception as e:
             print(e)
             res = False
-      
+
         return res
 
-    
+    def find_by_id(self, id):
+        """trouver une lane grace à son id
+
+        Parameters
+        ----------
+        id : int
+
+        Returns
+        -------
+        lane : lane
+            renvoie un objet lane
+        """
+        res = False
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT *                           "
+                        " FROM projet.lane              "
+                        " WHERE id = %(id)s;  ",
+                        {"id": id},
+                    )
+                    res = cursor.fetchone()
+        except Exception as e:
+            print(e)
+
+        if res:
+            lane = Lane(id=id, name=res["name"])
+
+        return lane
