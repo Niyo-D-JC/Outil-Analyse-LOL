@@ -35,7 +35,7 @@ class LaneDao(metaclass=Singleton):
 
         return res
 
-    def find_by_id(self, id):
+    def find_by_id(self, lane_id):
         """trouver une lane grace à son id
 
         Parameters
@@ -52,16 +52,16 @@ class LaneDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT *                           "
-                        " FROM projet.lane              "
-                        " WHERE id = %(id)s;  ",
-                        {"id": id},
+                        " SELECT *                 "
+                        " FROM projet.lane         "
+                        " WHERE id = %(lane_id)s;  ",
+                        {"id": lane_id},
                     )
                     res = cursor.fetchone()
         except Exception as e:
             print(e)
 
         if res:
-            lane = Lane(id=id, name=res["name"])
+            lane = Lane(lane_id=lane_id, name=res["name"])
 
         return lane

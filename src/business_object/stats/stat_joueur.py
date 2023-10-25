@@ -1,8 +1,8 @@
-
-class StatJoeur:
-    def __init__(self, total_damage_deal, total_damage_take, total_heal, 
-                 kda, result) -> None:
-        self.total_kills= total_kills
+class StatJoueur:
+    def __init__(
+        self, total_damage_deal, total_damage_take, total_heal, kda, result
+    ) -> None:
+        self.total_kills = total_kills
         self.total_deaths = total_deaths
         self.total_assists = total_assists
         self.total_heal = total_heal
@@ -20,12 +20,8 @@ class StatJoeur:
         res += "\t Total assists = {}".format(self.total_assists)
         res += "\t Total heal = {}".format(self.total_heal)
         return res
-    
+
     def kda_player(self):
         for joueur in self.joueur:
-            kda = f'KDA: Kills :{self.total_kills}/Deaths :{self.total_deaths}/Assists :{self.total_assists}'
+            kda = f"KDA: Kills :{self.total_kills}/Deaths :{self.total_deaths}/Assists :{self.total_assists}"
             print(f"Player: {Joueur.summoner_name}, {kda}")
-    
-    
-   
-    

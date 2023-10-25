@@ -1,6 +1,8 @@
 from dao.db_connection import DBConnection
 from utils.singleton import Singleton
+
 from business_object.tools.items import Item
+from dao.items_dao import ItemsDao
 
 
 class ItemMatchDao(metaclass=Singleton):
@@ -71,7 +73,8 @@ class ItemMatchDao(metaclass=Singleton):
             List_items = []
 
             for item in res:
-                item_object = Item(id=res["id"], name=res["name"])
+                item_object = ItemsDao().find_by_id(id=res["item_id"])
+                # type(item_object) == Item
 
                 List_items.append(item_object)
 
