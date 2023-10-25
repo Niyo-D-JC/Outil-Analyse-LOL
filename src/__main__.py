@@ -10,12 +10,12 @@ Classe de lancement de l'application
 if __name__ == "__main__":
     # On charge les variables d'envionnement
     dotenv.load_dotenv(override=True)
-    try : 
+    try:
         UserService().find_by_name("admin").name
-    except :
+    except:
         print("Premiere Ouverture de l'Application")
         ResetDatabase().lancer()
-        FillDataBase().run(name = "KC NEXT ADKING")
+        FillDataBase().run(name="KC NEXT ADKING")
 
     vue_courante = AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
     nb_erreurs = 0
