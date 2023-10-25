@@ -1,4 +1,8 @@
 from dao.user_dao import UserDao
+from business_object.user.joueur import Joueur
+from business_object.user.user import User
+
+
 class UserService:
     def creer(self, user):
         return UserDao().creer(user)
@@ -8,3 +12,6 @@ class UserService:
 
     def find_by_name(self, name):
         return UserDao().find_by_name(name)
+
+    def get_stats_perso(self, user: User):
+        pass
