@@ -140,4 +140,4 @@ class FillDataBase:
 
 
 if __name__ == "__main__":
-    FillDataBase().run(name="KC NEXT ADKING")
+    FillDataBase().run(name="Fan2Chat")
