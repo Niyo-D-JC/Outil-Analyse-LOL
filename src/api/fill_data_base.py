@@ -11,7 +11,7 @@ from business_object.user.user import User
 from business_object.tools.champion import Champion
 from business_object.tools.items import Item
 from business_object.tools.lane import Lane, LANE
-from business_object.stats.stat_joueur import StatJoeur
+from business_object.stats.stat_joueur import StatJoueur
 from dao.champion_dao import ChampionDao
 from dao.items_dao import ItemsDao
 from dao.joueur_dao import JoueurDao
@@ -22,7 +22,8 @@ from dao.itemmatch_dao import ItemMatchDao
 import time
 
 SIDE = {100: "Blue", 200: "Purple"}
-
+TIER = ["DIAMOND","PLATINUM","GOLD","SILVER","BRONZE","IRON"]
+DIVISION = ["I", "II", "III", "IV"]
 
 class FillDataBase:
     def __init__(self):
@@ -34,7 +35,7 @@ class FillDataBase:
         self.API_KEY = os.environ["API_KEY"]
         self.items = json.load(f)
 
-    def RequestNoRateLimitExceed(self, url, key_):
+    def reqLimit(self, url, key_):
         try:
             response = requests.get(url).json()
             status = response[key_]
@@ -52,7 +53,7 @@ class FillDataBase:
             + "?api_key="
             + self.API_KEY
         )
-        data = self.RequestNoRateLimitExceed(url, "gameName")
+        data = self.reqLimit(url, "gameName")
         return Joueur(puuid, data["gameName"])
 
     def getMatchInfo(self, match_id):
@@ -63,7 +64,7 @@ class FillDataBase:
             + "?api_key="
             + self.API_KEY
         )
-        data = self.RequestNoRateLimitExceed(url, "metadata")
+        data = self.reqLimit(url, "metadata")
         list_match = []
         for puuid in list(data["metadata"]["participants"]):
             player_info = data["info"]["participants"][
@@ -120,7 +121,7 @@ class FillDataBase:
             + "?api_key="
             + self.API_KEY
         )
-        puuid_ref = self.RequestNoRateLimitExceed(url, "puuid")["puuid"]
+        puuid_ref = self.reqLimit(url, "puuid")["puuid"]
         url = (
             self.HOST_WEBSERVICE_EUROPA
             + "/lol/match/v5/matches/by-puuid/"
@@ -133,7 +134,7 @@ class FillDataBase:
             + "&api_key="
             + self.API_KEY
         )
-        list_match_data = list(self.RequestNoRateLimitExceed(url, "metadata"))
+        list_match_data = list(self.reqLimit(url, "metadata"))
         [self.getMatchInfo(match_id) for match_id in list_match_data]
         UserDao().creer(User("admin", "admin", "Admin", self.getJoueur(puuid_ref)))
         return True

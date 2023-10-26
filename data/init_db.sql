@@ -9,7 +9,8 @@ CREATE SCHEMA projet;
 DROP TABLE IF EXISTS projet.joueur CASCADE ;
 CREATE TABLE projet.joueur(
     puuid    TEXT PRIMARY KEY,
-    name       TEXT UNIQUE
+    name       TEXT UNIQUE,
+    tier TEXT
 );
 
 
@@ -94,6 +95,7 @@ CREATE TABLE projet.itemmatch(
     match_id TEXT,
     puuid TEXT,
     item_id INT REFERENCES projet.item(item_id),
+    item_position INT,
     CONSTRAINT fk_puuid_match FOREIGN KEY (match_id, puuid) REFERENCES projet.match(match_id, puuid),
     PRIMARY KEY (match_id, puuid, item_id)
 );
