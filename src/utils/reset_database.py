@@ -1,6 +1,5 @@
 from utils.singleton import Singleton
 from dao.db_connection import DBConnection
-from services.fill_data_base import FillDataBase
 
 class ResetDatabase(metaclass=Singleton):
     """

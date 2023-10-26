@@ -24,7 +24,7 @@ class TeamDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "INSERT INTO projet.team(team_id, side) VALUES "
-                        "(%(team_id)s, %(side)s) ON CONFLICT (team_id) DO NOTHING",
+                        "(%(team_id)s, %(side)s)",
                         {"team_id": team.team_id, "side": team.side},
                     )
                     res = True
