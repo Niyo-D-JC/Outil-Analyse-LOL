@@ -34,7 +34,7 @@ class MatchDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "INSERT INTO projet.match(match_id,puuid,lane_id,champion_id,team_id,total_damage_deal,total_damage_take,total_heal,kda,result) VALUES "
-                        "(%(match_id)s, %(puuid)s, %(lane_id)s, %(champion_id)s, %(team_id)s, %(total_damage_deal)s, %(total_damage_take)s, %(total_heal)s, %(kda)s, %(result)s) ON CONFLICT (match_id, puuid) DO NOTHING",
+                        "(%(match_id)s, %(puuid)s, %(lane_id)s, %(champion_id)s, %(team_id)s, %(total_damage_deal)s, %(total_damage_take)s, %(total_heal)s, %(kda)s, %(result)s)",
                         {
                             "match_id": match.match_id,
                             "puuid": match.joueur.puuid,

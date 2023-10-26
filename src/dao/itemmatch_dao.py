@@ -6,7 +6,7 @@ from dao.items_dao import ItemsDao
 
 
 class ItemMatchDao(metaclass=Singleton):
-    def creer(self, match_id, puuid, item_id) -> bool:
+    def creer(self, match_id, puuid, item_id, item_position) -> bool:
         """Creation d'un itemmacth dans la base de données
 
         Parameters
@@ -29,8 +29,8 @@ class ItemMatchDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "INSERT INTO projet.itemmatch(match_id,puuid,item_id) VALUES "
-                        "(%(match_id)s, %(puuid)s, %(item_id)s) ON CONFLICT (match_id, puuid, item_id) DO NOTHING",
-                        {"match_id": match_id, "puuid": puuid, "item_id": item_id},
+                        "(%(match_id)s, %(puuid)s, %(item_id)s)",
+                        {"match_id": match_id, "puuid": puuid, "item_id": item_id, "item_position":item_position},
                     )
                     res = True
         except Exception as e:

@@ -9,7 +9,7 @@ CREATE SCHEMA projet;
 DROP TABLE IF EXISTS projet.joueur CASCADE ;
 CREATE TABLE projet.joueur(
     puuid    TEXT PRIMARY KEY,
-    name       TEXT UNIQUE,
+    name       TEXT,
     tier TEXT
 );
 
@@ -33,7 +33,7 @@ CREATE TABLE projet.user(
 DROP TABLE IF EXISTS projet.item CASCADE ;
 CREATE TABLE projet.item(
     item_id  INT PRIMARY KEY,
-    name   TEXT UNIQUE
+    name   TEXT
 );
 
 
@@ -43,7 +43,7 @@ CREATE TABLE projet.item(
 DROP TABLE IF EXISTS projet.champion CASCADE ;
 CREATE TABLE projet.champion(
     champion_id  INT PRIMARY KEY,
-    name   TEXT UNIQUE
+    name   TEXT
 );
 
 
@@ -62,7 +62,7 @@ CREATE TABLE projet.lane(
 -----------------------------------------------------
 DROP TABLE IF EXISTS projet.team CASCADE ;
 CREATE TABLE projet.team(
-    team_id  TEXT PRIMARY KEY,
+    team_id  INT PRIMARY KEY,
     side   TEXT
 );
 
@@ -76,7 +76,7 @@ CREATE TABLE projet.match(
     puuid TEXT REFERENCES projet.joueur(puuid),
     lane_id  INT REFERENCES projet.lane(lane_id),
     champion_id  INT REFERENCES projet.champion(champion_id),
-    team_id  TEXT REFERENCES projet.team(team_id),
+    team_id  INT REFERENCES projet.team(team_id),
     total_damage_deal   INT,
     total_damage_take   INT,
     total_heal   INT,
@@ -107,3 +107,7 @@ INSERT INTO projet.lane(lane_id, name) VALUES
 (3,'BOTTOM'),
 (4,'MIDDLE'),
 (5,'NONE');
+
+INSERT INTO projet.team(team_id, side) VALUES
+(100, 'Blue'),
+(200,'Purple');

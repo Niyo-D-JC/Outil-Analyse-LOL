@@ -25,8 +25,7 @@ class ChampionDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "INSERT INTO projet.champion(champion_id,name) VALUES "
-                        "(%(champion_id)s, %(name)s) "
-                        "ON CONFLICT (champion_id) DO NOTHING",
+                        "(%(champion_id)s, %(name)s) ",
                         {"champion_id": champion.tools_id, "name": champion.name},
                     )
                     res = True

@@ -26,8 +26,7 @@ class JoueurDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "INSERT INTO projet.joueur(puuid, name) VALUES "
-                        "(%(puuid)s,  %(name)s)"
-                        "ON CONFLICT (puuid) DO NOTHING",
+                        "(%(puuid)s,  %(name)s)",
                         {
                             "puuid": joueur.puuid,
                             "name": joueur.name,
