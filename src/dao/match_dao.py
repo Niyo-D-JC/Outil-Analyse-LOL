@@ -74,7 +74,7 @@ class MatchDao(metaclass=Singleton):
 
             for game in res:  # game est un dictionnaire
                 joueur = JoueurDao().find_by_puuid(puuid=game["puuid"])
-                champion = ChampionDAO().find_by_id(id=game["champion_id"])
+                champion = ChampionDao().find_by_id(id=game["champion_id"])
                 list_items = ItemMatchDao().find_all_by_match_puuid(
                     match_id=game["match_id"]
                 )
