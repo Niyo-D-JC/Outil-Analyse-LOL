@@ -16,5 +16,12 @@ class UserService:
         return UserDao().find_by_name(name)
 
     def get_stats_perso(self, user: User):
-        
-        Liste_Match_User = 
+
+        Liste_Match_User = MatchDao().filter_by_Joueur(User.joueur)
+        for Match_User in Liste_Match_User : 
+
+
+
+
+
+            
