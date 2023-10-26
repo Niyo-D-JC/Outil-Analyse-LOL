@@ -85,8 +85,7 @@ class MatchDao(metaclass=Singleton):
                     total_damage_take=game["total_damage_take"],
                     total_heal=game["total_heal"],
                     kda=game["kda"],
-                    result= None #C'est pas de la digramme de classe de la BDD
-
+                    result=None,  # C'est pas de la digramme de classe de la BDD
                 )
 
                 Match_Object = Match(
