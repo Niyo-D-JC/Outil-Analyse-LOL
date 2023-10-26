@@ -1,24 +1,12 @@
-from services.fill_data_base import FillDataBase
+"""from services.fill_data_base import FillDataBase
 
 
 class ListePartiesInvite:
-    """_summary_"""
 
     def __init__(self, match_id):
-        """Initialisation
-
-        Args:
-            match_id (str): id du match de départ qui sert à trouver les autres matchs
-        """
         self.match_id = match_id
 
     def transfo_list(self):
-        """transforme la liste obtenue avec le remplissage de la base de donnée en
-        la liste dont nous avons besoin
-
-        Returns:
-            list: liste dans le bon format
-        """
         liste_match = FillDataBase().getMatchInfo(self.match_id)
         L = []
         Ltempo = []
@@ -51,6 +39,7 @@ class ListePartiesInvite:
                         [liste_match[i][2], liste_match[i][3], liste_match[i][6][3]]
                     )
         return L
+"""
 
 
 class InviteService:
