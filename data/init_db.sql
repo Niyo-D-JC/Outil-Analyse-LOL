@@ -68,10 +68,10 @@ CREATE TABLE projet.team(
 
 
 -----------------------------------------------------
--- Match
+-- MatchJoueur
 -----------------------------------------------------
 DROP TABLE IF EXISTS projet.match CASCADE ;
-CREATE TABLE projet.match(
+CREATE TABLE projet.matchjoueur(
     match_id    TEXT,
     puuid TEXT REFERENCES projet.joueur(puuid),
     lane_id  INT REFERENCES projet.lane(lane_id),
@@ -81,7 +81,10 @@ CREATE TABLE projet.match(
     total_damage_take   INT,
     total_heal   INT,
     kda   FLOAT ,
-    result   BOOLEAN,
+    kills INT, 
+    deaths INT,
+    assists INT,
+    win   BOOLEAN,
     CONSTRAINT pk_match PRIMARY KEY (match_id, puuid)
 );
 
@@ -96,7 +99,7 @@ CREATE TABLE projet.itemmatch(
     puuid TEXT,
     item_id INT REFERENCES projet.item(item_id),
     item_position INT,
-    CONSTRAINT fk_puuid_match FOREIGN KEY (match_id, puuid) REFERENCES projet.match(match_id, puuid),
+    CONSTRAINT fk_puuid_match FOREIGN KEY (match_id, puuid) REFERENCES projet.matchjoueur(match_id, puuid),
     PRIMARY KEY (match_id, puuid, item_id)
 );
 

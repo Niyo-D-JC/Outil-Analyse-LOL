@@ -1,7 +1,7 @@
 from business_object.user.joueur import Joueur
 
 
-class Match:
+class MatchJoueur:
     def __init__(
         self, match_id, joueur, champion, items, lane, team, stat_joueur
     ) -> None:

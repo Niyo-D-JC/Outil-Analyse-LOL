@@ -8,11 +8,11 @@ from dao.team_dao import TeamDao
 
 
 from utils.singleton import Singleton
-from business_object.battle.match import Match
+from business_object.battle.matchjoueur import MatchJoueur
 from business_object.stats.stat_joueur import StatJoueur
 
 
-class MatchDao(metaclass=Singleton):
+class MatchJoueurDao(metaclass=Singleton):
     def creer(self, match) -> bool:
         """Creation d'un item dans la base de données
 
@@ -33,8 +33,8 @@ class MatchDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO projet.match(match_id,puuid,lane_id,champion_id,team_id,total_damage_deal,total_damage_take,total_heal,kda,result) VALUES "
-                        "(%(match_id)s, %(puuid)s, %(lane_id)s, %(champion_id)s, %(team_id)s, %(total_damage_deal)s, %(total_damage_take)s, %(total_heal)s, %(kda)s, %(result)s)",
+                        "INSERT INTO projet.matchjoueur(match_id,puuid,lane_id,champion_id,team_id,total_damage_deal,total_damage_take,total_heal,kda,kills,deaths,assists,win) VALUES "
+                        "(%(match_id)s, %(puuid)s, %(lane_id)s, %(champion_id)s, %(team_id)s, %(total_damage_deal)s, %(total_damage_take)s, %(total_heal)s, %(kda)s,  %(kills)s, %(deaths)s, %(assists)s,%(win)s)",
                         {
                             "match_id": match.match_id,
                             "puuid": match.joueur.puuid,
@@ -45,7 +45,10 @@ class MatchDao(metaclass=Singleton):
                             "total_damage_take": match.stat_joueur.total_damage_take,
                             "total_heal": match.stat_joueur.total_heal,
                             "kda": match.stat_joueur.kda,
-                            "result": match.stat_joueur.result,
+                            "kills": match.stat_joueur.kills,
+                            "deaths": match.stat_joueur.deaths,
+                            "assists": match.stat_joueur.assists,
+                            "win": match.stat_joueur.win,
                         },
                     )
                     res = True
@@ -60,7 +63,7 @@ class MatchDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT * " "FROM projet.match  " "WHERE puuid = %(puuid)s ",
+                        "SELECT * " "FROM projet.matchjoueur  " "WHERE puuid = %(puuid)s ",
                         {"puuid": joueur.puuid},
                     )
                     res = cursor.fetchall()
@@ -88,7 +91,7 @@ class MatchDao(metaclass=Singleton):
                     result=None,  # C'est pas de la digramme de classe de la BDD
                 )
 
-                Match_Object = Match(
+                Match_Object = MatchJoueur(
                     match_id=game["match_id"],
                     joueur=joueur,
                     champion=champion,

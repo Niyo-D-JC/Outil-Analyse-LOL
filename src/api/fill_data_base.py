@@ -4,7 +4,7 @@
 
 
 import requests, json, dotenv, os
-from business_object.battle.match import Match
+from business_object.battle.matchjoueur import MatchJoueur
 from business_object.battle.team import Team
 from business_object.user.joueur import Joueur
 from business_object.user.user import User
@@ -16,7 +16,7 @@ from dao.champion_dao import ChampionDao
 from dao.items_dao import ItemsDao
 from dao.joueur_dao import JoueurDao
 from dao.user_dao import UserDao
-from dao.match_dao import MatchDao
+from dao.matchjoueur_dao import MatchJoueurDao
 from dao.team_dao import TeamDao
 from dao.itemmatch_dao import ItemMatchDao
 import time
@@ -114,16 +114,19 @@ class FillDataBase:
                 side=SIDE[player_info["teamId"]],
             )
         stat_joueur = StatJoueur(
+                player_info["kills"],
+                player_info["deaths"],
+                player_info["assists"],
                 player_info["totalDamageDealt"],
                 player_info["totalDamageTaken"],
                 player_info["totalHeal"],
                 player_info["challenges"]["kda"],
-                bool(player_info["win"]),
+                bool(player_info["win"])
             )
-        match = Match(
+        matchjoueur = MatchJoueur(
                 match_id, joueur, champion, list_item, lane, team, stat_joueur
             )
-        return match
+        return matchjoueur
 
 
     def getJoueurAllMatchInfo(self, puuid, first_game=0, last_game = 20) : 
@@ -142,9 +145,9 @@ class FillDataBase:
         list_match = list(self.reqLimit(url))
 
         for match_id in list_match : 
-            match = self.getJoueurMatchInfo(puuid, match_id)
-            JoueurDao().creer(match.joueur)
-            MatchDao().creer(match)
+            matchjoueur = self.getJoueurMatchInfo(puuid, match_id)
+            JoueurDao().creer(matchjoueur.joueur)
+            MatchJoueurDao().creer(matchjoueur)
             [
                 ItemMatchDao().creer(match_id, puuid, item_.tools_id, item_.item_position)
                 for item_ in match.items
@@ -161,7 +164,7 @@ class FillDataBase:
             for D in DIVISION:
                 joueur = self.getJoueurByLeague(T,D)
                 self.getJoueurAllMatchInfo(joueur.puuid,first_game=0, last_game = 5)
-
+                print(T + " " + D)
         UserDao().creer_no_puuid(User("admin", "admin", "Admin"))
         return 1
         
