@@ -15,7 +15,7 @@ if __name__ == "__main__":
     except:
         print("Premiere Ouverture de l'Application")
         ResetDatabase().lancer()
-        FillDataBase().initiate()
+        FillDataBase().initiate(0,5)
 
     vue_courante = AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
     nb_erreurs = 0

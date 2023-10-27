@@ -177,7 +177,7 @@ class FillDataBase:
                 
                 
         UserDao().creer_no_puuid(User("admin", "admin", "Admin"))
-        bar.close()
+        self.bar.close()
         return 1
         
     def getJoueur(self, puuid):
