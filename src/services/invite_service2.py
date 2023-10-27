@@ -198,7 +198,7 @@ class InviteService:
             L.append(self.stat_champion(list_partie, i, l_stat))
         L2 = L
         for i in L:
-            if isintance(i, list):
+            if isinstance(i, list):
                 if self.is_instance_liste(i[0], int):
                     if i[0][1] == 0:
                         i[0][1] = 1
