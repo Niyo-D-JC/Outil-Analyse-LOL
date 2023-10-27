@@ -20,17 +20,19 @@ from dao.matchjoueur_dao import MatchJoueurDao
 from dao.team_dao import TeamDao
 from dao.itemmatch_dao import ItemMatchDao
 import time
+from tqdm import tqdm
+
 
 SIDE = {100: "Blue", 200: "Purple"}
 TIER = ["DIAMOND","PLATINUM","GOLD","SILVER","BRONZE","IRON"]
 DIVISION = ["I", "II", "III", "IV"]
-
 class FillDataBase:
     def __init__(self):
         dotenv.load_dotenv(override=True)
         f = open("data/item.json")
         fc = open("data/champion.json",'r', encoding='utf-8')
-
+        print("")
+        self.bar = tqdm()
         self.HOST_WEBSERVICE_EUW1 = os.environ["HOST_WEBSERVICE_EUW1"]
         self.HOST_WEBSERVICE_EUROPA = os.environ["HOST_WEBSERVICE_EUROPA"]
         self.API_KEY = os.environ["API_KEY"]
@@ -44,6 +46,7 @@ class FillDataBase:
                 status = response[key_]
                 return response
             except:
+                self.bar.set_description('Limit Rate Requests Atteint : Attendre 2 minutes sup')
                 time.sleep(125)
                 response = requests.get(url).json()
                 return response
@@ -52,6 +55,7 @@ class FillDataBase:
             if (response != []):
                 return response
             else : 
+                self.bar.set_description('Limit Rate Requests Atteint : Attendre 2 minutes sup')
                 time.sleep(125)
                 response = requests.get(url).json()
                 return response
@@ -153,23 +157,27 @@ class FillDataBase:
                     ItemMatchDao().creer(match_id, joueur.puuid, item_.tools_id, item_.item_position)
                     for item_ in matchjoueur.items
                 ]
+                
             except : 
                 pass
+            self.bar.set_description('Chargement en Cours')
+            self.bar.update(1)
         return 1
     
-    def initiate(self):
+    def initiate(self, first_game=0, last_game = 20):
         for it in self.items["data"].keys():
             ItemsDao().creer(Item(it, self.items["data"][it]["name"]))
         for cp in self.champions["data"].keys():
             ChampionDao().creer(Champion(self.champions["data"][cp]["key"],cp))
-        
+        self.bar.total = len(TIER) * len(DIVISION) * (last_game-first_game)
         for T in TIER:
             for D in DIVISION:
-                print(T + " " + D)
                 joueur = self.getJoueurByLeague(T,D)
-                self.getJoueurAllMatchInfo(joueur,first_game=0, last_game = 5)
+                self.getJoueurAllMatchInfo(joueur,first_game=first_game, last_game = last_game)
+                
                 
         UserDao().creer_no_puuid(User("admin", "admin", "Admin"))
+        bar.close()
         return 1
         
     def getJoueur(self, puuid):
@@ -184,4 +192,4 @@ class FillDataBase:
         return Joueur(puuid, data["gameName"])
 
 if __name__ == "__main__":
-    FillDataBase().initiate()
+    FillDataBase().initiate(0,3)

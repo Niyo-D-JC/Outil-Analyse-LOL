@@ -1,7 +1,7 @@
 import dotenv
 from view.accueil_vue import AccueilVue
 from services.user_service import UserService
-from services.fill_data_base import FillDataBase
+from api.fill_data_base import FillDataBase
 from utils.reset_database import ResetDatabase
 
 """
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     except:
         print("Premiere Ouverture de l'Application")
         ResetDatabase().lancer()
-        FillDataBase().run(name="KC NEXT ADKING")
+        FillDataBase().initiate()
 
     vue_courante = AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
     nb_erreurs = 0
