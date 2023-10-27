@@ -44,15 +44,15 @@ class FillDataBase:
                 status = response[key_]
                 return response
             except:
-                time.sleep(121)
+                time.sleep(125)
                 response = requests.get(url).json()
                 return response
         else : 
             response = requests.get(url).json()
-            if (response := []):
+            if (response != []):
                 return response
             else : 
-                time.sleep(121)
+                time.sleep(125)
                 response = requests.get(url).json()
                 return response
 
@@ -86,7 +86,7 @@ class FillDataBase:
             else : 
                 return [Joueur(dta["puuid"], dta["summonerName"], dta["tier"]) for j in data[:limit]]
     
-    def getJoueurMatchInfo(self, puuid, match_id) : 
+    def getJoueurMatchInfo(self, joueur, match_id) : 
         url = (
             self.HOST_WEBSERVICE_EUROPA
             + "/lol/match/v5/matches/"
@@ -95,15 +95,15 @@ class FillDataBase:
             + self.API_KEY
         )
         data = self.reqLimit(url, "metadata")
+        
         player_info = data["info"]["participants"][
-                list(data["metadata"]["participants"]).index(puuid)
+                list(data["metadata"]["participants"]).index(joueur.puuid)
             ]
-
         champion = Champion(player_info["championId"], player_info["championName"])
         list_item = [
                 Item(
                     player_info[f"item{i}"],
-                    self.items["data"][str(player_info[f"item{i}"])]["name"],
+                    self.items["data"][str(player_info[f"item{i}"])]["name"], i
                 )
                 for i in range(7)
                 if str(player_info[f"item{i}"]) != "0"
@@ -117,10 +117,11 @@ class FillDataBase:
                 player_info["kills"],
                 player_info["deaths"],
                 player_info["assists"],
+                player_info["totalMinionsKilled"],
+                player_info["goldEarned"],
                 player_info["totalDamageDealt"],
                 player_info["totalDamageTaken"],
                 player_info["totalHeal"],
-                player_info["challenges"]["kda"],
                 bool(player_info["win"])
             )
         matchjoueur = MatchJoueur(
@@ -129,11 +130,11 @@ class FillDataBase:
         return matchjoueur
 
 
-    def getJoueurAllMatchInfo(self, puuid, first_game=0, last_game = 20) : 
+    def getJoueurAllMatchInfo(self, joueur, first_game=0, last_game = 20) : 
         url = (
             self.HOST_WEBSERVICE_EUROPA
             + "/lol/match/v5/matches/by-puuid/"
-            + puuid
+            + joueur.puuid
             + "/ids?start="
             + str(first_game)
             + "&"
@@ -143,15 +144,17 @@ class FillDataBase:
             + self.API_KEY
         )
         list_match = list(self.reqLimit(url))
-
+        JoueurDao().creer(joueur)
         for match_id in list_match : 
-            matchjoueur = self.getJoueurMatchInfo(puuid, match_id)
-            JoueurDao().creer(matchjoueur.joueur)
-            MatchJoueurDao().creer(matchjoueur)
-            [
-                ItemMatchDao().creer(match_id, puuid, item_.tools_id, item_.item_position)
-                for item_ in match.items
-            ]
+            try : 
+                matchjoueur = self.getJoueurMatchInfo(joueur, match_id)
+                MatchJoueurDao().creer(matchjoueur)
+                [
+                    ItemMatchDao().creer(match_id, joueur.puuid, item_.tools_id, item_.item_position)
+                    for item_ in matchjoueur.items
+                ]
+            except : 
+                pass
         return 1
     
     def initiate(self):
@@ -162,9 +165,10 @@ class FillDataBase:
         
         for T in TIER:
             for D in DIVISION:
-                joueur = self.getJoueurByLeague(T,D)
-                self.getJoueurAllMatchInfo(joueur.puuid,first_game=0, last_game = 5)
                 print(T + " " + D)
+                joueur = self.getJoueurByLeague(T,D)
+                self.getJoueurAllMatchInfo(joueur,first_game=0, last_game = 5)
+                
         UserDao().creer_no_puuid(User("admin", "admin", "Admin"))
         return 1
         

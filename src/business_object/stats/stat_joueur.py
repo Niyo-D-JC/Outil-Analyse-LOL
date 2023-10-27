@@ -1,14 +1,15 @@
 class StatJoueur:
     def __init__(
-        self, kills, deaths, assists, total_damage_deal, total_damage_take, total_heal, kda, win
+        self, kills, deaths, assists, creeps, total_gold, total_damage_dealt, total_damage_take, total_heal, win
     ) -> None:
         self.kills = kills
         self.deaths = deaths
         self.assists = assists
+        self.creeps = creeps
+        self.total_gold = total_gold
         self.total_damage_dealt = total_damage_dealt
         self.total_damage_take = total_damage_take
         self.total_heal = total_heal
-        self.kda = kda
         self.win = win
 
     def __str__(self) -> str:

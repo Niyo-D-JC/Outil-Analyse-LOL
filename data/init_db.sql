@@ -77,13 +77,14 @@ CREATE TABLE projet.matchjoueur(
     lane_id  INT REFERENCES projet.lane(lane_id),
     champion_id  INT REFERENCES projet.champion(champion_id),
     team_id  INT REFERENCES projet.team(team_id),
-    total_damage_deal   INT,
+    total_damage_dealt   INT,
     total_damage_take   INT,
     total_heal   INT,
-    kda   FLOAT ,
     kills INT, 
     deaths INT,
     assists INT,
+    creeps INT,
+    total_gold INT,
     win   BOOLEAN,
     CONSTRAINT pk_match PRIMARY KEY (match_id, puuid)
 );
@@ -100,7 +101,7 @@ CREATE TABLE projet.itemmatch(
     item_id INT REFERENCES projet.item(item_id),
     item_position INT,
     CONSTRAINT fk_puuid_match FOREIGN KEY (match_id, puuid) REFERENCES projet.matchjoueur(match_id, puuid),
-    PRIMARY KEY (match_id, puuid, item_id)
+    PRIMARY KEY (match_id, puuid, item_position)
 );
 
 
