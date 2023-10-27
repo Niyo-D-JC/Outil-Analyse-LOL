@@ -87,9 +87,9 @@ class MatchJoueurDao(metaclass=Singleton):
                     total_damage_deal=game["total_damage_deal"],
                     total_damage_take=game["total_damage_take"],
                     total_heal=game["total_heal"],
-                    kill=game["kill"],
-                    death=game["death"]
-                    assist=game["assist"]
+                    kills=game["kills"],
+                    deaths=game["deaths"],
+                    assists=game["assists"],
                     win=game["win"],  # C'est pas de la digramme de classe de la BDD
                 )
 
