@@ -16,7 +16,6 @@ class UserService:
     def find_by_name(self, name):
         return UserDao().find_by_name(name)
 
-
     def get_stats_by_champ(Liste_Match_User):
         """Calcule les statistiques moyennes par champion à partir d'une liste de matchs d'un utilisateur.
 
@@ -32,7 +31,7 @@ class UserService:
         -------
         champions_stats : dict
             Un dictionnaire contenant les statistiques moyennes par champion.
-            Chaque entrée du dictionnaire a pour clé le nom du champion et 
+            Chaque entrée du dictionnaire a pour clé le nom du champion et
             pour valeur un sous-dictionnaire avec les clés suivantes :
                 - "kills_avg" : La moyenne des kills par match.
                 - "deaths_avg" : La moyenne des deaths par match.
@@ -74,7 +73,6 @@ class UserService:
 
         return champions_stats
 
-
     def get_global_WR(Liste_Match_User):
         """Calcule le taux de victoire global d'un utilisateur.
 
@@ -103,9 +101,7 @@ class UserService:
 
         return (total_wins, total_games)
 
-
     def get_stats_perso(self, user: User):
-
         Liste_Match_User = MatchJoueurDao().filter_by_Joueur(user.joueur)
 
         total_wins, total_games = UserService().get_global_WR(Liste_Match_User)
@@ -114,4 +110,4 @@ class UserService:
 
 if __name__ == "__main__":
     # Exemple d'utilisation
-
+    pass
