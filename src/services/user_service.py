@@ -16,7 +16,6 @@ class UserService:
     def find_by_name(self, name):
         return UserDao().find_by_name(name)
 
-    def 
 
     def get_stats_by_champ(Liste_Match_User):
         """Calcule les statistiques moyennes par champion à partir d'une liste de matchs d'un utilisateur.
