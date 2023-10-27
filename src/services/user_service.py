@@ -65,9 +65,9 @@ class UserService:
 
         total_wins, total_games = get_global_WR(Liste_Match_User)
         champions_counts = get_most_played_champs(get_most_played_champs)
-
-        # il faut dire le WR général
-        # les champions les plus joués avec leur KDA associé et leur WR associé
+        pass
+        ## il faut dire le WR général
+        ## les champions les plus joués avec leur KDA associé et leur WR associé
 
 
 if __name__ == "__main__":

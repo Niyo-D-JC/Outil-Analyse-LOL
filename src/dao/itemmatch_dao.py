@@ -28,8 +28,8 @@ class ItemMatchDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO projet.itemmatch(match_id,puuid,item_id) VALUES "
-                        "(%(match_id)s, %(puuid)s, %(item_id)s)",
+                        "INSERT INTO projet.itemmatch(match_id,puuid,item_id, item_position) VALUES "
+                        "(%(match_id)s, %(puuid)s, %(item_id)s, %(item_position)s)",
                         {"match_id": match_id, "puuid": puuid, "item_id": item_id, "item_position":item_position},
                     )
                     res = True

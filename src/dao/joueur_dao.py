@@ -25,11 +25,12 @@ class JoueurDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO projet.joueur(puuid, name) VALUES "
-                        "(%(puuid)s,  %(name)s)",
+                        "INSERT INTO projet.joueur(puuid, name, tier) VALUES "
+                        "(%(puuid)s,  %(name)s, %(tier)s)",
                         {
                             "puuid": joueur.puuid,
                             "name": joueur.name,
+                            "tier" : joueur.tier
                         },
                     )
                     res = True

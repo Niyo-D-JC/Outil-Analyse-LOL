@@ -33,21 +33,22 @@ class MatchJoueurDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO projet.matchjoueur(match_id,puuid,lane_id,champion_id,team_id,total_damage_deal,total_damage_take,total_heal,kda,kills,deaths,assists,win) VALUES "
-                        "(%(match_id)s, %(puuid)s, %(lane_id)s, %(champion_id)s, %(team_id)s, %(total_damage_deal)s, %(total_damage_take)s, %(total_heal)s, %(kda)s,  %(kills)s, %(deaths)s, %(assists)s,%(win)s)",
+                        "INSERT INTO projet.matchjoueur(match_id,puuid,lane_id,champion_id,team_id,total_damage_dealt,total_damage_take,total_heal,kills,deaths,assists,creeps, total_gold, win) VALUES "
+                        "(%(match_id)s, %(puuid)s, %(lane_id)s, %(champion_id)s, %(team_id)s, %(total_damage_dealt)s, %(total_damage_take)s, %(total_heal)s,  %(kills)s, %(deaths)s, %(assists)s, %(creeps)s,  %(total_gold)s, %(win)s)",
                         {
                             "match_id": match.match_id,
                             "puuid": match.joueur.puuid,
                             "lane_id": match.lane.tools_id,
                             "champion_id": match.champion.tools_id,
                             "team_id": match.team.team_id,
-                            "total_damage_deal": match.stat_joueur.total_damage_deal,
+                            "total_damage_dealt": match.stat_joueur.total_damage_dealt,
                             "total_damage_take": match.stat_joueur.total_damage_take,
                             "total_heal": match.stat_joueur.total_heal,
-                            "kda": match.stat_joueur.kda,
                             "kills": match.stat_joueur.kills,
                             "deaths": match.stat_joueur.deaths,
                             "assists": match.stat_joueur.assists,
+                            "creeps" : match.stat_joueur.creeps,
+                            "total_gold": match.stat_joueur.total_gold,
                             "win": match.stat_joueur.win,
                         },
                     )
@@ -87,7 +88,9 @@ class MatchJoueurDao(metaclass=Singleton):
                     total_damage_deal=game["total_damage_deal"],
                     total_damage_take=game["total_damage_take"],
                     total_heal=game["total_heal"],
-                    kda=game["kda"],
+                    kills=game["kills"],
+                    deaths=game["deaths"],
+                    assists=game["assists"],
                     win=game["win"],  # C'est pas de la digramme de classe de la BDD
                 )
 
@@ -134,11 +137,10 @@ class MatchJoueurDao(metaclass=Singleton):
                 lane = LaneDao().find_by_id(id=game["lane_id"])
                 team = TeamDao().find_by_id(team_id=game["team_id"])
                 stat_joueur = StatJoueur(
-                    total_damage_deal=game["total_damage_deal"],
+                    total_damage_dealt=game["total_damage_dealt"],
                     total_damage_take=game["total_damage_take"],
                     total_heal=game["total_heal"],
-                    kda=game["kda"],
-                    result=None,  # C'est pas de la digramme de classe de la BDD
+                    win=None,  # C'est pas de la digramme de classe de la BDD
                 )
 
                 Match_Object = MatchJoueur(
