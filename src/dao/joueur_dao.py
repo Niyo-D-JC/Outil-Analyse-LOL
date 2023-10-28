@@ -67,7 +67,7 @@ class JoueurDao(metaclass=Singleton):
 
         joueur = None
         if res:
-            joueur = Joueur(puuid=res["puuid"], name=res["name"])
+            joueur = Joueur(puuid=res["puuid"], name=res["name"], tier=res["tier"])
 
         return joueur
 

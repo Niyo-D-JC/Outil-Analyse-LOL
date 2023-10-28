@@ -30,7 +30,7 @@ class AccueilVue(VueAbstraite):
                 "choices": [
                     "Créer un Compte",
                     "Se connecter",
-                    "Trier les champions",
+                    "Continuer à tant qu'invité",
                     "Quitter"
                 ],
             }
@@ -55,9 +55,5 @@ class AccueilVue(VueAbstraite):
             return ConnexionVue()
         elif reponse["choix"] == "Créer un Compte":
             return CreerCompteVue()
-        elif reponse["choix"] == "Afficher les statistiques d'un champion":
+        elif reponse["choix"] == "Continuer à tant qu'invité":
             return ChampionVue()
-        elif reponse["choix"] == "Trier les champions":
-            return ChampionVue()
-        elif reponse["choix"] == "Créer un compte":
-            return CreationCompteVue()

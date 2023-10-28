@@ -107,5 +107,5 @@ class UserDao(metaclass=Singleton):
         user = None
         if res:
             user = User(name=res["name"], password=res["password"], role=res["role"])
-
+            
         return user

@@ -9,7 +9,7 @@ class ConnexionVue(VueAbstraite):
         super().__init__(message)
         self.questions = [
             {"type": "input", "name": "pseudo", "message": "Entrez votre username :"},
-            {"type": "input", "name": "mdp", "message": "Entrez votre mot de passe :"},
+            {"type": "password", "name": "mdp", "message": "Entrez votre mot de passe :"},
         ]
 
     def afficher(self):
