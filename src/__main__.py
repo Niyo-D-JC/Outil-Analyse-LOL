@@ -1,5 +1,5 @@
 import dotenv
-from view.accueil_vue import AccueilVue
+from view.utils_vue.accueil_vue import AccueilVue
 from services.user_service import UserService
 from api.fill_data_base import FillDataBase
 from utils.reset_database import ResetDatabase

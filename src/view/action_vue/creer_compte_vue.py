@@ -1,6 +1,6 @@
 from InquirerPy import prompt
 
-from view.vue_abstraite import VueAbstraite
+from view.utils_vue.vue_abstraite import VueAbstraite
 from services.joueur_service import JoueurService
 from business_object.user.user import User
 from services.user_service import UserService

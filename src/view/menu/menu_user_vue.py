@@ -1,10 +1,10 @@
 from InquirerPy import prompt
 
-from view.vue_abstraite import VueAbstraite
+from view.utils_vue.vue_abstraite import VueAbstraite
 #from service.joueur_service import JoueurService
 
 
-class MenuJoueurVue(VueAbstraite):
+class MenuUserVue(VueAbstraite):
     """Vue du menu du joueur
 
     Attributes
@@ -25,8 +25,7 @@ class MenuJoueurVue(VueAbstraite):
                 "type": "list",
                 "name": "choix",
                 "message": "Faites votre choix",
-                "choices": [ "Afficher les statistiques d'un champion", "Trier les champions",
-                 "Afficher les Statistiques Globales", "Lister les Parties du Joueur", "Se déconnecter"],
+                "choices": [ "Accéder aux Statistiques Personnelles", "Accéder aux Statistiques Générales", "Se déconnecter"],
             }
         ]
 
@@ -41,17 +40,13 @@ class MenuJoueurVue(VueAbstraite):
         reponse = prompt(self.questions)
 
         if reponse["choix"] == "Se déconnecter":
-            from view.accueil_vue import AccueilVue
+            from view.utils_vue.accueil_vue import AccueilVue
             return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
 
-        elif reponse["choix"] == "Afficher les Statistiques Globales":
-            pass
+        elif reponse["choix"] == "Accéder aux Statistiques Personnelles":
+            from view.action_vue.statistiques_perso_vue import StatistiquesPersoVue
+            return StatistiquesPersoVue(" ")
         
-        elif reponse["choix"] == "Trier les champions":
-            pass
-
-        elif reponse["choix"] == "Afficher les statistiques d'un champion":
-            pass
-
-        elif reponse["choix"] == "Lister les Parties du Joueur":
-            pass
+        elif reponse["choix"] == "Accéder aux Statistiques Générales":
+            from view.action_vue.statistiques_vue import StatistiquesVue
+            return StatistiquesVue(" ")

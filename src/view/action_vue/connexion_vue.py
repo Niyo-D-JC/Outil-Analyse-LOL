@@ -1,6 +1,6 @@
 from InquirerPy import prompt
 
-from view.vue_abstraite import VueAbstraite
+from view.utils_vue.vue_abstraite import VueAbstraite
 from services.user_service import UserService
 
 
@@ -27,18 +27,18 @@ class ConnexionVue(VueAbstraite):
 
         if user.role == "Admin" :
             message = f"Administrateur : Vous êtes connecté sous le profil de {user.name}"
-            from view.menu_admin_vue import MenuAdminVue
+            from view.menu.menu_admin_vue import MenuAdminVue
 
             return MenuAdminVue(message)
 
         if user.role == "User":
             message = f"Utilisateur : Vous êtes connecté sous le profil de {user.name}"
-            from view.menu_joueur_vue import MenuJoueurVue
+            from view.menu.menu_user_vue import MenuUserVue
 
-            return MenuJoueurVue(message)
+            return MenuUserVue(message)
 
         else:
-            message = "Erreur de connexion"
+            message = "Erreur de connexion. Vos identifiants sont incorrects"
             from view.accueil_vue import AccueilVue
 
             return AccueilVue(message)
