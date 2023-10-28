@@ -1,4 +1,4 @@
-from services.invite_service2 import InviteService, ListePartiesInvite
+from services.invite_service2 import InviteService
 import math as dp
 
 Liste_part = [
@@ -14,7 +14,7 @@ Liste_part = [
     ],
 ]
 
-"""
+
 Liste_stat = ["win rate", "KDA", "pick rate", "item"]
 invitsc = InviteService().stat_champion_view(
     list_partie=Liste_part, champion_id="10", stat=Liste_stat
@@ -51,6 +51,23 @@ liste_match = [
     ],
 ]
 
-l = ListePartiesInvite().transfo_list(liste_match)
+l = InviteService().transfo_list(liste_match)
 print(l)
+
 """
+
+"""
+
+invitsi = InviteService().stat_item_view(
+    list_partie=Liste_part, item_id=100, stat=Liste_stat
+)
+print(invitsi)
+
+"""
+
+"""
+
+invitli = InviteService().liste_item_view(
+    list_partie=Liste_part, stat=Liste_stat[0], l_stat=Liste_stat[:1]
+)
+print(invitli)
