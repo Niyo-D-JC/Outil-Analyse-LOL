@@ -24,7 +24,7 @@ class InviteService:
         Args:
             liste_match (_type_, optional): liste de la forme :
             [[idgame,joueur,champ,items,lane,team,[tot_domdeal,tot_domtake,tot_heal,k,d,a,win]],...]
-            Defaults to MatchJoueurDao().get_all_match_invite().
+            Defaults to MatchJoueurDao().get_all_match().
 
         Returns:
             list: liste dans le format dont nous avons besoin :

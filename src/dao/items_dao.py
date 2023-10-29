@@ -35,7 +35,7 @@ class ItemsDao(metaclass=Singleton):
         return res
 
     def find_by_id(self, id):
-        """trouver une lane grace à son id
+        """trouver une item grace à son id
 
         Parameters
         ----------
@@ -43,8 +43,8 @@ class ItemsDao(metaclass=Singleton):
 
         Returns
         -------
-        lane : lane
-            renvoie un objet lane
+        item : item
+            renvoie un objet item
         """
         res = False
         try:
@@ -52,7 +52,7 @@ class ItemsDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "SELECT *                           "
-                        "FROM projet.lane              "
+                        "FROM projet.item              "
                         "WHERE id = %(id)s;  ",
                         {"id": id},
                     )

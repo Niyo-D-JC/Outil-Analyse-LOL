@@ -58,7 +58,7 @@ class MatchJoueurDao(metaclass=Singleton):
             res = False
         return res
 
-    def get_all_match_invite(self):
+    def get_all_match(self):
         res = None
         try:
             with DBConnection().connection as connection:

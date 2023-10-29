@@ -45,4 +45,4 @@ class MenuInviteVue(VueAbstraite):
 
         elif reponse["choix"] == "Accéder aux Statistiques Générales":
             from view.action_vue.statistiques_vue import StatistiquesVue
-            return StatistiquesVue(" ")
+            return StatistiquesVue("Bienvenue sur Votre Application ViewerOn LoL")

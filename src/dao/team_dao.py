@@ -33,34 +33,3 @@ class TeamDao(metaclass=Singleton):
             res = False
 
         return res
-
-    def find_by_id(team_id):
-        """trouver une Team grace à son id
-
-        Parameters
-        ----------
-        id : int
-
-        Returns
-        -------
-        Team : Team
-            renvoie un objet Team
-        """
-        res = False
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT *                           "
-                        "FROM projet.team              "
-                        "WHERE id = %(team_id)s;  ",
-                        {"team_id": team_id},
-                    )
-                    res = cursor.fetchone()
-        except Exception as e:
-            print(e)
-
-        if res:
-            team = Team(team_id=team_id, side=res["side"])
-
-        return team

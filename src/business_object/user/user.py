@@ -10,6 +10,3 @@ class User:
 
     def __str__(self):
         return "Joueur : " + self._name
-
-    def global_stat_perso(self):
-        pass
