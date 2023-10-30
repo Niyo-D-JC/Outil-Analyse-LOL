@@ -1,7 +1,6 @@
 from InquirerPy import prompt
 
 from view.utils_vue.vue_abstraite import VueAbstraite
-#from service.joueur_service import JoueurService
 
 
 class StatistiquesChampionVue(VueAbstraite):
@@ -44,7 +43,13 @@ class StatistiquesChampionVue(VueAbstraite):
             return StatistiquesVue("Bienvenue sur Votre Application ViewerOn LoL")
 
         elif reponse["choix"] == "Filtrer par popularité":
-            pass
-
+            from services.invite_service import InviteService
+            from view.action_vue.statistiques_vue import StatistiquesVue
+            InviteService().get_all_champions()
+            return StatistiquesVue("Bienvenue sur Votre Application ViewerOn LoL")
         elif reponse["choix"] == "Filter par taux de victoire":
-            pass
+            from services.invite_service import InviteService
+            from view.action_vue.statistiques_vue import StatistiquesVue
+            InviteService().get_all_champions(True)
+            return StatistiquesVue("Bienvenue sur Votre Application ViewerOn LoL")
+

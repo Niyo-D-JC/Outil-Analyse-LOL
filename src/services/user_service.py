@@ -4,9 +4,9 @@ from business_object.user.user import User
 from business_object.battle.matchjoueur import MatchJoueur
 from business_object.stats.stat_joueur import StatJoueur
 from dao.matchjoueur_dao import MatchJoueurDao
+from services.invite_service import InviteService
 
-
-class UserService:
+class UserService(InviteService):
     def creer(self, user):
         return UserDao().creer(user)
 

@@ -6,3 +6,4 @@ requests
 tabulate
 time
 tqdm
+pandas

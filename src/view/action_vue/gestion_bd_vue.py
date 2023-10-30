@@ -1,7 +1,6 @@
 from InquirerPy import prompt
 
 from view.utils_vue.vue_abstraite import VueAbstraite
-#from service.joueur_service import JoueurService
 
 
 class GestionBDVue(VueAbstraite):
