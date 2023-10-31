@@ -3,6 +3,7 @@ from InquirerPy import prompt
 from view.utils_vue.vue_abstraite import VueAbstraite
 from utils.reset_database import ResetDatabase
 from view.utils_vue.accueil_vue import AccueilVue
+from view.session.session import Session
 
 class MenuAdminVue(VueAbstraite):
     """Vue du menu de l'admin
@@ -20,12 +21,16 @@ class MenuAdminVue(VueAbstraite):
 
     def __init__(self, message="") -> None:
         super().__init__(message)
+        session = Session()
+        add_ques = []
+        if (not session.joueur):
+            add_ques.append("Vous n'êtes pas associés à un joueur, Associez maintenant")
         self.questions = [
             {
                 "type": "list",
                 "name": "choix",
                 "message": "Faites votre choix",
-                "choices": ["Accéder aux Statistiques Personnelles", "Accéder aux Statistiques Générales",
+                "choices": add_ques + ["Accéder aux Statistiques Personnelles", "Accéder aux Statistiques Générales",
                 "Gestion de Base de Données", "Se déconnecter"],
             }
         ]
@@ -42,6 +47,8 @@ class MenuAdminVue(VueAbstraite):
 
         if reponse["choix"] == "Se déconnecter":
             from view.utils_vue.accueil_vue import AccueilVue
+            session = Session()
+            session.user , session.role = None , None
             return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
 
         elif reponse["choix"] == "Accéder aux Statistiques Personnelles":
@@ -53,8 +60,8 @@ class MenuAdminVue(VueAbstraite):
             return StatistiquesVue("Bienvenue sur Votre Application ViewerOn LoL")
 
         elif reponse["choix"] == "Gestion de Base de Données":
-            from view.action_vue.statistiques_vue import StatistiquesVue
-            return StatistiquesVue("Bienvenue sur Votre Application ViewerOn LoL")
+            from view.action_vue.gestion_bd_vue import GestionBDVue
+            return GestionBDVue("Bienvenue sur Votre Application ViewerOn LoL")
 
 if __name__ == "__main__":
     pass

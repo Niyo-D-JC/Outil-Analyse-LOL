@@ -53,8 +53,23 @@ class AccueilVue(VueAbstraite):
         if reponse["choix"] == "Quitter":
             pass
         elif reponse["choix"] == "Se connecter":
-            return ConnexionVue()
+            session = Session()
+            if (session.user):
+                if session.role == "Admin" :
+                    message = f"Administrateur : Vous êtes connectés sous le profil de {session.user.upper()}"
+                    from view.menu.menu_admin_vue import MenuAdminVue
+
+                    return MenuAdminVue(message)
+
+                if session.role == "User":
+                    message = f"Utilisateur : Vous êtes connectés sous le profil de {session.user.upper()}"
+                    from view.menu.menu_user_vue import MenuUserVue
+
+                    return MenuUserVue(message)
+            else : 
+                return ConnexionVue()
+
         elif reponse["choix"] == "Créer un Compte":
             return CreerCompteVue()
         elif reponse["choix"] == "Continuer en tant qu'invité":
-            return MenuInviteVue("Bienvenue sur Votre Application ViewerOn LoL")
+            return MenuInviteVue("Invité : Bienvenue sur Votre Application ViewerOn LoL")

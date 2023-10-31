@@ -2,7 +2,7 @@ from InquirerPy import prompt
 
 from view.utils_vue.vue_abstraite import VueAbstraite
 from services.user_service import UserService
-
+from view.session.session import Session
 
 class ConnexionVue(VueAbstraite):
     def __init__(self, message=""):
@@ -24,15 +24,19 @@ class ConnexionVue(VueAbstraite):
         if (user.password != answers["mdp"]) : 
             return AccueilVue("Vos identifiants sont incorrects")
         message = ""
+        session = Session()
+        session.user = user.name
+        session.role = user.role
+        session.joueur = user.joueur
 
-        if user.role == "Admin" :
-            message = f"Administrateur : Vous êtes connecté sous le profil de {user.name}"
+        if session.role == "Admin" :
+            message = f"Administrateur : Vous êtes connectés sous le profil de {session.user.upper()}"
             from view.menu.menu_admin_vue import MenuAdminVue
 
             return MenuAdminVue(message)
 
-        if user.role == "User":
-            message = f"Utilisateur : Vous êtes connecté sous le profil de {user.name}"
+        if session.role == "User":
+            message = f"Utilisateur : Vous êtes connectés sous le profil de {session.user.upper()}"
             from view.menu.menu_user_vue import MenuUserVue
 
             return MenuUserVue(message)

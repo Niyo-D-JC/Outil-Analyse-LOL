@@ -1,6 +1,7 @@
 from dao.db_connection import DBConnection
 from utils.singleton import Singleton
 from business_object.user.user import User
+from business_object.user.joueur import Joueur
 
 
 class UserDao(metaclass=Singleton):
@@ -107,5 +108,48 @@ class UserDao(metaclass=Singleton):
         user = None
         if res:
             user = User(name=res["name"], password=res["password"], role=res["role"])
-            
+            if res["puuid"]:
+                with DBConnection().connection as connection:
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            " SELECT *                           "
+                            " FROM projet.joueur               "
+                            " WHERE puuid = %(puuid)s;  ",
+                            {"puuid": res["puuid"]},
+                        )
+                        res = cursor.fetchone()
+                        user.joueur = Joueur(res["puuid"],res["name"], res["tier"])
         return user
+
+    def update_puuid(self, puuid, name):
+        """
+        Mettre à jour le puuid d'un joueur
+
+        Parameters
+        ----------
+        puuid : str
+
+        Returns
+        -------
+        """
+
+        created = None
+
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "UPDATE projet.user "
+                        " SET puuid = %(puuid)s "
+                        " WHERE name = %(name)s ;",
+                        {
+                            "puuid": puuid,
+                            "name": name,
+                        },
+                    )
+                    created = True
+        except Exception as e:
+            print(e)
+            created = False
+            
+        return created

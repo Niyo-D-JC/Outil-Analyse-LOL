@@ -39,8 +39,22 @@ class GestionBDVue(VueAbstraite):
         reponse = prompt(self.questions)
 
         if reponse["choix"] == "Retour":
-            from view.menu.menu_admin_vue import MenuAdminVue
-            return MenuAdminVue("Bienvenue sur Votre Application ViewerOn LoL")
+            session = Session()
+            if (session.user):
+                if session.role == "Admin" :
+                    message = f"Administrateur : Vous êtes connectés sous le profil de {session.user.upper()}"
+                    from view.menu.menu_admin_vue import MenuAdminVue
+
+                    return MenuAdminVue(message)
+
+                if session.role == "User":
+                    message = f"Utilisateur : Vous êtes connectés sous le profil de {session.user.upper()}"
+                    from view.menu.menu_user_vue import MenuUserVue
+
+                    return MenuUserVue(message)
+            else : 
+                from view.menu.menu_invite_vue import MenuInviteVue
+                return MenuInviteVue("Invité : Bienvenue sur Votre Application ViewerOn LoL")
 
         elif reponse["choix"] == "Ajouter un Administrateur":
             pass

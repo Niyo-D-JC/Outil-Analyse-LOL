@@ -16,6 +16,9 @@ class UserService(InviteService):
     def find_by_name(self, name):
         return UserDao().find_by_name(name)
 
+    def update_puuid(self, puuid, name):
+        return UserDao().update_puuid(puuid, name)
+
     def get_stats_by_champ(Liste_Match_User):
         """Calcule les statistiques moyennes par champion à partir d'une liste de matchs d'un utilisateur.
 

@@ -28,7 +28,7 @@ class CreerCompteVue(VueAbstraite):
         user = None
 
         joueur = JoueurService().find_by_name(
-            answers["pseudo"]
+            answers["joueur"]
         )  # il faudrait faire un requete API au lieu de chercher dans la BDD
 
         if joueur != None:
