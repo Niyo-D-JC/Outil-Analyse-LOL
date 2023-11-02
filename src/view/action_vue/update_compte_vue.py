@@ -45,7 +45,7 @@ class UpdateCompteVue(VueAbstraite):
         
         print("")
         print(
-            "----------------------- Retour à la page precédente -------------------------"
+            "-------------------------- Retour sur votre Page ---------------------------"
         )
         time.sleep(3)
         session = Session()

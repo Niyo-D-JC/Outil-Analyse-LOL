@@ -2,6 +2,8 @@ from InquirerPy import prompt
 
 from view.utils_vue.vue_abstraite import VueAbstraite
 from view.session.session import Session
+from business_object.user.user import User
+from services.user_service import UserService
 import time
 
 class StatistiquesPersoVue(VueAbstraite):
@@ -60,7 +62,10 @@ class StatistiquesPersoVue(VueAbstraite):
         elif reponse["choix"] == "Accéder au Bilan Personnel":
             session = Session()
             if(session.joueur):
-                pass #################
+                user = User(name=session.user, role=session.role, joueur=session.joueur)
+                UserService().get_stats_perso(user)
+                input("Appuyez sur Entrée pour afficher retourner ...")
+                return self.__class__("Bienvenue sur Votre Application ViewerOn LoL")
             else : 
                 print("Vous n'êtes pas associés à un joueur, Associez maintenant")
                 time.sleep(3)

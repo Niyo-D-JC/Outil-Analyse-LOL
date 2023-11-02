@@ -2,7 +2,7 @@ from .joueur import Joueur
 
 
 class User:
-    def __init__(self, name, password, role="User", joueur=None):
+    def __init__(self, name, password=None, role="User", joueur=None):
         self.name = name
         self.password = password
         self.role = role

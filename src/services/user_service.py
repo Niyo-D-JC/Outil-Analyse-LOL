@@ -19,7 +19,10 @@ class UserService(InviteService):
     def update_puuid(self, puuid, name):
         return UserDao().update_puuid(puuid, name)
 
-    def get_stats_by_champ(Liste_Match_User):
+    def get_match_list_bypuuid(self, puuid):
+        return MatchJoueurDao().get_match_list_bypuuid(puuid)
+
+    def get_stats_by_champ(self, Liste_Match_User):
         """Calcule les statistiques moyennes par champion à partir d'une liste de matchs d'un utilisateur.
 
         Cette fonction parcourt la liste de matchs d'un utilisateur, regroupe les statistiques par champion,
@@ -46,7 +49,7 @@ class UserService(InviteService):
         champions_stats = {}
 
         for Match_User in Liste_Match_User:
-            champion = Match_User.champion
+            champion = Match_User.champion.name
             stat_joueur = Match_User.stat_joueur
 
             # Vérifier si le champion est déjà dans le dictionnaire
@@ -76,7 +79,7 @@ class UserService(InviteService):
 
         return champions_stats
 
-    def get_global_WR(Liste_Match_User):
+    def get_global_WR(self, Liste_Match_User):
         """Calcule le taux de victoire global d'un utilisateur.
 
         Cette fonction prend en compte la liste des matchs d'un utilisateur, compte le nombre total de parties
@@ -107,10 +110,34 @@ class UserService(InviteService):
     def get_stats_perso(self, user: User):
         Liste_Match_User = MatchJoueurDao().filter_by_Joueur(user.joueur)
 
-        total_wins, total_games = UserService().get_global_WR(Liste_Match_User)
-        champions_counts = UserService().get_stats_by_champ(Liste_Match_User)
+        total_wins, total_games = self.get_global_WR(Liste_Match_User)
+        champions_counts = self.get_stats_by_champ(Liste_Match_User)
+        print("************************** Mon Bilan Personnel ***************************")
+        print(f"\t Nombre de Match Total : {total_wins}")
+        print(f"\t Nombre de Match Gagné : {total_wins}")
+        print("")
+        print("*********************** Mon Bilan Par Champion ***************************")
+        header = "{:<15} {:<12} {:<12} {:<13} {:<9} {:<16}".format(
+            "Champion", "Kills Avg", "Deaths Avg", "Assists Avg", "CS Avg", "Nombre de Matchs"
+        )
+        separator = "-" * 74  # Longueur totale du tableau
 
+        # Affichage de l'en-tête et du séparateur
+        print(header)
+        print(separator)
 
+        # Affichage des données des champions
+        for champion, stats in champions_counts.items():
+            row = "{:<15} {:<12} {:<12} {:<13} {:<9} {:<16}".format(
+                champion,
+                stats["kills_avg"],
+                stats["deaths_avg"],
+                stats["assists_avg"],
+                stats["cs_avg"],
+                stats["nombre_de_matchs"],
+            )
+            print(row)
 if __name__ == "__main__":
     # Exemple d'utilisation
-    pass
+    df = UserService().get_match_list_bypuuid(puuid="8Txcyum0enjud-XioRLBTcWvz0k3wCg9jAc8yGSG0y_ck_KANCiAz9M-m7WcWwLq9f9_qqEPg1pusw")
+    print(df)
