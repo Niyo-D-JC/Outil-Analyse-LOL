@@ -79,6 +79,77 @@ class MatchJoueurDao(metaclass=Singleton):
             import pandas as pd
             return pd.DataFrame(res)
 
+    def vue_partie(self, match_id) : 
+        res = None
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT j.name AS Joueur, c.name AS champion_name, "
+                        " mj.total_damage_dealt, mj.total_damage_take, "
+                        " mj.total_heal, mj.kills, mj.deaths, mj.assists, mj.creeps, "
+                        " mj.total_gold, mj.win "
+                        " FROM projet.matchjoueur mj "
+                        " JOIN projet.champion c ON mj.champion_id = c.champion_id "
+                        " JOIN projet.joueur j ON mj.puuid = j.puuid "
+                        " WHERE mj.match_id = %(match_id)s ; ",
+                        {"match_id": match_id },
+                    )
+                    res = cursor.fetchall()
+
+        except Exception as e:
+            print(e)
+
+        if res:
+            import pandas as pd
+            return pd.DataFrame(res)
+
+
+    def all_parties(self) : 
+        res = None
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT * " 
+                        "FROM projet.matchjoueur  "
+                    )
+                    res = cursor.fetchall()
+
+        except Exception as e:
+            print(e)
+
+        if res:
+            import pandas as pd
+            return pd.DataFrame(res)
+
+    def delete_match(self, match_id) : 
+        deleted = None
+
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        " DELETE FROM projet.itemmatch "
+                        " WHERE match_id = %(match_id)s;",
+                        {
+                            "match_id": match_id,
+                        },
+                    )
+                    cursor.execute(
+                        " DELETE FROM projet.matchjoueur"
+                        " WHERE match_id = %(match_id)s;",
+                        {
+                            "match_id": match_id,
+                        },
+                    )
+                    deleted = True
+        except Exception as e:
+            print(e)
+            deleted = False
+            
+        return deleted
+
     def get_all_match(self):
         res = None
         try:

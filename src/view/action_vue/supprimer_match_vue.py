@@ -5,7 +5,7 @@ from view.session.session import Session
 from services.user_service import UserService
 
 
-class PartiesVue(VueAbstraite):
+class SupprimerMatchVue(VueAbstraite):
     """Vue du menu du joueur
 
     Attributes
@@ -23,8 +23,8 @@ class PartiesVue(VueAbstraite):
         super().__init__(message)
         session = Session()
         add_ques = []
-        if (session.joueur):
-            df = UserService().get_match_list_bypuuid(session.joueur.puuid)
+        if (session):
+            df = UserService().all_parties()
             add_ques = add_ques + list(df.match_id.unique())
         self.questions = [
             {
@@ -64,7 +64,9 @@ class PartiesVue(VueAbstraite):
                 return MenuInviteVue("Invité : Bienvenue sur Votre Application ViewerOn LoL")
 
         else :
-            UserService().vue_partie(reponse["choix"])
+            UserService().delete_match(reponse["choix"])
+            print("")
+            print("Le Match " + reponse["choix"] + " a été supprimé avec succes ! ")
             print("")
             input("Appuyez sur Entrée pour retourner à la liste des parties ...")
             return self.__class__("Bienvenue sur Votre Application ViewerOn LoL")

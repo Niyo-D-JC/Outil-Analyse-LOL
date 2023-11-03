@@ -5,7 +5,7 @@ from view.session.session import Session
 from services.user_service import UserService
 
 
-class PartiesVue(VueAbstraite):
+class SupprimerCompteVue(VueAbstraite):
     """Vue du menu du joueur
 
     Attributes
@@ -23,9 +23,11 @@ class PartiesVue(VueAbstraite):
         super().__init__(message)
         session = Session()
         add_ques = []
-        if (session.joueur):
-            df = UserService().get_match_list_bypuuid(session.joueur.puuid)
-            add_ques = add_ques + list(df.match_id.unique())
+        if (session):
+            df = UserService().get_users()
+            df.sort_values(by='role', ascending=False).reset_index(drop=True)
+            df['Role : Name'] = df['role'] + ' : ' + df['name']
+            add_ques = add_ques + list(df['Role : Name'].unique().tolist())
         self.questions = [
             {
                 "type": "list",
@@ -64,7 +66,9 @@ class PartiesVue(VueAbstraite):
                 return MenuInviteVue("Invité : Bienvenue sur Votre Application ViewerOn LoL")
 
         else :
-            UserService().vue_partie(reponse["choix"])
+            UserService().delete_by_name(reponse["choix"].split(":")[1][1:])
+            print("")
+            print("Le compte "+ reponse["choix"].split(":")[1][1:].upper() + " a été supprimé avec succes !")
             print("")
             input("Appuyez sur Entrée pour retourner à la liste des parties ...")
             return self.__class__("Bienvenue sur Votre Application ViewerOn LoL")

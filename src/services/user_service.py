@@ -16,8 +16,30 @@ class UserService(InviteService):
     def find_by_name(self, name):
         return UserDao().find_by_name(name)
 
+    def delete_by_name(self, name):
+        return UserDao().delete_by_name(name)
+
+    def get_users(self):
+        return UserDao().get_users()
+
     def update_puuid(self, puuid, name):
         return UserDao().update_puuid(puuid, name)
+
+    def delete_match(self, match_id):
+        return MatchJoueurDao().delete_match(match_id)
+
+    def all_parties(self):
+        return MatchJoueurDao().all_parties()
+
+    def vue_partie(self, match_id):
+        print("")
+        pd_match = MatchJoueurDao().vue_partie(match_id).to_string(index=False, formatters={
+                                    'total_damage_dealt': '{:,.0f}'.format,
+                                    'total_damage_take': '{:,.0f}'.format,
+                                    'total_heal': '{:,.0f}'.format,
+                                    'total_gold': '{:,.0f}'.format
+                                })
+        print(pd_match)
 
     def get_match_list_bypuuid(self, puuid):
         return MatchJoueurDao().get_match_list_bypuuid(puuid)
@@ -113,7 +135,7 @@ class UserService(InviteService):
         total_wins, total_games = self.get_global_WR(Liste_Match_User)
         champions_counts = self.get_stats_by_champ(Liste_Match_User)
         print("************************** Mon Bilan Personnel ***************************")
-        print(f"\t Nombre de Match Total : {total_wins}")
+        print(f"\t Nombre de Match Total : {total_games}")
         print(f"\t Nombre de Match Gagné : {total_wins}")
         print("")
         print("*********************** Mon Bilan Par Champion ***************************")
@@ -138,6 +160,5 @@ class UserService(InviteService):
             )
             print(row)
 if __name__ == "__main__":
-    # Exemple d'utilisation
-    df = UserService().get_match_list_bypuuid(puuid="8Txcyum0enjud-XioRLBTcWvz0k3wCg9jAc8yGSG0y_ck_KANCiAz9M-m7WcWwLq9f9_qqEPg1pusw")
+    df = UserService().vue_partie("EUW1_6648309581")
     print(df)

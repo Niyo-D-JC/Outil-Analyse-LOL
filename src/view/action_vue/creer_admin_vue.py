@@ -7,7 +7,7 @@ from services.user_service import UserService
 import time
 
 
-class CreerCompteVue(VueAbstraite):
+class CreerAdminVue(VueAbstraite):
     def __init__(self, message=""):
         super().__init__(message)
         self.questions = [
@@ -32,27 +32,40 @@ class CreerCompteVue(VueAbstraite):
         )  # il faudrait faire un requete API au lieu de chercher dans la BDD
 
         if joueur != None:
-            user = User(answers["pseudo"], answers["mdp"], "User", joueur)
+            user = User(answers["pseudo"], answers["mdp"], "Admin", joueur)
             UserService().creer(user)
         else:
             print("")
             print("Aucun Joueur Referencé")
-            user = User(answers["pseudo"], answers["mdp"], "User")
+            user = User(answers["pseudo"], answers["mdp"], "Admin")
             UserService().creer_no_puuid(user)
 
         print("")
         print(
-            "-------------------------Votre Compte a été Créé-------------------------"
+            "------------------------- Le Compte Admin a été Créé -------------------------"
         )
         print("")
         print(
-            "-----------------------Retour à la page d'accueil-------------------------"
+            "----------------------- Retour à la page précédente -------------------------"
         )
         time.sleep(3)
-        from view.utils_vue.accueil_vue import AccueilVue
+        session = Session()
+        if (session.user):
+            if session.role == "Admin" :
+                message = f"Administrateur : Vous êtes connectés sous le profil de {session.user.upper()}"
+                from view.menu.menu_admin_vue import MenuAdminVue
 
-        return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
+                return MenuAdminVue(message)
+
+            if session.role == "User":
+                message = f"Utilisateur : Vous êtes connectés sous le profil de {session.user.upper()}"
+                from view.menu.menu_user_vue import MenuUserVue
+
+                return MenuUserVue(message)
+        else : 
+            from view.menu.menu_invite_vue import MenuInviteVue
+            return MenuInviteVue("Invité : Bienvenue sur Votre Application ViewerOn LoL")
 
 
 if __name__ == "__main__":
-    CreerCompteVue("").choisir_menu()
+    pass

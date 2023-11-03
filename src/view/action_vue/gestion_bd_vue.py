@@ -1,7 +1,9 @@
 from InquirerPy import prompt
 
 from view.utils_vue.vue_abstraite import VueAbstraite
-
+from view.action_vue.creer_admin_vue import CreerAdminVue
+from view.action_vue.supprimer_compte_vue import SupprimerCompteVue
+from view.action_vue.supprimer_match_vue import SupprimerMatchVue
 
 class GestionBDVue(VueAbstraite):
     """Vue du menu du joueur
@@ -57,10 +59,10 @@ class GestionBDVue(VueAbstraite):
                 return MenuInviteVue("Invité : Bienvenue sur Votre Application ViewerOn LoL")
 
         elif reponse["choix"] == "Ajouter un Administrateur":
-            pass
+            return CreerAdminVue()
 
         elif reponse["choix"] == "Supprimer un Compte":
-            pass
+            return SupprimerCompteVue("Bienvenue sur Votre Application ViewerOn LoL")
         
         elif reponse["choix"] == "Supprimer un Match":
-            pass
+            return SupprimerMatchVue("Bienvenue sur Votre Application ViewerOn LoL")
