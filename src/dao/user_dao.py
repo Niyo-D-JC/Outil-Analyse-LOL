@@ -43,7 +43,7 @@ class UserDao(metaclass=Singleton):
 
         return res["user_id"]
 
-    def get_users(self) : 
+    def get_users(self):
         res = None
         try:
             with DBConnection().connection as connection:
@@ -59,8 +59,8 @@ class UserDao(metaclass=Singleton):
 
         if res:
             import pandas as pd
-            return pd.DataFrame(res)
 
+            return pd.DataFrame(res)
 
     def delete_by_name(self, name):
         """
@@ -80,8 +80,7 @@ class UserDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        " DELETE FROM projet.user "
-                        " WHERE name = %(name)s; ",
+                        " DELETE FROM projet.user " " WHERE name = %(name)s; ",
                         {
                             "name": name,
                         },
@@ -90,9 +89,8 @@ class UserDao(metaclass=Singleton):
         except Exception as e:
             print(e)
             deleted = False
-            
-        return deleted
 
+        return deleted
 
     def creer_no_puuid(self, user):
         """Creation d'un utilisateur dans la base de données
@@ -154,7 +152,7 @@ class UserDao(metaclass=Singleton):
                     )
                     res = cursor.fetchone()
         except Exception as e:
-            pass 
+            pass
 
         user = None
         if res:
@@ -169,7 +167,7 @@ class UserDao(metaclass=Singleton):
                             {"puuid": res["puuid"]},
                         )
                         res = cursor.fetchone()
-                        user.joueur = Joueur(res["puuid"],res["name"], res["tier"])
+                        user.joueur = Joueur(res["puuid"], res["name"], res["tier"])
         return user
 
     def update_puuid(self, puuid, name):
@@ -202,5 +200,38 @@ class UserDao(metaclass=Singleton):
         except Exception as e:
             print(e)
             created = False
-            
+
+        return created
+
+    def add_matches(self, user: User):
+        """
+        ajouter des matchs du joueurs en base de données
+
+        Parameters
+        ----------
+        puuid : str
+
+        Returns
+        -------
+        """
+
+        created = None
+
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "UPDATE projet.user "
+                        " SET puuid = %(puuid)s "
+                        " WHERE name = %(name)s ;",
+                        {
+                            "puuid": puuid,
+                            "name": name,
+                        },
+                    )
+                    created = True
+        except Exception as e:
+            print(e)
+            created = False
+
         return created
