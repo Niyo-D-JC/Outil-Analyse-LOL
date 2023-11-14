@@ -1,3 +1,9 @@
+import requests
+import json
+import dotenv
+import os
+import time
+
 from dao.user_dao import UserDao
 from business_object.user.joueur import Joueur
 from business_object.user.user import User
@@ -5,6 +11,8 @@ from business_object.battle.matchjoueur import MatchJoueur
 from business_object.stats.stat_joueur import StatJoueur
 from dao.matchjoueur_dao import MatchJoueurDao
 from services.invite_service import InviteService
+from api.fill_data_base import FillDataBase
+
 
 class UserService(InviteService):
     def creer(self, user):
@@ -33,12 +41,19 @@ class UserService(InviteService):
 
     def vue_partie(self, match_id):
         print("")
-        pd_match = MatchJoueurDao().vue_partie(match_id).to_string(index=False, formatters={
-                                    'total_damage_dealt': '{:,.0f}'.format,
-                                    'total_damage_take': '{:,.0f}'.format,
-                                    'total_heal': '{:,.0f}'.format,
-                                    'total_gold': '{:,.0f}'.format
-                                })
+        pd_match = (
+            MatchJoueurDao()
+            .vue_partie(match_id)
+            .to_string(
+                index=False,
+                formatters={
+                    "total_damage_dealt": "{:,.0f}".format,
+                    "total_damage_take": "{:,.0f}".format,
+                    "total_heal": "{:,.0f}".format,
+                    "total_gold": "{:,.0f}".format,
+                },
+            )
+        )
         print(pd_match)
 
     def get_match_list_bypuuid(self, puuid):
@@ -134,13 +149,22 @@ class UserService(InviteService):
 
         total_wins, total_games = self.get_global_WR(Liste_Match_User)
         champions_counts = self.get_stats_by_champ(Liste_Match_User)
-        print("************************** Mon Bilan Personnel ***************************")
+        print(
+            "************************** Mon Bilan Personnel ***************************"
+        )
         print(f"\t Nombre de Match Total : {total_games}")
         print(f"\t Nombre de Match Gagné : {total_wins}")
         print("")
-        print("*********************** Mon Bilan Par Champion ***************************")
+        print(
+            "*********************** Mon Bilan Par Champion ***************************"
+        )
         header = "{:<15} {:<12} {:<12} {:<13} {:<9} {:<16}".format(
-            "Champion", "Kills Avg", "Deaths Avg", "Assists Avg", "CS Avg", "Nombre de Matchs"
+            "Champion",
+            "Kills Avg",
+            "Deaths Avg",
+            "Assists Avg",
+            "CS Avg",
+            "Nombre de Matchs",
         )
         separator = "-" * 74  # Longueur totale du tableau
 
@@ -159,6 +183,52 @@ class UserService(InviteService):
                 stats["nombre_de_matchs"],
             )
             print(row)
+
+    def update_data_of_player(self, user: User):
+        """
+        Permet de rajouter en BDD, les 20 dernières parties de l'utilisateur
+
+        """
+
+        # EUW_api_url = os.environ["HOST_WEBSERVICE_EUW1"]
+        # summoner_url = "/lol/summoner/v4/summoners/by-name/"
+        # name = user.joueur.name
+
+        # final_account_url = (
+        #     EUW_api_url + summoner_url + name + "?api_key=" + os.environ["API_KEY"]
+        # )
+        # account_data = requests.get(final_account_url)
+
+        # account_puuid = account_data.json()["puuid"]
+
+        time.sleep(2)
+
+        # match_list_url = "/lol/match/v5/matches/by-puuid/"
+        # first_game, last_game = 0, 20
+        # final_list_match_url = (
+        #     EUW_api_url
+        #     + match_list_url
+        #     + account_puuid
+        #     + "/ids?start="
+        #     + str(first_game)
+        #     + "&"
+        #     + "count="
+        #     + str(last_game)
+        #     + "&api_key="
+        #     + os.environ["API_KEY"]
+        # )
+        # list_match_data = requests.get(final_list_match_url)
+
+        time.sleep(2)
+
+        for match_id in list_match_data.json():
+            MatchJoueur_Object = FillDataBase().getJoueurMatchInfo(
+                joueur=user.joueur, match_id=match_id
+            )
+
+            MatchJoueurDao().creer()
+
+
 if __name__ == "__main__":
     df = UserService().vue_partie("EUW1_6648309581")
     print(df)
