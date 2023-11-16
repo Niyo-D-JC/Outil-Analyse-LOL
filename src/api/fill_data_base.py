@@ -217,4 +217,4 @@ class FillDataBase:
 
 
 if __name__ == "__main__":
-    FillDataBase().initiate(0, 20)
+    FillDataBase().initiate(0, 3)

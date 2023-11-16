@@ -2,10 +2,11 @@ from dao.db_connection import DBConnection
 from utils.singleton import Singleton
 from business_object.user.user import User
 from business_object.user.joueur import Joueur
+from services.invite_service import InviteService
 
 
 class UserDao(metaclass=Singleton):
-    def creer(self, user):
+    def creer(self, user: User):
         """Creation d'un utilisateur dans la base de données
 
         Parameters
@@ -19,6 +20,10 @@ class UserDao(metaclass=Singleton):
 
         res = None
 
+        hashed_password = InviteService().hash_password(
+            password=user.password, salt=user.name
+        )
+
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -29,7 +34,7 @@ class UserDao(metaclass=Singleton):
                         {
                             "puuid": user.joueur.puuid,
                             "name": user.name,
-                            "password": user.password,
+                            "password": hashed_password,
                             "role": user.role,
                         },
                     )
@@ -37,9 +42,9 @@ class UserDao(metaclass=Singleton):
         except Exception as e:
             print(e)
 
-        created = False
-        if res:
-            created = True
+        # created = False
+        # if res:
+        #     created = True
 
         return res["user_id"]
 
@@ -106,6 +111,10 @@ class UserDao(metaclass=Singleton):
 
         res = None
 
+        hashed_password = InviteService().hash_password(
+            password=user.password, salt=user.name
+        )
+
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -115,7 +124,7 @@ class UserDao(metaclass=Singleton):
                         "  RETURNING user_id ; ",
                         {
                             "name": user.name,
-                            "password": user.password,
+                            "password": hashed_password,
                             "role": user.role,
                         },
                     )
@@ -155,6 +164,7 @@ class UserDao(metaclass=Singleton):
             pass
 
         user = None
+
         if res:
             user = User(name=res["name"], password=res["password"], role=res["role"])
             if res["puuid"]:
@@ -205,7 +215,7 @@ class UserDao(metaclass=Singleton):
 
     def add_matches(self, user: User):
         """
-        ajouter des matchs du joueurs en base de données
+        ???
 
         Parameters
         ----------
@@ -235,3 +245,7 @@ class UserDao(metaclass=Singleton):
             created = False
 
         return created
+
+
+if __name__ == "__main__":
+    pass
