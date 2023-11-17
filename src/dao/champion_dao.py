@@ -46,7 +46,7 @@ class ChampionDao(metaclass=Singleton):
             renvoie un objet Champion
         """
         res = False
-        champion = None
+        
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
