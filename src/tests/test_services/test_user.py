@@ -1,13 +1,43 @@
-from unittest import TestCase 
+from unittest import TestCase, TextTestRunner, TestLoader
+from unittest.mock import patch
+
 from services.user_service import UserService
+
+from business_object.battle.matchjoueur import MatchJoueur
+from business_object.stats.stat_joueur import StatJoueur
+
 
 class TestUser(TestCase):
     def test_get_coef_damage_type(self):
         # GIVEN
         liste_matchs = [
-            MatchJoueur(1, "Joueur1", "Champion1", ["Item1", "Item2"], "Top", "Team1", StatJoueur(5, 2, 3, 100, 20, 50, 4.0, True)),
-            MatchJoueur(2, "Joueur1", "Champion1", ["Item1", "Item2"], "Top", "Team1", StatJoueur(8, 3, 5, 120, 25, 60, 4.0, True)),
-            MatchJoueur(3, "Joueur1", "Champion1", ["Item1", "Item2"], "Top", "Team1", StatJoueur(3, 1, 2, 80, 15, 40, 6.0, False)),
+            MatchJoueur(
+                1,
+                "Joueur1",
+                "Champion1",
+                ["Item1", "Item2"],
+                "Top",
+                "Team1",
+                StatJoueur(5, 2, 3, 100, 20, 50, 4.0, True),
+            ),
+            MatchJoueur(
+                2,
+                "Joueur1",
+                "Champion1",
+                ["Item1", "Item2"],
+                "Top",
+                "Team1",
+                StatJoueur(8, 3, 5, 120, 25, 60, 4.0, True),
+            ),
+            MatchJoueur(
+                3,
+                "Joueur1",
+                "Champion1",
+                ["Item1", "Item2"],
+                "Top",
+                "Team1",
+                StatJoueur(3, 1, 2, 80, 15, 40, 6.0, False),
+            ),
             # ... Ajoutez d'autres matchs selon vos besoins
         ]
 
@@ -21,9 +51,33 @@ class TestUser(TestCase):
     def test_get_stats_by_champ(self):
         # GIVEN
         liste_matchs = [
-            MatchJoueur(1, "Joueur1", "Champion1", ["Item1", "Item2"], "Top", "Team1", StatJoueur(5, 2, 3, 100, 20, 50, 4.0, True)),
-            MatchJoueur(2, "Joueur1", "Champion1", ["Item1", "Item2"], "Top", "Team1", StatJoueur(8, 3, 5, 120, 25, 60, 4.0, True)),
-            MatchJoueur(3, "Joueur2", "Champion2", ["Item3", "Item4"], "Mid", "Team2", StatJoueur(3, 1, 2, 80, 15, 40, 6.0, False)),
+            MatchJoueur(
+                1,
+                "Joueur1",
+                "Champion1",
+                ["Item1", "Item2"],
+                "Top",
+                "Team1",
+                StatJoueur(5, 2, 3, 100, 20, 50, 4.0, True),
+            ),
+            MatchJoueur(
+                2,
+                "Joueur1",
+                "Champion1",
+                ["Item1", "Item2"],
+                "Top",
+                "Team1",
+                StatJoueur(8, 3, 5, 120, 25, 60, 4.0, True),
+            ),
+            MatchJoueur(
+                3,
+                "Joueur2",
+                "Champion2",
+                ["Item3", "Item4"],
+                "Mid",
+                "Team2",
+                StatJoueur(3, 1, 2, 80, 15, 40, 6.0, False),
+            ),
             # ... Ajoutez d'autres matchs selon vos besoins
         ]
 
@@ -46,8 +100,7 @@ class TestUser(TestCase):
 
         # Ajoutez des assertions supplémentaires si nécessaire
 
+
 if __name__ == "__main__":
     # Run the tests
-    result = TextTestRunner().run(
-        TestLoader().loadTestsFromTestCase(TestUser)
-    )
+    result = TextTestRunner().run(TestLoader().loadTestsFromTestCase(TestUser))
