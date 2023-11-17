@@ -381,7 +381,7 @@ class InviteService:
         for i in range(len(self.stat_th)):
             if L[i + 1] is not None and self.stat_th[i] != "item":
                 Lf.append(self.stat_th[i] + " : " + str(L[i + 1]))
-            if L[i + 1] is not None and self.stat_th[i] == "item":
+            if L[i + 1] is not None and self.stat_th[i] == "item":  # a changer
                 Lf.append(
                     "champions populaires (champion, taux d'utilisation) : "
                     + str(L[i + 1][:5])
