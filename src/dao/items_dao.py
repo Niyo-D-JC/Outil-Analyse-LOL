@@ -35,7 +35,7 @@ class ItemsDao(metaclass=Singleton):
         return res
 
     def find_by_id(self, id):
-        """trouver une lane grace à son id
+        """trouver une item grace à son id
 
         Parameters
         ----------
@@ -43,8 +43,8 @@ class ItemsDao(metaclass=Singleton):
 
         Returns
         -------
-        lane : lane
-            renvoie un objet lane
+        item : item
+            renvoie un objet item
         """
         res = False
         try:
@@ -52,7 +52,7 @@ class ItemsDao(metaclass=Singleton):
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "SELECT *                           "
-                        "FROM projet.lane              "
+                        "FROM projet.item              "
                         "WHERE id = %(id)s;  ",
                         {"id": id},
                     )
@@ -64,3 +64,24 @@ class ItemsDao(metaclass=Singleton):
             item = Item(id=id, name=res["name"])
 
         return item
+
+    def get_all_order(self) :
+        res = False
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT I.name AS item_name, "
+                        " COUNT(IM.item_id) AS usage_frequency, "
+                        " (COUNT(CASE WHEN MJ.win = TRUE THEN 1 END)::FLOAT / COUNT(*)) AS win_rate "
+                        " FROM projet.item AS I "
+                        " LEFT JOIN projet.itemmatch AS IM ON I.item_id = IM.item_id "
+                        " LEFT JOIN projet.matchjoueur AS MJ ON IM.match_id = MJ.match_id AND IM.puuid = MJ.puuid "
+                        " GROUP BY I.name ;"
+                    )
+                    res = cursor.fetchall()
+        except Exception as e:
+            print(e)
+
+        if res:
+            return res

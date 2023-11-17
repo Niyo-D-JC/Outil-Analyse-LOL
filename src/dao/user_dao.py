@@ -1,10 +1,12 @@
 from dao.db_connection import DBConnection
 from utils.singleton import Singleton
 from business_object.user.user import User
+from business_object.user.joueur import Joueur
+from services.invite_service import InviteService
 
 
 class UserDao(metaclass=Singleton):
-    def creer(self, user):
+    def creer(self, user: User):
         """Creation d'un utilisateur dans la base de données
 
         Parameters
@@ -18,6 +20,10 @@ class UserDao(metaclass=Singleton):
 
         res = None
 
+        hashed_password = InviteService().hash_password(
+            password=user.password, salt=user.name
+        )
+
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -28,7 +34,7 @@ class UserDao(metaclass=Singleton):
                         {
                             "puuid": user.joueur.puuid,
                             "name": user.name,
-                            "password": user.password,
+                            "password": hashed_password,
                             "role": user.role,
                         },
                     )
@@ -36,11 +42,60 @@ class UserDao(metaclass=Singleton):
         except Exception as e:
             print(e)
 
-        created = False
-        if res:
-            created = True
+        # created = False
+        # if res:
+        #     created = True
 
         return res["user_id"]
+
+    def get_users(self):
+        res = None
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        " SELECT *                           "
+                        " FROM projet.user               "
+                    )
+                    res = cursor.fetchall()
+
+        except Exception as e:
+            print(e)
+
+        if res:
+            import pandas as pd
+
+            return pd.DataFrame(res)
+
+    def delete_by_name(self, name):
+        """
+        Mettre à jour le puuid d'un joueur
+
+        Parameters
+        ----------
+        puuid : str
+
+        Returns
+        -------
+        """
+
+        deleted = None
+
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        " DELETE FROM projet.user " " WHERE name = %(name)s; ",
+                        {
+                            "name": name,
+                        },
+                    )
+                    deleted = True
+        except Exception as e:
+            print(e)
+            deleted = False
+
+        return deleted
 
     def creer_no_puuid(self, user):
         """Creation d'un utilisateur dans la base de données
@@ -56,6 +111,10 @@ class UserDao(metaclass=Singleton):
 
         res = None
 
+        hashed_password = InviteService().hash_password(
+            password=user.password, salt=user.name
+        )
+
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -65,7 +124,7 @@ class UserDao(metaclass=Singleton):
                         "  RETURNING user_id ; ",
                         {
                             "name": user.name,
-                            "password": user.password,
+                            "password": hashed_password,
                             "role": user.role,
                         },
                     )
@@ -102,10 +161,91 @@ class UserDao(metaclass=Singleton):
                     )
                     res = cursor.fetchone()
         except Exception as e:
-            pass 
+            pass
 
         user = None
+
         if res:
             user = User(name=res["name"], password=res["password"], role=res["role"])
-
+            if res["puuid"]:
+                with DBConnection().connection as connection:
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            " SELECT *                           "
+                            " FROM projet.joueur               "
+                            " WHERE puuid = %(puuid)s;  ",
+                            {"puuid": res["puuid"]},
+                        )
+                        res = cursor.fetchone()
+                        user.joueur = Joueur(res["puuid"], res["name"], res["tier"])
         return user
+
+    def update_puuid(self, puuid, name):
+        """
+        Mettre à jour le puuid d'un joueur
+
+        Parameters
+        ----------
+        puuid : str
+
+        Returns
+        -------
+        """
+
+        created = None
+
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "UPDATE projet.user "
+                        " SET puuid = %(puuid)s "
+                        " WHERE name = %(name)s ;",
+                        {
+                            "puuid": puuid,
+                            "name": name,
+                        },
+                    )
+                    created = True
+        except Exception as e:
+            print(e)
+            created = False
+
+        return created
+
+    def add_matches(self, user: User):
+        """
+        ???
+
+        Parameters
+        ----------
+        puuid : str
+
+        Returns
+        -------
+        """
+
+        created = None
+
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "UPDATE projet.user "
+                        " SET puuid = %(puuid)s "
+                        " WHERE name = %(name)s ;",
+                        {
+                            "puuid": puuid,
+                            "name": name,
+                        },
+                    )
+                    created = True
+        except Exception as e:
+            print(e)
+            created = False
+
+        return created
+
+
+if __name__ == "__main__":
+    pass

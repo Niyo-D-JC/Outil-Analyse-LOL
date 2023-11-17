@@ -1,5 +1,5 @@
 import dotenv
-from view.accueil_vue import AccueilVue
+from view.utils_vue.accueil_vue import AccueilVue
 from services.user_service import UserService
 from api.fill_data_base import FillDataBase
 from utils.reset_database import ResetDatabase
@@ -15,9 +15,11 @@ if __name__ == "__main__":
     except:
         print("Premiere Ouverture de l'Application")
         ResetDatabase().lancer()
-        FillDataBase().initiate(0,5)
+        FillDataBase().initiate(0, 1)
 
-    vue_courante = AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
+    vue_courante = AccueilVue(
+        "Bienvenue sur votre application d'analyse de League of Legends"
+    )
     nb_erreurs = 0
 
     while vue_courante:
@@ -40,5 +42,7 @@ if __name__ == "__main__":
             )
 
     # Lorsque l on quitte l application
-    print("---------------------------------")
+    print(
+        "--------------------------------------------------------------------------------------"
+    )
     print("Au revoir")

@@ -4,6 +4,7 @@ Pour cela, on importe nos données depuis matchjoueur_dao.
 """
 
 
+
 class InviteService:
     """service pour les invités"""
 
@@ -16,7 +17,7 @@ class InviteService:
         """
         self.stat_th = stat_th
 
-    def transfo_list(self, liste_match):
+    def transfo_list(self, liste_match=MatchJoueurDao().get_all_match()):
         """transforme la liste obtenue avec le remplissage de la base de donnée en
         la liste dont nous avons besoin
         [id_game,joueur,champ,items,lane,team,[tot_domdeal,tot_domtake,tot_heal,k,d,a,win]]
@@ -24,7 +25,7 @@ class InviteService:
         Args:
             liste_match (_type_, optional): liste de la forme :
             [[idgame,joueur,champ,items,lane,team,[tot_domdeal,tot_domtake,tot_heal,k,d,a,win]],...]
-            Defaults to MatchJoueurDao().get_all_match_invite().
+            Defaults to MatchJoueurDao().get_all_match().
 
         Returns:
             list: liste dans le format dont nous avons besoin :

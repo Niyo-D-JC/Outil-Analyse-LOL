@@ -1,10 +1,10 @@
 from InquirerPy import prompt
 
-from view.vue_abstraite import VueAbstraite
+from view.utils_vue.vue_abstraite import VueAbstraite
 #from service.joueur_service import JoueurService
 
 
-class MenuJoueurVue(VueAbstraite):
+class MenuInviteVue(VueAbstraite):
     """Vue du menu du joueur
 
     Attributes
@@ -25,7 +25,7 @@ class MenuJoueurVue(VueAbstraite):
                 "type": "list",
                 "name": "choix",
                 "message": "Faites votre choix",
-                "choices": ["Afficher les joueurs", "Se déconnecter"],
+                "choices": [ "Accéder aux Statistiques Générales", "Revenir au Menu Principal"],
             }
         ]
 
@@ -39,10 +39,10 @@ class MenuJoueurVue(VueAbstraite):
         """
         reponse = prompt(self.questions)
 
-        if reponse["choix"] == "Se déconnecter":
-            from view.accueil_vue import AccueilVue
+        if reponse["choix"] == "Revenir au Menu Principal":
+            from view.utils_vue.accueil_vue import AccueilVue
             return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
 
-        elif reponse["choix"] == "Afficher les joueurs":
-            joueurs_str = None #JoueurService().afficher_tous()
-            return MenuJoueurVue(joueurs_str)
+        elif reponse["choix"] == "Accéder aux Statistiques Générales":
+            from view.action_vue.statistiques_vue import StatistiquesVue
+            return StatistiquesVue("Bienvenue sur Votre Application ViewerOn LoL")

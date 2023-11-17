@@ -1,10 +1,11 @@
 from InquirerPy import prompt
 
-from view.vue_abstraite import VueAbstraite
-from view.connexion_vue import ConnexionVue
-from view.session import Session
+from view.utils_vue.vue_abstraite import VueAbstraite
+from view.action_vue.connexion_vue import ConnexionVue
+from view.session.session import Session
 from utils.reset_database import ResetDatabase
-from view.creer_compte_vue import CreerCompteVue
+from view.action_vue.creer_compte_vue import CreerCompteVue
+from view.menu.menu_invite_vue import MenuInviteVue
 
 class AccueilVue(VueAbstraite):
     """Vue de l'accueil de l'application du Jeu de Rôle.
@@ -30,7 +31,7 @@ class AccueilVue(VueAbstraite):
                 "choices": [
                     "Créer un Compte",
                     "Se connecter",
-                    "Trier les champions",
+                    "Continuer en tant qu'invité",
                     "Quitter"
                 ],
             }
@@ -52,12 +53,23 @@ class AccueilVue(VueAbstraite):
         if reponse["choix"] == "Quitter":
             pass
         elif reponse["choix"] == "Se connecter":
-            return ConnexionVue()
+            session = Session()
+            if (session.user):
+                if session.role == "Admin" :
+                    message = f"Administrateur : Vous êtes connectés sous le profil de {session.user.upper()}"
+                    from view.menu.menu_admin_vue import MenuAdminVue
+
+                    return MenuAdminVue(message)
+
+                if session.role == "User":
+                    message = f"Utilisateur : Vous êtes connectés sous le profil de {session.user.upper()}"
+                    from view.menu.menu_user_vue import MenuUserVue
+
+                    return MenuUserVue(message)
+            else : 
+                return ConnexionVue()
+
         elif reponse["choix"] == "Créer un Compte":
             return CreerCompteVue()
-        elif reponse["choix"] == "Afficher les statistiques d'un champion":
-            return ChampionVue()
-        elif reponse["choix"] == "Trier les champions":
-            return ChampionVue()
-        elif reponse["choix"] == "Créer un compte":
-            return CreationCompteVue()
+        elif reponse["choix"] == "Continuer en tant qu'invité":
+            return MenuInviteVue("Invité : Bienvenue sur Votre Application ViewerOn LoL")

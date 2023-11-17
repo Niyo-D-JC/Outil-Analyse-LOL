@@ -28,7 +28,7 @@ class stats_match(Joueur,Team,StatJoeur):
 
     # Créer un tableau qui référence dans un tableau a 2 colonnes le nom des joueurs
     def get_teams(self):
-    team1 = [(joueur.name,kda_player()) for joueur in self.joueur if joueur.team_id == 100]
-    team2 = [(joueur.name,kda_player()) for joueur in self.joueur if joueur.team_id == 200]
-    tableau_equipes = np.column_stack((team1, team2))
-    print(tableau_equipes)
+      team1 = [(joueur.name,kda_player()) for joueur in self.joueur if joueur.team_id == 100]
+      team2 = [(joueur.name,kda_player()) for joueur in self.joueur if joueur.team_id == 200]
+      tableau_equipes = np.column_stack((team1, team2))
+      print(tableau_equipes)

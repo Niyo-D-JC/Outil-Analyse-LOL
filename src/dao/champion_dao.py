@@ -64,3 +64,23 @@ class ChampionDao(metaclass=Singleton):
             champion = Champion(champion_id=id, name=res["name"])
 
         return champion
+
+    def get_all_order(self) :
+        res = False
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT C.name AS champion_name, "
+                        " COUNT(MJ.champion_id) AS usage_frequency,"
+                        " (COUNT(CASE WHEN MJ.win = TRUE THEN 1 END)::FLOAT / COUNT(*)) AS win_rate "
+                        "FROM projet.champion AS C  "
+                        "LEFT JOIN projet.matchjoueur AS MJ ON C.champion_id = MJ.champion_id "
+                        "GROUP BY C.name ;"
+                    )
+                    res = cursor.fetchall()
+        except Exception as e:
+            print(e)
+
+        if res:
+            return res
