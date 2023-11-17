@@ -197,7 +197,7 @@ class FillDataBase:
                     joueur, first_game=first_game, last_game=last_game
                 )
 
-        UserDao().creer_no_puuid(User("admin", "admin", "Admin"))
+        UserDao().creer_no_puuid(User("admin", "admin", "Admin"))  # faille de sécurité
         self.bar.close()
         return 1
 
