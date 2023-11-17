@@ -2,7 +2,6 @@ from dao.db_connection import DBConnection
 from utils.singleton import Singleton
 from business_object.tools.champion import Champion
 
-
 class ChampionDao(metaclass=Singleton):
     def creer(self, champion) -> bool:
         """Creation d'un champion dans la base de données
@@ -47,6 +46,7 @@ class ChampionDao(metaclass=Singleton):
             renvoie un objet Champion
         """
         res = False
+        champion = None
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
