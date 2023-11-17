@@ -4,6 +4,7 @@ from view.utils_vue.vue_abstraite import VueAbstraite
 from view.action_vue.creer_admin_vue import CreerAdminVue
 from view.action_vue.supprimer_compte_vue import SupprimerCompteVue
 from view.action_vue.supprimer_match_vue import SupprimerMatchVue
+from view.action_vue.ajouter_partie_vue import AjouterPartieVue
 
 class GestionBDVue(VueAbstraite):
     """Vue du menu du joueur
@@ -26,7 +27,7 @@ class GestionBDVue(VueAbstraite):
                 "type": "list",
                 "name": "choix",
                 "message": "Faites votre choix",
-                "choices": ["Ajouter un Administrateur", "Supprimer un Compte",  "Supprimer un Match", "Retour"],
+                "choices": ["Ajouter des Parties", "Ajouter un Administrateur", "Supprimer un Compte",  "Supprimer un Match", "Retour"],
             }
         ]
 
@@ -60,6 +61,9 @@ class GestionBDVue(VueAbstraite):
 
         elif reponse["choix"] == "Ajouter un Administrateur":
             return CreerAdminVue()
+
+        elif reponse["choix"] == "Ajouter des Parties":
+            return AjouterPartieVue()
 
         elif reponse["choix"] == "Supprimer un Compte":
             return SupprimerCompteVue("Bienvenue sur Votre Application ViewerOn LoL")

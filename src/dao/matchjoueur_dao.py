@@ -79,6 +79,31 @@ class MatchJoueurDao(metaclass=Singleton):
             import pandas as pd
             return pd.DataFrame(res)
 
+    def existe(self, joueur, match_id) -> bool:
+        """Verifier qu'un joueur est dans la base de données
+        """
+
+        res = None
+
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT *                           "
+                        "  FROM projet.matchjoueur               "
+                        " WHERE puuid = %(puuid)s AND match_id = %(match_id)s;",
+                        {"puuid": joueur.puuid, 
+                         "match_id": match_id},
+                    )
+                    res = cursor.fetchone()
+        except Exception as e:
+            print(e)
+        exist = False
+        if res:
+            exist = True
+
+        return exist
+        
     def vue_partie(self, match_id) : 
         res = None
         try:

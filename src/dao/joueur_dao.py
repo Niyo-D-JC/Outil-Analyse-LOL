@@ -40,6 +40,31 @@ class JoueurDao(metaclass=Singleton):
 
         return res
 
+    def existe(self, joueur) -> bool:
+        """Verifier qu'un joueur est dans la base de données
+        """
+
+        res = None
+
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT *                           "
+                        "  FROM projet.joueur               "
+                        " WHERE puuid = %(puuid)s;  ",
+                        {"puuid": joueur.puuid},
+                    )
+                    res = cursor.fetchone()
+        except Exception as e:
+            print(e)
+        exist = False
+        if res:
+            exist = True
+
+        return exist
+
+        
     def find_by_name(self, name):
         """trouver un utilisateur grace à son nom
 

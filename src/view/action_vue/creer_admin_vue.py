@@ -1,4 +1,5 @@
 from InquirerPy import prompt
+from view.session.session import Session
 
 from view.utils_vue.vue_abstraite import VueAbstraite
 from services.joueur_service import JoueurService
