@@ -210,11 +210,96 @@ class FillDataBase:
             + self.API_KEY
         )
         data = self.reqLimit(url, "gameName")
-        return Joueur(puuid, data["gameName"])
 
-    def add_matches(self, user: User):
-        pass
+        tier = self.get_tier(puuid)
+
+        return Joueur(puuid, data["gameName"], tier)
+
+    def get_puuid(self, name: str):
+        EUW_api_url = self.HOST_WEBSERVICE_EUW1
+        summoner_url = "/lol/summoner/v4/summoners/by-name/"
+        # si on importe un user en parametre : name = user.joueur.name
+
+        final_account_url = (
+            EUW_api_url + summoner_url + name + "?api_key=" + os.environ["API_KEY"]
+        )
+        account_data = self.reqLimit(url=final_account_url)
+        account_puuid = account_data["puuid"]
+
+        return account_puuid
+
+    def get_last_matchId(self, puuid: str):
+        url = (
+            self.HOST_WEBSERVICE_EUROPA
+            + "/lol/match/v5/matches/by-puuid/"
+            + puuid
+            + "/ids?start="
+            + str(0)
+            + "&"
+            + "count="
+            + str(1)
+            + "&api_key="
+            + self.API_KEY
+        )
+        last_matchId = list(self.reqLimit(url))[0]
+
+        return last_matchId
+
+    def get_summonerId(self, puuid: str):
+        match_id = self.get_last_matchId(puuid)
+
+        url = (
+            self.HOST_WEBSERVICE_EUROPA
+            + "/lol/match/v5/matches/"
+            + match_id
+            + "?api_key="
+            + self.API_KEY
+        )
+        data = self.reqLimit(url)
+
+        try:
+            players_info = data["info"]["participants"]
+            # Parcourir la liste de dictionnaires
+            for player in players_info:
+                if player["puuid"] == puuid:
+                    summoner_id = player["summonerId"]
+                    break
+
+            return summoner_id
+
+        except:
+            pass
+
+    def get_tier(self, puuid: str):
+        # Pour avoir le rank il faut acceder à la variable summonerID
+
+        summoner_id = self.get_summonerId(puuid)
+
+        url = (
+            self.HOST_WEBSERVICE_EUW1
+            + "/lol/league/v4/entries/by-summoner/"
+            + summoner_id
+            + "?api_key="
+            + self.API_KEY
+        )
+
+        data = self.reqLimit(url)
+
+        tier = data[0]["tier"]  # 0=soloQ ; 1=Flex
+        return tier
+
+    def add_matches_for_user(self, user: User):
+        self.getJoueurAllMatchInfo(joueur=user.joueur)
 
 
 if __name__ == "__main__":
-    FillDataBase().initiate(0, 3)
+    # FillDataBase().initiate(0, 3)
+
+    puuid = FillDataBase().get_puuid("KC Next adking")
+    print("puuid", puuid)
+
+    summonerid = FillDataBase().get_summonerId(puuid)
+    print("summonerid", summonerid)
+
+    tier = FillDataBase().get_tier(puuid)
+    print("tier", tier)

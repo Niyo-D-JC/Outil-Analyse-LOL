@@ -190,17 +190,6 @@ class UserService(InviteService):
 
         """
 
-        # EUW_api_url = os.environ["HOST_WEBSERVICE_EUW1"]
-        # summoner_url = "/lol/summoner/v4/summoners/by-name/"
-        # name = user.joueur.name
-
-        # final_account_url = (
-        #     EUW_api_url + summoner_url + name + "?api_key=" + os.environ["API_KEY"]
-        # )
-        # account_data = requests.get(final_account_url)
-
-        # account_puuid = account_data.json()["puuid"]
-
         time.sleep(2)
 
         # match_list_url = "/lol/match/v5/matches/by-puuid/"

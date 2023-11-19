@@ -12,9 +12,17 @@ class CreerCompteVue(VueAbstraite):
         super().__init__(message)
         self.questions = [
             {"type": "input", "name": "pseudo", "message": "Entrez votre username :"},
-            {"type": "password", "name": "mdp", "message": "Entrez votre mot de passe :"},
-            {"type": "input", "name": "joueur", "message": "Nom de votre Joueur (Optionel) :"},
-    ]
+            {
+                "type": "password",
+                "name": "mdp",
+                "message": "Entrez votre mot de passe :",
+            },
+            {
+                "type": "input",
+                "name": "joueur",
+                "message": "Nom de votre Joueur (Optionel) :",
+            },
+        ]
 
     def afficher(self):
         self.nettoyer_console()
@@ -27,16 +35,18 @@ class CreerCompteVue(VueAbstraite):
         puuid = ""
         user = None
 
-        joueur = JoueurService().find_by_name(
-            answers["joueur"]
-        )  # il faudrait faire un requete API au lieu de chercher dans la BDD
+        joueur = JoueurService().create_joueur_object(answers["joueur"])
+
+        print(joueur)
 
         if joueur != None:
+            JoueurService().creer(joueur)
+
             user = User(answers["pseudo"], answers["mdp"], "User", joueur)
             UserService().creer(user)
         else:
             print("")
-            print("Aucun Joueur Referencé")
+            print("Aucun joueur ne porte ce nom d'invocateur")
             user = User(answers["pseudo"], answers["mdp"], "User")
             UserService().creer_no_puuid(user)
 

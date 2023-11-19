@@ -13,7 +13,7 @@ class UpdateCompteVue(VueAbstraite):
         super().__init__(message)
         self.questions = [
             {"type": "input", "name": "joueur", "message": "Nom de votre Joueur :"},
-    ]
+        ]
 
     def afficher(self):
         self.nettoyer_console()
@@ -26,13 +26,13 @@ class UpdateCompteVue(VueAbstraite):
         puuid = ""
         user = None
 
-        joueur = JoueurService().find_by_name(
-            answers["joueur"]
-        )  # il faudrait faire un requete API au lieu de chercher dans la BDD
+        joueur = JoueurService().create_joueur_object(answers["joueur"])
 
         if joueur != None:
             session = Session()
             session.joueur = joueur
+
+            JoueurService().creer(joueur)
             UserService().update_puuid(joueur.puuid, session.user)
             print("")
             print(
@@ -40,17 +40,16 @@ class UpdateCompteVue(VueAbstraite):
             )
         else:
             print("")
-            print("Aucun Joueur Referencé")
+            print("Aucun joueur ne porte ce nom d'invocateur")
 
-        
         print("")
         print(
             "-------------------------- Retour sur votre Page ---------------------------"
         )
         time.sleep(3)
         session = Session()
-        if (session.user):
-            if session.role == "Admin" :
+        if session.user:
+            if session.role == "Admin":
                 message = f"Administrateur : Vous êtes connectés sous le profil de {session.user.upper()}"
                 from view.menu.menu_admin_vue import MenuAdminVue
 
