@@ -29,8 +29,6 @@ class PartiesVue(VueAbstraite):
         if session.joueur:
             df = UserService().get_match_list_bypuuid(session.joueur.puuid)
 
-            print(df)
-
         for index, row in df.iterrows():
             # Extraire les valeurs nécessaires de la ligne
             match_id = row["match_id"]

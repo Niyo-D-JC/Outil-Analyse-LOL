@@ -322,8 +322,11 @@ class FillDataBase:
         else:
             return "UNRANKED"
 
-    def add_matches_for_user(self, user: User):
-        self.getJoueurAllMatchInfo(joueur=user.joueur)
+    def add_matches_for_user(self, user: User, n_matches=20):
+        self.bar.total = n_matches
+        self.getJoueurAllMatchInfo(
+            joueur=user.joueur, first_game=0, last_game=n_matches
+        )
 
 
 if __name__ == "__main__":
