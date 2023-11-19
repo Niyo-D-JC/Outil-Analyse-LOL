@@ -9,6 +9,7 @@ from business_object.tools.champion import Champion
 
 class TestChampionDao(unittest.TestCase):
     def setUp(self):
+        # Crée un objet Champion fictif pour les tests
         self.mock_champion = Champion(champion_id=1, name="TestChampion")
 
     @patch('dao.champion_dao.DBConnection')
