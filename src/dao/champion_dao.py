@@ -73,7 +73,7 @@ class ChampionDao(metaclass=Singleton):
                     cursor.execute(
                         "SELECT C.name AS champion_name, "
                         " COUNT(MJ.champion_id) AS usage_frequency,"
-                        " (COUNT(CASE WHEN MJ.win = TRUE THEN 1 END)::FLOAT / COUNT(*)) AS win_rate "
+                        " (COUNT(CASE WHEN MJ.win = TRUE THEN 1 END)::FLOAT / COUNT(*)) * 100 AS win_rate "
                         "FROM projet.champion AS C  "
                         "LEFT JOIN projet.matchjoueur AS MJ ON C.champion_id = MJ.champion_id "
                         "GROUP BY C.name ;"
