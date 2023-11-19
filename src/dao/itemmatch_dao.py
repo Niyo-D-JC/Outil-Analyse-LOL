@@ -14,6 +14,7 @@ class ItemMatchDao(metaclass=Singleton):
         match_id : string,
         puuid : string,
         item_id : int
+        item_position : int
 
         Returns
         -------
@@ -39,7 +40,7 @@ class ItemMatchDao(metaclass=Singleton):
                     )
                     res = True
         except Exception as e:
-            # print(e)
+            print(e)
             res = False
         return res
 

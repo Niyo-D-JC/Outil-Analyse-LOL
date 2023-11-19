@@ -16,12 +16,12 @@ import pandas as pd
 
 
 class MatchJoueurDao(metaclass=Singleton):
-    def creer(self, match) -> bool:
+    def creer(self, match: MatchJoueur) -> bool:
         """Creation d'un item dans la base de données
 
         Parameters
         ----------
-        match : Match
+        match : MatchJoueur
 
         Returns
         -------
@@ -57,7 +57,7 @@ class MatchJoueurDao(metaclass=Singleton):
                     )
                     res = True
         except Exception as e:
-            #print(e)
+            print(e)
             res = False
         return res
 

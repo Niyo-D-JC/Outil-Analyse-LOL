@@ -10,7 +10,6 @@ class JoueurDao(metaclass=Singleton):
         Parameters
         ----------
         joueur : Joueur
-        user_id : int
 
         Returns
         -------
@@ -35,7 +34,7 @@ class JoueurDao(metaclass=Singleton):
                     )
                     res = True
         except Exception as e:
-            # print(e)
+            print(e)
             res = False
 
         return res

@@ -106,11 +106,12 @@ CREATE TABLE projet.itemmatch(
 
 
 INSERT INTO projet.lane(lane_id, name) VALUES
-(1, 'TOP'),
-(2, 'JUNGLE'),
-(3,'BOTTOM'),
-(4,'MIDDLE'),
-(5,'NONE');
+(1,'TOP'),
+(2,'JUNGLE'),
+(3,'MIDDLE'),
+(4,'BOTTOM'),
+(5,'SUPPORT'),
+(6,'NONE');
 
 INSERT INTO projet.team(team_id, side) VALUES
 (100, 'Blue'),
