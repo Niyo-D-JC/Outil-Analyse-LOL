@@ -1,5 +1,6 @@
 from InquirerPy import prompt
 
+from api.fill_data_base import FillDataBase
 from view.utils_vue.vue_abstraite import VueAbstraite
 from view.session.session import Session
 from business_object.user.user import User
@@ -46,17 +47,18 @@ class StatistiquesPersoVue(VueAbstraite):
         """
         reponse = prompt(self.questions)
 
+        session = Session()
+
         if reponse["choix"] == "Retour":
-            session = Session()
             if session.user:
                 if session.role == "Admin":
-                    message = f"Administrateur : Vous êtes connectés sous le profil de {session.user.upper()}"
+                    message = f"Administrateur : Vous êtes connecté sous le profil de {session.user.upper()}"
                     from view.menu.menu_admin_vue import MenuAdminVue
 
                     return MenuAdminVue(message)
 
                 if session.role == "User":
-                    message = f"Utilisateur : Vous êtes connectés sous le profil de {session.user.upper()}"
+                    message = f"Utilisateur : Vous êtes connecté sous le profil de {session.user.upper()}"
                     from view.menu.menu_user_vue import MenuUserVue
 
                     return MenuUserVue(message)
@@ -67,30 +69,25 @@ class StatistiquesPersoVue(VueAbstraite):
                     "Invité : Bienvenue sur Votre Application ViewerOn LoL"
                 )
 
-        elif reponse["choix"] == "Accéder au Bilan Personnel":
-            session = Session()
-            if session.joueur:
-                user = User(name=session.user, role=session.role, joueur=session.joueur)
-                UserService().get_stats_perso(user)
-                input("Appuyez sur Entrée pour afficher retourner ...")
-                return self.__class__("Bienvenue sur Votre Application ViewerOn LoL")
+        elif not session.joueur:
+            print("Vous n'êtes associé à aucun joueur")
+            print("Redirection en cours ...")
+            time.sleep(2)
 
-            else:
-                print("Vous n'êtes pas associés à un joueur, Associez maintenant")
-                time.sleep(3)
-                from view.action_vue.update_compte_vue import UpdateCompteVue
+            from view.action_vue.update_compte_vue import UpdateCompteVue
 
-                return UpdateCompteVue()
+            return UpdateCompteVue()
+
+        user = User(name=session.user, role=session.role, joueur=session.joueur)
+        FillDataBase().add_matches_for_user(user)
+
+        if reponse["choix"] == "Accéder au Bilan Personnel":
+            UserService().get_stats_perso(user)
+
+            input("Appuyez sur Entrée pour afficher retourner ...")
+            return self.__class__("Bienvenue sur Votre Application ViewerOn LoL")
 
         elif reponse["choix"] == "Voir les Parties Disponibles":
             from view.action_vue.parties_vue import PartiesVue
 
-            session = Session()
-            if session.joueur:
-                return PartiesVue("Bienvenue sur Votre Application ViewerOn LoL")
-            else:
-                print("Vous n'êtes pas associés à un joueur, Associez maintenant")
-                time.sleep(3)
-                from view.action_vue.update_compte_vue import UpdateCompteVue
-
-                return UpdateCompteVue()
+            return PartiesVue("Bienvenue sur Votre Application ViewerOn LoL")

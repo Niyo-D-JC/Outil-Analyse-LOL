@@ -176,11 +176,11 @@ class UserService(InviteService):
         for champion, stats in champions_counts.items():
             row = "{:<15} {:<12} {:<12} {:<13} {:<9} {:<16}".format(
                 champion,
-                stats["kills_avg"],
-                stats["deaths_avg"],
-                stats["assists_avg"],
-                stats["cs_avg"],
-                stats["nombre_de_matchs"],
+                round(stats["kills_avg"], 2),
+                round(stats["deaths_avg"], 2),
+                round(stats["assists_avg"], 2),
+                round(stats["cs_avg"], 2),
+                stats["nombre_de_matchs"],  # Ne pas arrondir le nombre de matchs
             )
             print(row)
 

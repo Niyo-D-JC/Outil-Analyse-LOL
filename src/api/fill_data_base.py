@@ -255,11 +255,6 @@ class FillDataBase:
         account_data = self.reqLimit(url)
 
         if account_data:
-            print("")
-            print(account_data)
-            print("")
-
-            print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
             account_puuid = account_data["puuid"]
 
             return account_puuid

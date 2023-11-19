@@ -17,7 +17,7 @@ class UpdateCompteVue(VueAbstraite):
 
     def afficher(self):
         self.nettoyer_console()
-        print("Creez votre compte")
+        print("Mis a jour de vos informations")
         print()
 
     def choisir_menu(self):

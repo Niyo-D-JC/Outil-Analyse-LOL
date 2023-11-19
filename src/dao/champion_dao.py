@@ -2,6 +2,7 @@ from dao.db_connection import DBConnection
 from utils.singleton import Singleton
 from business_object.tools.champion import Champion
 
+
 class ChampionDao(metaclass=Singleton):
     def creer(self, champion) -> bool:
         """Creation d'un champion dans la base de données
@@ -33,7 +34,7 @@ class ChampionDao(metaclass=Singleton):
             res = False
         return res
 
-    def find_by_id(self, id):
+    def find_by_id(self, champion_id):
         """trouver un Champion grace à son id
 
         Parameters
@@ -46,15 +47,15 @@ class ChampionDao(metaclass=Singleton):
             renvoie un objet Champion
         """
         res = False
-        
+
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "SELECT *                           "
                         " FROM projet.champion               "
-                        " WHERE id = %(id)s;  ",
-                        {"id": id},
+                        " WHERE champion_id = %(champion_id)s;  ",
+                        {"champion_id": champion_id},
                     )
                     res = cursor.fetchone()
         except Exception as e:
@@ -62,10 +63,9 @@ class ChampionDao(metaclass=Singleton):
 
         if res:
             champion = Champion(champion_id=id, name=res["name"])
+            return champion
 
-        return champion
-
-    def get_all_order(self) :
+    def get_all_order(self):
         res = False
         try:
             with DBConnection().connection as connection:
