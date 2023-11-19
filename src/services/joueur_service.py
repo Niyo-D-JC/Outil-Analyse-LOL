@@ -24,4 +24,4 @@ class JoueurService:
 
 
 if __name__ == "__main__":
-    print(JoueurService().create_joueur_object("Hifolyjjd"))
+    moi = JoueurService().create_joueur_object("Fan2Chat")
