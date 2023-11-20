@@ -3,7 +3,7 @@ from business_object.battle.team import Team
 from business_object.stats.stat_joueur import StatJoueur
 
 
-class stats_match:
+class Stat_match:
     def __init__(
         self,
         puuid,
@@ -90,7 +90,7 @@ class stats_match:
 
 
 if __name__ == "__main__":
-    joueur1 = (
+    joueur1 = Stat_match.(
         "puuid1",
         "Joueur1",
         100,
@@ -103,6 +103,6 @@ if __name__ == "__main__":
         "5/2/7",
         "Victoire",
     )
-    joueur2 = ("puuid2", "Joueur2", 100, 3, 4, 6, 800, 12000, 1500, "3/4/6", "Défaite")
-    players = stats_match([joueur1, joueur2])
+    joueur2 = Stat_match().("puuid2", "Joueur2", 100, 3, 4, 6, 800, 12000, 1500, "3/4/6", "Défaite")
+
     players.kda_team()

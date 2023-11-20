@@ -135,7 +135,7 @@ class FillDataBase:
                 for j in data[:limit]
             ]
 
-    def getJoueurMatchInfo(self, match_id: str, player_k: int):
+    def getJoueurMatchInfo(self, match_id: str):
         self.bar.set_description("Chargemnent en cours")
 
         url = (
@@ -147,67 +147,68 @@ class FillDataBase:
         )
         data = self.reqLimit(url, "metadata")
 
-        player_info = data["info"]["participants"][player_k]
+        for player_k in range(0, 10):
+            player_info = data["info"]["participants"][player_k]
 
-        joueur = Joueur(
-            player_info["puuid"],
-            player_info["summonerName"],
-            self.get_tier(player_info["puuid"]),
-        )
-
-        JoueurDao().creer(joueur)
-
-        print("")
-        print(joueur)
-
-        champion = Champion(player_info["championId"], player_info["championName"])
-
-        list_item = [
-            Item(
-                player_info[f"item{i}"],
-                self.items["data"][str(player_info[f"item{i}"])]["name"],
-                i,
+            joueur = Joueur(
+                player_info["puuid"],
+                player_info["summonerName"],
+                self.get_tier(puuid=None, summoner_id=player_info["summonerId"]),
             )
-            for i in range(7)
-            if str(player_info[f"item{i}"]) != "0"
-        ]
-        lane = Lane(LANE[player_info["teamPosition"]], player_info["teamPosition"])
-        team = Team(
-            team_id=player_info["teamId"],
-            side=SIDE[player_info["teamId"]],
-        )
-        stat_joueur = StatJoueur(
-            player_info["kills"],
-            player_info["deaths"],
-            player_info["assists"],
-            player_info["totalMinionsKilled"],
-            player_info["goldEarned"],
-            player_info["totalDamageDealt"],
-            player_info["totalDamageTaken"],
-            player_info["totalHeal"],
-            bool(player_info["win"]),
-        )
 
-        matchjoueur = MatchJoueur(
-            match_id, joueur, champion, list_item, lane, team, stat_joueur
-        )
-
-        self.bar.update(1)
-
-        try:
-            MatchJoueurDao().creer(matchjoueur)
-
-            for item_ in matchjoueur.items:
-                ItemMatchDao().creer(
-                    match_id, joueur.puuid, item_.tools_id, item_.item_position
-                )
+            JoueurDao().creer(joueur)
 
             print("")
-            print("Importation success")
+            print(joueur)
 
-        except:
-            print("ERREUR")
-            pass
+            champion = Champion(player_info["championId"], player_info["championName"])
+
+            list_item = [
+                Item(
+                    player_info[f"item{i}"],
+                    self.items["data"][str(player_info[f"item{i}"])]["name"],
+                    i,
+                )
+                for i in range(7)
+                if str(player_info[f"item{i}"]) != "0"
+            ]
+            lane = Lane(LANE[player_info["teamPosition"]], player_info["teamPosition"])
+            team = Team(
+                team_id=player_info["teamId"],
+                side=SIDE[player_info["teamId"]],
+            )
+            stat_joueur = StatJoueur(
+                player_info["kills"],
+                player_info["deaths"],
+                player_info["assists"],
+                player_info["totalMinionsKilled"] + player_info["neutralMinionsKilled"],
+                player_info["goldEarned"],
+                player_info["totalDamageDealtToChampions"],
+                player_info["totalDamageTaken"],
+                player_info["totalHeal"],
+                bool(player_info["win"]),
+            )
+
+            matchjoueur = MatchJoueur(
+                match_id, joueur, champion, list_item, lane, team, stat_joueur
+            )
+
+            self.bar.update(1)
+
+            try:
+                MatchJoueurDao().creer(matchjoueur)
+
+                for item_ in matchjoueur.items:
+                    ItemMatchDao().creer(
+                        match_id, joueur.puuid, item_.tools_id, item_.item_position
+                    )
+
+                print("")
+                print("Importation success")
+
+            except:
+                print("ERREUR")
+                pass
 
     def get_matchlist(self, joueur, first_game=0, last_game=20):
         url = (
@@ -232,8 +233,8 @@ class FillDataBase:
             print("")
             print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
             print("MATCH ID :", match_id)
-            for k in range(0, 10):
-                self.getJoueurMatchInfo(match_id, k)
+            
+            self.getJoueurMatchInfo(match_id)
 
     def initiate(self, first_game=0, last_game=20):
         for it in self.items["data"].keys():
@@ -244,6 +245,8 @@ class FillDataBase:
         self.bar.total = (
             len(list_TIER) * len(list_DIVISION) * (last_game - first_game) * 10
         )
+
+        print (len(list_TIER), len(list_DIVISION), (last_game - first_game) * 10)
 
         for tier in list_TIER:
             for division in list_DIVISION:
@@ -260,9 +263,10 @@ class FillDataBase:
                         self.getAllMatchesInfo(
                             joueur, first_game=first_game, last_game=last_game
                         )
-                print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
-                print("IIIIIIIIIIIII FINI IIIIIIIIIIIII")
-                print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+
+        print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+        print("IIIIIIIIIIIII FINI IIIIIIIIIIIII")
+        print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
 
         UserDao().creer_no_puuid(User("admin", "admin", "Admin"))  # faille de sécurité
         self.bar.close()
@@ -340,10 +344,11 @@ class FillDataBase:
         except:
             pass
 
-    def get_tier(self, puuid: str):
+    def get_tier(self, puuid: str, summoner_id=None):
         # Pour avoir le rank il faut acceder à la variable summonerID
 
-        summoner_id = self.get_summonerId(puuid)
+        if not summoner_id:
+            summoner_id = self.get_summonerId(puuid)
 
         url = (
             self.HOST_WEBSERVICE_EUW1
@@ -361,11 +366,9 @@ class FillDataBase:
         else:
             return "UNRANKED"
 
-    def add_matches_for_user(self, user: User, n_matches=20):
-        self.bar.total = n_matches
-        self.getJoueurAllMatchInfo(
-            joueur=user.joueur, first_game=0, last_game=n_matches
-        )
+    def add_matches_for_user(self, user: User, n_matches=5):
+        self.bar.total = n_matches * 10
+        self.getAllMatchesInfo(joueur=user.joueur, first_game=0, last_game=n_matches)
 
 
 if __name__ == "__main__":
