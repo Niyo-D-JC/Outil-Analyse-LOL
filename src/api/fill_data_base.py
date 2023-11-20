@@ -31,7 +31,7 @@ from utils.reset_database import ResetDatabase
 
 
 SIDE = {100: "Blue", 200: "Purple"}
-list_TIER = ["DIAMOND"]  # , "PLATINUM", "GOLD", "SILVER", "BRONZE", "IRON"]
+list_TIER = ["DIAMOND", "PLATINUM", "GOLD", "SILVER", "BRONZE", "IRON"]
 list_DIVISION = ["I", "II", "III", "IV"]
 
 
@@ -236,22 +236,26 @@ class FillDataBase:
             
             self.getJoueurMatchInfo(match_id)
 
-    def initiate(self, first_game=0, last_game=20):
+    def initiate(self, first_game=0, last_game=20, limit=2):
         for it in self.items["data"].keys():
             ItemsDao().creer(Item(it, self.items["data"][it]["name"]))
         for cp in self.champions["data"].keys():
             ChampionDao().creer(Champion(self.champions["data"][cp]["key"], cp))
 
-        self.bar.total = (
-            len(list_TIER) * len(list_DIVISION) * (last_game - first_game) * 10
-        )
 
-        print (len(list_TIER), len(list_DIVISION), (last_game - first_game) * 10)
+        iter_necessaire =len(list_TIER) * len(list_DIVISION) * limit * (last_game - first_game) * 10  
+
+        self.bar.total = iter_necessaire
+
+        print("")
+        print("Temps prévu :", round((iter_necessaire / 89) * 2), "minutes")
+        print("")
+        print("")
 
         for tier in list_TIER:
             for division in list_DIVISION:
                 list_joueurs_league = self.getJoueurByLeague(
-                    tier, division, first=False, limit=2
+                    tier, division, first=False, limit=limit
                 )
 
                 for joueur in list_joueurs_league:
@@ -373,7 +377,7 @@ class FillDataBase:
 
 if __name__ == "__main__":
     ResetDatabase().lancer()
-    FillDataBase().initiate(0, 1)
+    FillDataBase().initiate(0, 2, 5)
 
     # puuid = FillDataBase().get_puuid("Îgnite")
     # print("puuid", puuid)
