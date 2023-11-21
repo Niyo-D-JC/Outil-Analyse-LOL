@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+   backend :
+      build: .
+      command: python src/__main__.py
+      volumes:
+         - .:/app
+      ports:
+         - 8080:8080
+      depends_on:
+         - database
+      env_file:
+        - .env 
+         
+   database:
+      image: 'postgres:13.1-alpine'
+      container_name: database
+      healthcheck:
+         test: ["CMD","pg_isready", "-q", "-d", "postgres", "-U", "postgres"]
+         timeout: 45s
+         interval: 10s
+         retries: 10
+      restart: always
+      volumes:
+         - ./data:/docker-entrypoint-initdb.d/
+         - pgdata:/var/lib/postgresql/data
+      ports:
+         -  5432:5432
+      environment:
+         - POSTGRES_USER=postgres
+         - POSTGRES_PASSWORD=niyo1999
+         - POSTGRES_DB=projet
+
+volumes:
+    pgdata:

@@ -35,29 +35,27 @@ class ConnexionVue(VueAbstraite):
             password=answers["mdp"], salt=answers["pseudo"]
         )
 
-        if hashed_password != hashed_answer_password:
-            return AccueilVue("Vos identifiants sont incorrects")  # ne fonctionne pas
-
         message = ""
         session = Session()
-        session.user = user.name
-        session.role = user.role
-        session.joueur = user.joueur
+        if session.user :
+            session.user = user.name
+            session.role = user.role
+            session.joueur = user.joueur
+            
+            if session.role == "Admin":
+                message = f"Administrateur : Vous êtes connectés sous le profil de {session.user.upper()}"
+                from view.menu.menu_admin_vue import MenuAdminVue
 
-        if session.role == "Admin":
-            message = f"Administrateur : Vous êtes connectés sous le profil de {session.user.upper()}"
-            from view.menu.menu_admin_vue import MenuAdminVue
+                return MenuAdminVue(message)
 
-            return MenuAdminVue(message)
+            if session.role == "User":
+                message = f"Utilisateur : Vous êtes connectés sous le profil de {session.user.upper()}"
+                from view.menu.menu_user_vue import MenuUserVue
 
-        if session.role == "User":
-            message = f"Utilisateur : Vous êtes connectés sous le profil de {session.user.upper()}"
-            from view.menu.menu_user_vue import MenuUserVue
-
-            return MenuUserVue(message)
+                return MenuUserVue(message)
 
         else:
             message = "Erreur de connexion. Vos identifiants sont incorrects"
-            from view.accueil_vue import AccueilVue
+            from view.utils_vue.accueil_vue import AccueilVue
 
             return AccueilVue(message)

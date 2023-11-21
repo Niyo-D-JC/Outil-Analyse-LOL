@@ -1,9 +1,7 @@
 inquirerPy
-fastapi
 psycopg2-binary
 python-dotenv
 requests
 tabulate
-time
 tqdm
 pandas
