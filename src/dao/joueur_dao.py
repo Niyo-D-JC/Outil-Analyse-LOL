@@ -4,13 +4,12 @@ from business_object.user.joueur import Joueur
 
 
 class JoueurDao(metaclass=Singleton):
-    def creer(self, joueur) -> bool:
+    def creer(self, joueur: Joueur) -> bool:
         """Creation d'un joueur dans la base de données
 
         Parameters
         ----------
         joueur : Joueur
-        user_id : int
 
         Returns
         -------
@@ -30,7 +29,7 @@ class JoueurDao(metaclass=Singleton):
                         {
                             "puuid": joueur.puuid,
                             "name": joueur.name,
-                            "tier" : joueur.tier
+                            "tier": joueur.tier,
                         },
                     )
                     res = True

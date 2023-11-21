@@ -34,7 +34,7 @@ class ChampionDao(metaclass=Singleton):
             res = False
         return res
 
-    def find_by_id(self, id):
+    def find_by_id(self, champion_id):
         """trouver un Champion grace à son id
 
         Parameters
@@ -47,14 +47,15 @@ class ChampionDao(metaclass=Singleton):
             renvoie un objet Champion
         """
         res = False
+
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
                         "SELECT *                           "
                         " FROM projet.champion               "
-                        " WHERE id = %(id)s;  ",
-                        {"id": id},
+                        " WHERE champion_id = %(champion_id)s;  ",
+                        {"champion_id": champion_id},
                     )
                     res = cursor.fetchone()
         except Exception as e:
@@ -62,10 +63,9 @@ class ChampionDao(metaclass=Singleton):
 
         if res:
             champion = Champion(champion_id=id, name=res["name"])
+            return champion
 
-        return champion
-
-    def get_all_order(self) :
+    def get_all_order(self):
         res = False
         try:
             with DBConnection().connection as connection:
@@ -73,7 +73,7 @@ class ChampionDao(metaclass=Singleton):
                     cursor.execute(
                         "SELECT C.name AS champion_name, "
                         " COUNT(MJ.champion_id) AS usage_frequency,"
-                        " (COUNT(CASE WHEN MJ.win = TRUE THEN 1 END)::FLOAT / COUNT(*)) AS win_rate "
+                        " (COUNT(CASE WHEN MJ.win = TRUE THEN 1 END)::FLOAT / COUNT(*)) * 100 AS win_rate "
                         "FROM projet.champion AS C  "
                         "LEFT JOIN projet.matchjoueur AS MJ ON C.champion_id = MJ.champion_id "
                         "GROUP BY C.name ;"

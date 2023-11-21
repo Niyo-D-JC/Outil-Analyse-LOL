@@ -12,14 +12,16 @@ from business_object.battle.matchjoueur import MatchJoueur
 from business_object.stats.stat_joueur import StatJoueur
 from business_object.tools.champion import Champion
 
+import pandas as pd
+
 
 class MatchJoueurDao(metaclass=Singleton):
-    def creer(self, match) -> bool:
+    def creer(self, match: MatchJoueur) -> bool:
         """Creation d'un item dans la base de données
 
         Parameters
         ----------
-        match : Match
+        match : MatchJoueur
 
         Returns
         -------
@@ -48,7 +50,7 @@ class MatchJoueurDao(metaclass=Singleton):
                             "kills": match.stat_joueur.kills,
                             "deaths": match.stat_joueur.deaths,
                             "assists": match.stat_joueur.assists,
-                            "creeps" : match.stat_joueur.creeps,
+                            "creeps": match.stat_joueur.creeps,
                             "total_gold": match.stat_joueur.total_gold,
                             "win": match.stat_joueur.win,
                         },
@@ -59,7 +61,7 @@ class MatchJoueurDao(metaclass=Singleton):
             res = False
         return res
 
-    def get_match_list_bypuuid(self, puuid) : 
+    def get_match_list_bypuuid(self, puuid):
         res = None
         try:
             with DBConnection().connection as connection:
@@ -68,7 +70,7 @@ class MatchJoueurDao(metaclass=Singleton):
                         "SELECT * "
                         " FROM projet.matchjoueur "
                         " WHERE puuid = %(puuid)s ; ",
-                        {"puuid": puuid },
+                        {"puuid": puuid},
                     )
                     res = cursor.fetchall()
 
@@ -76,7 +78,6 @@ class MatchJoueurDao(metaclass=Singleton):
             print(e)
 
         if res:
-            import pandas as pd
             return pd.DataFrame(res)
 
     def existe(self, joueur, match_id) -> bool:
@@ -110,15 +111,21 @@ class MatchJoueurDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT j.name AS Joueur, c.name AS champion_name, "
-                        " mj.total_damage_dealt, mj.total_damage_take, "
-                        " mj.total_heal, mj.kills, mj.deaths, mj.assists, mj.creeps, "
-                        " mj.total_gold, mj.win "
-                        " FROM projet.matchjoueur mj "
-                        " JOIN projet.champion c ON mj.champion_id = c.champion_id "
-                        " JOIN projet.joueur j ON mj.puuid = j.puuid "
-                        " WHERE mj.match_id = %(match_id)s ; ",
-                        {"match_id": match_id },
+                        "SELECT l.name AS Role, j.name AS Joueur, c.name AS Champion, "
+                        "CASE WHEN mj.win THEN 'Win' ELSE 'Lose' END AS win_lose, "
+                        "mj.kills as Kills, mj.deaths as Deaths, "
+                        "mj.assists as Assists, mj.creeps AS CS, mj.total_gold AS golds,"
+                        " mj.total_damage_dealt as dégats_infligés, "
+                        "mj.total_damage_take as dégats_subis, "
+                        "mj.total_heal as soins_totaux, t.side "
+                        "FROM projet.matchjoueur mj "
+                        "JOIN projet.champion c ON mj.champion_id = c.champion_id "
+                        "JOIN projet.joueur j ON mj.puuid = j.puuid "
+                        "JOIN projet.lane l ON mj.lane_id = l.lane_id "
+                        "JOIN projet.team t ON mj.team_id = t.team_id "
+                        "WHERE mj.match_id = %(match_id)s "
+                        "ORDER BY t.side ASC, l.lane_id ASC;",
+                        {"match_id": match_id},
                     )
                     res = cursor.fetchall()
 
@@ -127,18 +134,15 @@ class MatchJoueurDao(metaclass=Singleton):
 
         if res:
             import pandas as pd
+
             return pd.DataFrame(res)
 
-
-    def all_parties(self) : 
+    def all_parties(self):
         res = None
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT * " 
-                        "FROM projet.matchjoueur  "
-                    )
+                    cursor.execute("SELECT * " "FROM projet.matchjoueur  ")
                     res = cursor.fetchall()
 
         except Exception as e:
@@ -146,9 +150,10 @@ class MatchJoueurDao(metaclass=Singleton):
 
         if res:
             import pandas as pd
+
             return pd.DataFrame(res)
 
-    def delete_match(self, match_id) : 
+    def delete_match(self, match_id):
         deleted = None
 
         try:
@@ -172,10 +177,10 @@ class MatchJoueurDao(metaclass=Singleton):
         except Exception as e:
             print(e)
             deleted = False
-            
+
         return deleted
 
-    def get_all_match(self):
+    def get_all_match(self):  # ??
         res = None
         try:
             with DBConnection().connection as connection:
@@ -250,7 +255,7 @@ class MatchJoueurDao(metaclass=Singleton):
             Player_Matches = []
 
             for game in res:  # game est un dictionnaire
-                champion = Champion(0,game["champion_name"])
+                champion = Champion(0, game["champion_name"])
                 stat_joueur = StatJoueur(
                     total_damage_dealt=game["total_damage_dealt"],
                     total_damage_take=game["total_damage_take"],

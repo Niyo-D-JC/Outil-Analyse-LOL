@@ -27,73 +27,101 @@ import time
 from tqdm import tqdm
 
 
+from utils.reset_database import ResetDatabase
+
+
 SIDE = {100: "Blue", 200: "Purple"}
-TIER = ["DIAMOND", "PLATINUM", "GOLD", "SILVER", "BRONZE", "IRON"]
-DIVISION = ["I", "II", "III", "IV"]
+list_TIER = ["DIAMOND", "PLATINUM", "GOLD", "SILVER", "BRONZE", "IRON"]
+list_DIVISION = ["I", "II", "III", "IV"]
 
 
 class FillDataBase:
     def __init__(self):
         dotenv.load_dotenv(override=True)
-        f = open("data/item.json")
-        fc = open("data/champion.json", "r", encoding="utf-8")
-        print("")
+
         self.bar = tqdm()
         self.HOST_WEBSERVICE_EUW1 = os.environ["HOST_WEBSERVICE_EUW1"]
         self.HOST_WEBSERVICE_EUROPA = os.environ["HOST_WEBSERVICE_EUROPA"]
         self.API_KEY = os.environ["API_KEY"]
-        self.items = json.load(f)
-        self.champions = json.load(fc)
+        self.items = json.load(open("data/item.json"))
+        self.champions = json.load(open("data/champion.json", "r", encoding="utf-8"))
 
     def reqLimit(self, url, key_=None):
-        if key_:
-            try:
-                response = requests.get(url).json()
-                status = response[key_]
-                return response
-            except:
-                self.bar.set_description(
-                    "Limit Rate Requests Atteint : Attendre 2 minutes sup"
-                )
-                time.sleep(125)
-                response = requests.get(url).json()
-                return response
-        else:
-            response = requests.get(url).json()
-            if response != []:
-                return response
-            else:
-                self.bar.set_description(
-                    "Limit Rate Requests Atteint : Attendre 2 minutes sup"
-                )
-                time.sleep(125)
-                response = requests.get(url).json()
-                return response
+        response = requests.get(url)
 
-    def getJoueurByLeague(self, tier, div, first=True, limit=0):
+        if response.status_code == 200:  # tout va bien
+            return response.json()
+
+        elif response.status_code == 429:  # Trop de requetes
+            self.bar.set_description(
+                "Limit Rate Requests Atteint :  Attendre 1 seconde"
+            )
+            time.sleep(1)
+
+            response = requests.get(url)
+
+            if response.status_code == 429:
+                self.bar.set_description(
+                    "Limit Rate Requests Atteint : Attendre 2 minutes"
+                )
+                time.sleep(121)
+
+                response = requests.get(url)
+                if response.status_code == 200:  # apres les 2 mins d'attente
+                    return response.json()
+                else:
+                    pass
+
+            elif response.status_code == 200:  # après 2 sec d'attente
+                return response.json()
+            else:
+                pass
+
+        else:  # si ce n'est pas ok et que ce n'est pas à cause du limitRate
+            pass
+
+    def getJoueurByLeague(self, tier, div, first=True, limit=0, page=1):
         url = (
             self.HOST_WEBSERVICE_EUW1
-            + "/tft/league/v1/entries/"
+            + "/lol/league/v4/entries/RANKED_SOLO_5x5/"
             + tier
             + "/"
             + div
-            + "?api_key="
+            + "?page="
+            + str(page)
+            + "&api_key="
             + self.API_KEY
         )
+
         data = self.reqLimit(url)
+
         if first or limit <= 0:
             dta = data[0]
-            return Joueur(dta["puuid"], dta["summonerName"], dta["tier"])
+            print("")
+            print(dta)
+
+            if self.get_puuid(dta["summonerName"]) is not None:
+                puuid = self.get_puuid(dta["summonerName"])
+                name = dta["summonerName"]
+                tier = dta["tier"]
+
+                return Joueur(puuid, name, tier)
+
         else:
             return [
-                Joueur(dta["puuid"], dta["summonerName"], dta["tier"])
-                for j in data[:limit]
+                Joueur(
+                    puuid=self.get_puuid(dta["summonerName"]),
+                    name=dta["summonerName"],
+                    tier=dta["tier"],
+                )
+                for dta in data[:limit]
+                if self.get_puuid(dta["summonerName"]) is not None
             ]
 
-    def getJoueurBySummonerId(self, summonerId, first=True, limit=0):
+    def getJoueurBySummonerId(self, summonerId, first=True, limit=0):  # Jamais utilisé
         url = (
             self.HOST_WEBSERVICE_EUW1
-            + "/tft/league/v1/entries/by-summoner/"
+            + "/lol/league/v4/entries/by-summoner/"
             + summonerId
             + "?api_key="
             + self.API_KEY
@@ -108,7 +136,9 @@ class FillDataBase:
                 for j in data[:limit]
             ]
 
-    def getJoueurMatchInfo(self, joueur: Joueur, match_id: str):
+    def getJoueurMatchInfo(self, match_id: str):
+        self.bar.set_description("Chargemnent en cours")
+
         url = (
             self.HOST_WEBSERVICE_EUROPA
             + "/lol/match/v5/matches/"
@@ -118,41 +148,74 @@ class FillDataBase:
         )
         data = self.reqLimit(url, "metadata")
 
-        player_info = data["info"]["participants"][
-            list(data["metadata"]["participants"]).index(joueur.puuid)
-        ]
-        champion = Champion(player_info["championId"], player_info["championName"])
-        list_item = [
-            Item(
-                player_info[f"item{i}"],
-                self.items["data"][str(player_info[f"item{i}"])]["name"],
-                i,
-            )
-            for i in range(7)
-            if str(player_info[f"item{i}"]) != "0"
-        ]
-        lane = Lane(LANE[player_info["lane"]], player_info["lane"])
-        team = Team(
-            team_id=player_info["teamId"],
-            side=SIDE[player_info["teamId"]],
-        )
-        stat_joueur = StatJoueur(
-            player_info["kills"],
-            player_info["deaths"],
-            player_info["assists"],
-            player_info["totalMinionsKilled"],
-            player_info["goldEarned"],
-            player_info["totalDamageDealt"],
-            player_info["totalDamageTaken"],
-            player_info["totalHeal"],
-            bool(player_info["win"]),
-        )
-        matchjoueur = MatchJoueur(
-            match_id, joueur, champion, list_item, lane, team, stat_joueur
-        )
-        return matchjoueur
+        for player_k in range(0, 10):
+            try:
+                player_info = data["info"]["participants"][player_k]
 
-    def getJoueurAllMatchInfo(self, joueur, first_game=0, last_game=20):
+                joueur = Joueur(
+                    player_info["puuid"],
+                    player_info["summonerName"],
+                    self.get_tier(puuid=None, summoner_id=player_info["summonerId"]),
+                )
+
+                JoueurDao().creer(joueur)
+
+                print("")
+                print(joueur)
+
+                champion = Champion(
+                    player_info["championId"], player_info["championName"]
+                )
+
+                list_item = [
+                    Item(
+                        player_info[f"item{i}"],
+                        self.items["data"][str(player_info[f"item{i}"])]["name"],
+                        i,
+                    )
+                    for i in range(7)
+                    if str(player_info[f"item{i}"]) != "0"
+                ]
+                lane = Lane(
+                    LANE[player_info["teamPosition"]], player_info["teamPosition"]
+                )
+                team = Team(
+                    team_id=player_info["teamId"],
+                    side=SIDE[player_info["teamId"]],
+                )
+                stat_joueur = StatJoueur(
+                    player_info["kills"],
+                    player_info["deaths"],
+                    player_info["assists"],
+                    player_info["totalMinionsKilled"]
+                    + player_info["neutralMinionsKilled"],
+                    player_info["goldEarned"],
+                    player_info["totalDamageDealtToChampions"],
+                    player_info["totalDamageTaken"],
+                    player_info["totalHeal"],
+                    bool(player_info["win"]),
+                )
+
+                matchjoueur = MatchJoueur(
+                    match_id, joueur, champion, list_item, lane, team, stat_joueur
+                )
+
+                self.bar.update(1)
+
+                MatchJoueurDao().creer(matchjoueur)
+
+                for item_ in matchjoueur.items:
+                    ItemMatchDao().creer(
+                        match_id, joueur.puuid, item_.tools_id, item_.item_position
+                    )
+
+                print("")
+                print("Importation success")
+
+            except:
+                print("ERREUR")
+
+    def get_matchlist(self, joueur, first_game=0, last_game=20):
         url = (
             self.HOST_WEBSERVICE_EUROPA
             + "/lol/match/v5/matches/by-puuid/"
@@ -166,38 +229,54 @@ class FillDataBase:
             + self.API_KEY
         )
         list_match = list(self.reqLimit(url))
-        JoueurDao().creer(joueur)
-        for match_id in list_match:
-            try:
-                matchjoueur = self.getJoueurMatchInfo(joueur, match_id)
-                MatchJoueurDao().creer(matchjoueur)
-                [
-                    ItemMatchDao().creer(
-                        match_id, joueur.puuid, item_.tools_id, item_.item_position
-                    )
-                    for item_ in matchjoueur.items
-                ]
 
-            except:
-                pass
-            self.bar.set_description("Chargement en Cours")
-            self.bar.update(1)
-        return 1
+        return list_match
 
-    def initiate(self, first_game=0, last_game=20):
-        for it in self.items["data"].keys():
-            ItemsDao().creer(Item(it, self.items["data"][it]["name"]))
-        for cp in self.champions["data"].keys():
-            ChampionDao().creer(Champion(self.champions["data"][cp]["key"], cp))
-        self.bar.total = len(TIER) * len(DIVISION) * (last_game - first_game)
-        for T in TIER:
-            for D in DIVISION:
-                joueur = self.getJoueurByLeague(T, D)
-                self.getJoueurAllMatchInfo(
-                    joueur, first_game=first_game, last_game=last_game
+    def getAllMatchesInfo(self, joueur, first_game, last_game):
+        list_match_id = self.get_matchlist(joueur, first_game, last_game)
+        for match_id in list_match_id:
+            print("")
+            print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+            print("MATCH ID :", match_id)
+
+            self.getJoueurMatchInfo(match_id)
+
+    def initiate(self, first_game=0, last_game=20, limit=2, page=1):
+
+
+        iter_necessaire = (
+            len(list_TIER) * len(list_DIVISION) * limit * (last_game - first_game) * 10
+        )
+
+        self.bar.total = iter_necessaire
+
+        print("")
+        print("Temps prévu :", round((iter_necessaire / 89) * 2), "minutes")
+        print("")
+        print("")
+
+        for tier in list_TIER:
+            for division in list_DIVISION:
+                list_joueurs_league = self.getJoueurByLeague(
+                    tier, division, first=False, limit=limit, page = page
                 )
 
-        UserDao().creer_no_puuid(User("admin", "admin", "Admin"))
+                for joueur in list_joueurs_league:
+                    print("")
+                    print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+                    print("IIIIIIIIIIIII JOUEUR DE REFERENCE IIIIIIIIIIIII")
+                    print(joueur)
+
+                    if joueur:
+                        self.getAllMatchesInfo(
+                            joueur, first_game=first_game, last_game=last_game
+                        )
+
+        print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+        print("IIIIIIIIIIIII FINI IIIIIIIIIIIII")
+        print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+
+        UserDao().creer_no_puuid(User("admin", "admin", "Admin"))  # faille de sécurité
         self.bar.close()
         return 1
 
@@ -210,11 +289,117 @@ class FillDataBase:
             + self.API_KEY
         )
         data = self.reqLimit(url, "gameName")
-        return Joueur(puuid, data["gameName"])
 
-    def add_matches(self, user: User):
-        pass
+        tier = self.get_tier(puuid)
+
+        return Joueur(puuid, data["gameName"], tier)
+
+    def get_puuid(self, name: str):
+        url = (
+            self.HOST_WEBSERVICE_EUW1
+            + "/lol/summoner/v4/summoners/by-name/"
+            + name
+            + "?api_key="
+            + self.API_KEY
+        )
+
+        account_data = self.reqLimit(url)
+
+        if account_data:
+            account_puuid = account_data["puuid"]
+
+            return account_puuid
+
+    def get_last_matchId(self, puuid: str):
+        url = (
+            self.HOST_WEBSERVICE_EUROPA
+            + "/lol/match/v5/matches/by-puuid/"
+            + puuid
+            + "/ids?start="
+            + str(0)
+            + "&"
+            + "count="
+            + str(1)
+            + "&api_key="
+            + self.API_KEY
+        )
+        last_matchId = list(self.reqLimit(url))[0]
+
+        return last_matchId
+
+    def get_summonerId(self, puuid: str):
+        match_id = self.get_last_matchId(puuid)
+
+        url = (
+            self.HOST_WEBSERVICE_EUROPA
+            + "/lol/match/v5/matches/"
+            + match_id
+            + "?api_key="
+            + self.API_KEY
+        )
+        data = self.reqLimit(url)
+
+        try:
+            players_info = data["info"]["participants"]
+            # Parcourir la liste de dictionnaires
+            for player in players_info:
+                if player["puuid"] == puuid:
+                    summoner_id = player["summonerId"]
+                    break
+
+            return summoner_id
+
+        except:
+            pass
+
+    def get_tier(self, puuid: str, summoner_id=None):
+        # Pour avoir le rank il faut acceder à la variable summonerID
+
+        if not summoner_id:
+            summoner_id = self.get_summonerId(puuid)
+
+        url = (
+            self.HOST_WEBSERVICE_EUW1
+            + "/lol/league/v4/entries/by-summoner/"
+            + summoner_id
+            + "?api_key="
+            + self.API_KEY
+        )
+
+        data = self.reqLimit(url)
+
+        if data:
+            for dico in data:
+                if dico["queueType"] == "RANKED_SOLO_5x5":
+                    tier = dico["tier"]
+                    return tier
+
+            # no return = only flex is available
+            return data[0]["tier"]
+
+        else:  # No Data
+            return "UNRANKED"
+
+    def add_matches_for_user(self, user: User, n_matches=9):
+        # Faire une requete DAO pour check
+
+        df = MatchJoueurDao().get_match_list_bypuuid(user.joueur.puuid)
+        if len(df) < n_matches:
+            self.bar.total = n_matches * 10
+            self.getAllMatchesInfo(
+                joueur=user.joueur, first_game=0, last_game=n_matches
+            )
 
 
 if __name__ == "__main__":
-    FillDataBase().initiate(0, 3)
+    # ResetDatabase().lancer()
+    # FillDataBase().initiate(0, 2, 5)
+
+    puuid = FillDataBase().get_puuid("Hifoly")
+    print("puuid", puuid)
+
+    summonerid = FillDataBase().get_summonerId(puuid)
+    print("summonerid", summonerid)
+
+    tier = FillDataBase().get_tier(puuid)
+    print("tier", tier)

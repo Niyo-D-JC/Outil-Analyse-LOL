@@ -5,7 +5,7 @@ from api.fill_data_base import FillDataBase
 from utils.reset_database import ResetDatabase
 
 """
-Classe de lancement de l'application
+Lancement de l'application
 """
 if __name__ == "__main__":
     # On charge les variables d'envionnement
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     except:
         print("Premiere Ouverture de l'Application")
         ResetDatabase().lancer()
-        FillDataBase().initiate(0, 5)
+        FillDataBase().initiate(0, 2, 2)
 
     vue_courante = AccueilVue(
         "Bienvenue sur votre application d'analyse de League of Legends"

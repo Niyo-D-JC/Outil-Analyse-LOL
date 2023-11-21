@@ -24,7 +24,11 @@ class StatistiquesChampionVue(VueAbstraite):
                 "type": "list",
                 "name": "choix",
                 "message": "Faites votre choix",
-                "choices": [ "Filtrer par popularité", "Filter par taux de victoire", "Retour"],
+                "choices": [
+                    "Filtrer par popularité",
+                    "Filter par taux de victoire",
+                    "Retour",
+                ],
             }
         ]
 
@@ -40,16 +44,19 @@ class StatistiquesChampionVue(VueAbstraite):
 
         if reponse["choix"] == "Retour":
             from view.action_vue.statistiques_vue import StatistiquesVue
+
             return StatistiquesVue("Bienvenue sur Votre Application ViewerOn LoL")
 
         elif reponse["choix"] == "Filtrer par popularité":
             from services.invite_service import InviteService
             from view.action_vue.statistiques_vue import StatistiquesVue
+
             InviteService().get_all_champions()
             return StatistiquesVue("Bienvenue sur Votre Application ViewerOn LoL")
+
         elif reponse["choix"] == "Filter par taux de victoire":
             from services.invite_service import InviteService
             from view.action_vue.statistiques_vue import StatistiquesVue
+
             InviteService().get_all_champions(True)
             return StatistiquesVue("Bienvenue sur Votre Application ViewerOn LoL")
-

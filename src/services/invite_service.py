@@ -2,6 +2,7 @@
 Il permet de générer toutes les statistiques et les listes accessibles pour les invités.
 Pour cela, on importe nos données depuis matchjoueur_dao.
 """
+from tabulate import tabulate
 import hashlib
 from dao.champion_dao import ChampionDao
 from dao.items_dao import ItemsDao
@@ -28,9 +29,17 @@ class InviteService:
         start_index = 0
         end = len(df) if len(df) < 50 else 50
         while start_index < end:
-            end_index = start_index + 10
+            end_index = start_index + 20
             wave_df = df.iloc[start_index:end_index]
-            print(wave_df)
+
+            print(
+                tabulate(
+                    wave_df,
+                    headers="keys",
+                    tablefmt="double_outline",
+                    showindex=False,
+                )
+            )
             input("Appuyez sur Entrée pour afficher la vague suivante...")
             start_index = end_index
 
@@ -53,9 +62,16 @@ class InviteService:
         start_index = 0
         end = len(df) if len(df) < 50 else 50
         while start_index < end:
-            end_index = start_index + 10
+            end_index = start_index + 20
             wave_df = df.iloc[start_index:end_index]
-            print(wave_df)
+            print(
+                tabulate(
+                    wave_df,
+                    headers="keys",
+                    tablefmt="double_outline",
+                    showindex=False,
+                )
+            )
             input("Appuyez sur Entrée pour afficher la vague suivante...")
             start_index = end_index
 

@@ -14,6 +14,7 @@ class ItemMatchDao(metaclass=Singleton):
         match_id : string,
         puuid : string,
         item_id : int
+        item_position : int
 
         Returns
         -------
@@ -30,7 +31,12 @@ class ItemMatchDao(metaclass=Singleton):
                     cursor.execute(
                         "INSERT INTO projet.itemmatch(match_id,puuid,item_id, item_position) VALUES "
                         "(%(match_id)s, %(puuid)s, %(item_id)s, %(item_position)s)",
-                        {"match_id": match_id, "puuid": puuid, "item_id": item_id, "item_position":item_position},
+                        {
+                            "match_id": match_id,
+                            "puuid": puuid,
+                            "item_id": item_id,
+                            "item_position": item_position,
+                        },
                     )
                     res = True
         except Exception as e:
