@@ -73,7 +73,7 @@ class ItemsDao(metaclass=Singleton):
                     cursor.execute(
                         "SELECT I.name AS item_name, "
                         " COUNT(IM.item_id) AS usage_frequency, "
-                        " (COUNT(CASE WHEN MJ.win = TRUE THEN 1 END)::FLOAT / COUNT(*)) AS win_rate "
+                        " (COUNT(CASE WHEN MJ.win = TRUE THEN 1 END)::FLOAT / COUNT(*))* 100  AS win_rate "
                         " FROM projet.item AS I "
                         " LEFT JOIN projet.itemmatch AS IM ON I.item_id = IM.item_id "
                         " LEFT JOIN projet.matchjoueur AS MJ ON IM.match_id = MJ.match_id AND IM.puuid = MJ.puuid "

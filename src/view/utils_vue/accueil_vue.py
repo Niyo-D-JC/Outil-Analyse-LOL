@@ -6,6 +6,7 @@ from view.session.session import Session
 from utils.reset_database import ResetDatabase
 from view.action_vue.creer_compte_vue import CreerCompteVue
 from view.menu.menu_invite_vue import MenuInviteVue
+from view.action_vue.ajouter_data_vue import AjouterDataVue
 
 class AccueilVue(VueAbstraite):
     """Vue de l'accueil de l'application du Jeu de Rôle.
@@ -32,10 +33,12 @@ class AccueilVue(VueAbstraite):
                     "Créer un Compte",
                     "Se connecter",
                     "Continuer en tant qu'invité",
+                    "Charger plus de données",
                     "Quitter"
                 ],
             }
         ]
+
     def banner(self):
         with open("src/graphical_assets/banner.txt", "r", encoding="utf-8") as asset:
             print(asset.read())
@@ -73,3 +76,6 @@ class AccueilVue(VueAbstraite):
             return CreerCompteVue()
         elif reponse["choix"] == "Continuer en tant qu'invité":
             return MenuInviteVue("Invité : Bienvenue sur Votre Application ViewerOn LoL")
+
+        elif reponse["choix"] == "Charger plus de données":
+            return AjouterDataVue()

@@ -38,15 +38,13 @@ list_DIVISION = ["I", "II", "III", "IV"]
 class FillDataBase:
     def __init__(self):
         dotenv.load_dotenv(override=True)
-        f = open("data/item.json")
-        fc = open("data/champion.json", "r", encoding="utf-8")
-        print("")
+
         self.bar = tqdm()
         self.HOST_WEBSERVICE_EUW1 = os.environ["HOST_WEBSERVICE_EUW1"]
         self.HOST_WEBSERVICE_EUROPA = os.environ["HOST_WEBSERVICE_EUROPA"]
         self.API_KEY = os.environ["API_KEY"]
-        self.items = json.load(f)
-        self.champions = json.load(fc)
+        self.items = json.load(open("data/item.json"))
+        self.champions = json.load(open("data/champion.json", "r", encoding="utf-8"))
 
     def reqLimit(self, url, key_=None):
         response = requests.get(url)
@@ -82,16 +80,19 @@ class FillDataBase:
         else:  # si ce n'est pas ok et que ce n'est pas à cause du limitRate
             pass
 
-    def getJoueurByLeague(self, tier, div, first=True, limit=0):
+    def getJoueurByLeague(self, tier, div, first=True, limit=0, page=1):
         url = (
             self.HOST_WEBSERVICE_EUW1
             + "/lol/league/v4/entries/RANKED_SOLO_5x5/"
             + tier
             + "/"
             + div
-            + "?api_key="
+            + "?page="
+            + str(page)
+            + "&api_key="
             + self.API_KEY
         )
+
         data = self.reqLimit(url)
 
         if first or limit <= 0:
@@ -240,11 +241,8 @@ class FillDataBase:
 
             self.getJoueurMatchInfo(match_id)
 
-    def initiate(self, first_game=0, last_game=20, limit=2):
-        for it in self.items["data"].keys():
-            ItemsDao().creer(Item(it, self.items["data"][it]["name"]))
-        for cp in self.champions["data"].keys():
-            ChampionDao().creer(Champion(self.champions["data"][cp]["key"], cp))
+    def initiate(self, first_game=0, last_game=20, limit=2, page=1):
+
 
         iter_necessaire = (
             len(list_TIER) * len(list_DIVISION) * limit * (last_game - first_game) * 10
@@ -260,7 +258,7 @@ class FillDataBase:
         for tier in list_TIER:
             for division in list_DIVISION:
                 list_joueurs_league = self.getJoueurByLeague(
-                    tier, division, first=False, limit=limit
+                    tier, division, first=False, limit=limit, page = page
                 )
 
                 for joueur in list_joueurs_league:
@@ -268,6 +266,7 @@ class FillDataBase:
                     print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
                     print("IIIIIIIIIIIII JOUEUR DE REFERENCE IIIIIIIIIIIII")
                     print(joueur)
+
                     if joueur:
                         self.getAllMatchesInfo(
                             joueur, first_game=first_game, last_game=last_game

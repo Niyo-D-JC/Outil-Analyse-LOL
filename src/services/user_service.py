@@ -112,7 +112,7 @@ class UserService(InviteService):
             f" 🛡️ Montagne : {StatMatch().mvp_by_category(pd_match, 'dégats_subis')} (Le plus de dégats subis)"
         )
         print(
-            f" ❤️ Médecin de guerre :{StatMatch().mvp_by_category(pd_match, 'soins_totaux')} (Le plus de points de vie soignés)"
+            f" ❤️ Médecin :{StatMatch().mvp_by_category(pd_match, 'soins_totaux')} (Le plus de points de vie soignés)"
         )
         print("=" * 45)
         print("")
@@ -242,7 +242,7 @@ class UserService(InviteService):
                 round(stats["deaths_avg"], 2),
                 round(stats["assists_avg"], 2),
                 round(stats["cs_avg"], 2),
-                stats["nombre_de_matchs"],  # Ne pas arrondir le nombre de matchs
+                stats["nombre_de_matchs"], 
             )
             print(row)
 

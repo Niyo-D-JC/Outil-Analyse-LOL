@@ -27,7 +27,10 @@ class SupprimerCompteVue(VueAbstraite):
             df = UserService().get_users()
             df.sort_values(by="role", ascending=False).reset_index(drop=True)
             df["Role : Name"] = df["role"] + " : " + df["name"]
-            add_ques = add_ques + list(df["Role : Name"].unique().tolist())
+
+            df = df.drop(df[df['Name'] == "admin"].index)
+
+            add_ques = add_ques + list(df["Role : Name"].unique())
         self.questions = [
             {
                 "type": "list",
