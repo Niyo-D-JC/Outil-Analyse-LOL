@@ -148,54 +148,59 @@ class FillDataBase:
         data = self.reqLimit(url, "metadata")
 
         for player_k in range(0, 10):
-            player_info = data["info"]["participants"][player_k]
-
-            joueur = Joueur(
-                player_info["puuid"],
-                player_info["summonerName"],
-                self.get_tier(puuid=None, summoner_id=player_info["summonerId"]),
-            )
-
-            JoueurDao().creer(joueur)
-
-            print("")
-            print(joueur)
-
-            champion = Champion(player_info["championId"], player_info["championName"])
-
-            list_item = [
-                Item(
-                    player_info[f"item{i}"],
-                    self.items["data"][str(player_info[f"item{i}"])]["name"],
-                    i,
-                )
-                for i in range(7)
-                if str(player_info[f"item{i}"]) != "0"
-            ]
-            lane = Lane(LANE[player_info["teamPosition"]], player_info["teamPosition"])
-            team = Team(
-                team_id=player_info["teamId"],
-                side=SIDE[player_info["teamId"]],
-            )
-            stat_joueur = StatJoueur(
-                player_info["kills"],
-                player_info["deaths"],
-                player_info["assists"],
-                player_info["totalMinionsKilled"] + player_info["neutralMinionsKilled"],
-                player_info["goldEarned"],
-                player_info["totalDamageDealtToChampions"],
-                player_info["totalDamageTaken"],
-                player_info["totalHeal"],
-                bool(player_info["win"]),
-            )
-
-            matchjoueur = MatchJoueur(
-                match_id, joueur, champion, list_item, lane, team, stat_joueur
-            )
-
-            self.bar.update(1)
-
             try:
+                player_info = data["info"]["participants"][player_k]
+
+                joueur = Joueur(
+                    player_info["puuid"],
+                    player_info["summonerName"],
+                    self.get_tier(puuid=None, summoner_id=player_info["summonerId"]),
+                )
+
+                JoueurDao().creer(joueur)
+
+                print("")
+                print(joueur)
+
+                champion = Champion(
+                    player_info["championId"], player_info["championName"]
+                )
+
+                list_item = [
+                    Item(
+                        player_info[f"item{i}"],
+                        self.items["data"][str(player_info[f"item{i}"])]["name"],
+                        i,
+                    )
+                    for i in range(7)
+                    if str(player_info[f"item{i}"]) != "0"
+                ]
+                lane = Lane(
+                    LANE[player_info["teamPosition"]], player_info["teamPosition"]
+                )
+                team = Team(
+                    team_id=player_info["teamId"],
+                    side=SIDE[player_info["teamId"]],
+                )
+                stat_joueur = StatJoueur(
+                    player_info["kills"],
+                    player_info["deaths"],
+                    player_info["assists"],
+                    player_info["totalMinionsKilled"]
+                    + player_info["neutralMinionsKilled"],
+                    player_info["goldEarned"],
+                    player_info["totalDamageDealtToChampions"],
+                    player_info["totalDamageTaken"],
+                    player_info["totalHeal"],
+                    bool(player_info["win"]),
+                )
+
+                matchjoueur = MatchJoueur(
+                    match_id, joueur, champion, list_item, lane, team, stat_joueur
+                )
+
+                self.bar.update(1)
+
                 MatchJoueurDao().creer(matchjoueur)
 
                 for item_ in matchjoueur.items:
@@ -208,7 +213,6 @@ class FillDataBase:
 
             except:
                 print("ERREUR")
-                pass
 
     def get_matchlist(self, joueur, first_game=0, last_game=20):
         url = (
@@ -233,7 +237,7 @@ class FillDataBase:
             print("")
             print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
             print("MATCH ID :", match_id)
-            
+
             self.getJoueurMatchInfo(match_id)
 
     def initiate(self, first_game=0, last_game=20, limit=2):
@@ -242,8 +246,9 @@ class FillDataBase:
         for cp in self.champions["data"].keys():
             ChampionDao().creer(Champion(self.champions["data"][cp]["key"], cp))
 
-
-        iter_necessaire =len(list_TIER) * len(list_DIVISION) * limit * (last_game - first_game) * 10  
+        iter_necessaire = (
+            len(list_TIER) * len(list_DIVISION) * limit * (last_game - first_game) * 10
+        )
 
         self.bar.total = iter_necessaire
 
@@ -365,25 +370,37 @@ class FillDataBase:
         data = self.reqLimit(url)
 
         if data:
-            tier = data[0]["tier"]  # 0=soloQ ; 1=Flex ; Si solo indisponible -> Flex
-            return tier
-        else:
+            for dico in data:
+                if dico["queueType"] == "RANKED_SOLO_5x5":
+                    tier = dico["tier"]
+                    return tier
+
+            # no return = only flex is available
+            return data[0]["tier"]
+
+        else:  # No Data
             return "UNRANKED"
 
-    def add_matches_for_user(self, user: User, n_matches=5):
-        self.bar.total = n_matches * 10
-        self.getAllMatchesInfo(joueur=user.joueur, first_game=0, last_game=n_matches)
+    def add_matches_for_user(self, user: User, n_matches=9):
+        # Faire une requete DAO pour check
+
+        df = MatchJoueurDao().get_match_list_bypuuid(user.joueur.puuid)
+        if len(df) < n_matches:
+            self.bar.total = n_matches * 10
+            self.getAllMatchesInfo(
+                joueur=user.joueur, first_game=0, last_game=n_matches
+            )
 
 
 if __name__ == "__main__":
-    ResetDatabase().lancer()
-    FillDataBase().initiate(0, 2, 5)
+    # ResetDatabase().lancer()
+    # FillDataBase().initiate(0, 2, 5)
 
-    # puuid = FillDataBase().get_puuid("Îgnite")
-    # print("puuid", puuid)
+    puuid = FillDataBase().get_puuid("Hifoly")
+    print("puuid", puuid)
 
-    # summonerid = FillDataBase().get_summonerId(puuid)
-    # print("summonerid", summonerid)
+    summonerid = FillDataBase().get_summonerId(puuid)
+    print("summonerid", summonerid)
 
-    # tier = FillDataBase().get_tier(puuid)
-    # print("tier", tier)
+    tier = FillDataBase().get_tier(puuid)
+    print("tier", tier)

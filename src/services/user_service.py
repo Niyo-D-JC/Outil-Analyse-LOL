@@ -1,14 +1,15 @@
-import requests
-import json
-import dotenv
-import os
 import time
+import pandas as pd
+from tabulate import tabulate
+
 
 from dao.user_dao import UserDao
 from business_object.user.joueur import Joueur
 from business_object.user.user import User
 from business_object.battle.matchjoueur import MatchJoueur
 from business_object.stats.stat_joueur import StatJoueur
+from business_object.stats.stat_match import StatMatch
+
 from dao.matchjoueur_dao import MatchJoueurDao
 from services.invite_service import InviteService
 from api.fill_data_base import FillDataBase
@@ -41,20 +42,80 @@ class UserService(InviteService):
 
     def vue_partie(self, match_id):
         print("")
-        pd_match = (
-            MatchJoueurDao()
-            .vue_partie(match_id)
-            .to_string(
-                index=False,
-                formatters={
-                    "total_damage_dealt": "{:,.0f}".format,
-                    "total_damage_take": "{:,.0f}".format,
-                    "total_heal": "{:,.0f}".format,
-                    "total_gold": "{:,.0f}".format,
-                },
+        pd_match = MatchJoueurDao().vue_partie(match_id)
+
+        first_row = pd_match.iloc[0]
+        blue_win = first_row["side"] == "Blue" and first_row["win_lose"] == "Win"
+
+        pd_match_blue = pd_match.iloc[:5].set_index(["side", "win_lose"])
+        pd_match_red = pd_match.iloc[5:].set_index(["side", "win_lose"])
+
+        if blue_win:
+            print("=" * 65, "{ EQUIPE BLEUE : VICTOIRE }", "=" * 65)
+        else:
+            print("=" * 65, "{ EQUIPE BLEUE : DEFAITE }", "=" * 65)
+
+        # Team KDA Blue
+
+        print(
+            "=" * 65 + " {" + " " * 5,
+            StatMatch().kda_team(pd_match_blue),
+            " " * 5 + "} " + "=" * 65,
+        )
+
+        print(
+            tabulate(
+                pd_match_blue,
+                headers="keys",
+                tablefmt="double_outline",
+                showindex=False,
             )
         )
-        print(pd_match)
+
+        ################ Red Team ################
+        print("")
+
+        if blue_win:
+            print("=" * 65, "{ EQUIPE ROUGE : DEFAITE }", "=" * 65)
+        else:
+            print("=" * 65, "{ EQUIPE ROUGE : VICTOIRE }", "=" * 65)
+
+        # Team KDA Red
+        print(
+            "=" * 65 + " {" + " " * 5,
+            StatMatch().kda_team(pd_match_red),
+            " " * 5 + "} " + "=" * 65,
+        )
+
+        print(
+            tabulate(
+                pd_match_red,
+                headers="keys",
+                tablefmt="double_outline",
+                showindex=False,
+            )
+        )
+
+        print("")
+        print("=" * 15, "{ MVP DU MATCH }", "=" * 15)
+        print(
+            f" 🔪 Assassin : {StatMatch().mvp_by_category(pd_match, 'kills')} (Le plus de kills)"
+        )
+        print(
+            f" 💰 Avare : {StatMatch().mvp_by_category(pd_match, 'golds')} (Le plus de golds accumulés)"
+        )
+
+        print(
+            f" ⚔️ Combattant : {StatMatch().mvp_by_category(pd_match, 'dégats_infligés')} (Le plus de dégats infligés)"
+        )
+        print(
+            f" 🛡️ Montagne : {StatMatch().mvp_by_category(pd_match, 'dégats_subis')} (Le plus de dégats subis)"
+        )
+        print(
+            f" ❤️ Médecin de guerre :{StatMatch().mvp_by_category(pd_match, 'soins_totaux')} (Le plus de points de vie soignés)"
+        )
+        print("=" * 45)
+        print("")
 
     def get_match_list_bypuuid(self, puuid):
         return MatchJoueurDao().get_match_list_bypuuid(puuid)
@@ -154,6 +215,7 @@ class UserService(InviteService):
         )
         print(f"\t Nombre de Match Total : {total_games}")
         print(f"\t Nombre de Match Gagné : {total_wins}")
+        print(f"\t Taux de victoire : {round(total_wins*100/total_games,1)}%")
         print("")
         print(
             "*********************** Mon Bilan Par Champion ***************************"
@@ -183,39 +245,6 @@ class UserService(InviteService):
                 stats["nombre_de_matchs"],  # Ne pas arrondir le nombre de matchs
             )
             print(row)
-
-    def update_data_of_player(self, user: User):
-        """
-        Permet de rajouter en BDD, les 20 dernières parties de l'utilisateur
-
-        """
-
-        time.sleep(2)
-
-        # match_list_url = "/lol/match/v5/matches/by-puuid/"
-        # first_game, last_game = 0, 20
-        # final_list_match_url = (
-        #     EUW_api_url
-        #     + match_list_url
-        #     + account_puuid
-        #     + "/ids?start="
-        #     + str(first_game)
-        #     + "&"
-        #     + "count="
-        #     + str(last_game)
-        #     + "&api_key="
-        #     + os.environ["API_KEY"]
-        # )
-        # list_match_data = requests.get(final_list_match_url)
-
-        time.sleep(2)
-
-        for match_id in list_match_data.json():
-            MatchJoueur_Object = FillDataBase().getJoueurMatchInfo(
-                joueur=user.joueur, match_id=match_id
-            )
-
-            MatchJoueurDao().creer()
 
 
 if __name__ == "__main__":

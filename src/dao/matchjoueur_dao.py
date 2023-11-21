@@ -86,14 +86,20 @@ class MatchJoueurDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT j.name AS Joueur, c.name AS champion_name, "
-                        " mj.total_damage_dealt, mj.total_damage_take, "
-                        " mj.total_heal, mj.kills, mj.deaths, mj.assists, mj.creeps, "
-                        " mj.total_gold, mj.win "
-                        " FROM projet.matchjoueur mj "
-                        " JOIN projet.champion c ON mj.champion_id = c.champion_id "
-                        " JOIN projet.joueur j ON mj.puuid = j.puuid "
-                        " WHERE mj.match_id = %(match_id)s ; ",
+                        "SELECT l.name AS Role, j.name AS Joueur, c.name AS Champion, "
+                        "CASE WHEN mj.win THEN 'Win' ELSE 'Lose' END AS win_lose, "
+                        "mj.kills as Kills, mj.deaths as Deaths, "
+                        "mj.assists as Assists, mj.creeps AS CS, mj.total_gold AS golds,"
+                        " mj.total_damage_dealt as dégats_infligés, "
+                        "mj.total_damage_take as dégats_subis, "
+                        "mj.total_heal as soins_totaux, t.side "
+                        "FROM projet.matchjoueur mj "
+                        "JOIN projet.champion c ON mj.champion_id = c.champion_id "
+                        "JOIN projet.joueur j ON mj.puuid = j.puuid "
+                        "JOIN projet.lane l ON mj.lane_id = l.lane_id "
+                        "JOIN projet.team t ON mj.team_id = t.team_id "
+                        "WHERE mj.match_id = %(match_id)s "
+                        "ORDER BY t.side ASC, l.lane_id ASC;",
                         {"match_id": match_id},
                     )
                     res = cursor.fetchall()
@@ -149,7 +155,7 @@ class MatchJoueurDao(metaclass=Singleton):
 
         return deleted
 
-    def get_all_match(self):
+    def get_all_match(self):  # ??
         res = None
         try:
             with DBConnection().connection as connection:

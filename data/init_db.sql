@@ -115,4 +115,4 @@ INSERT INTO projet.lane(lane_id, name) VALUES
 
 INSERT INTO projet.team(team_id, side) VALUES
 (100, 'Blue'),
-(200,'Purple');
+(200, 'Red');
