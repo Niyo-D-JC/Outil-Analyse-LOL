@@ -5,6 +5,8 @@ from view.session.session import Session
 from services.user_service import UserService
 from dao.champion_dao import ChampionDao
 
+from view.menu.menu_user_vue import MenuUserVue
+
 
 class PartiesVue(VueAbstraite):
     """Vue du menu du joueur
@@ -103,3 +105,5 @@ class PartiesVue(VueAbstraite):
 if __name__ == "__main__":
     champion_name = ChampionDao().find_by_id(27).name
     print(champion_name)
+
+    Acc().choisir_menu()
