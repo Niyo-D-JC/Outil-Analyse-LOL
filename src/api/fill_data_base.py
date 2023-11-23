@@ -110,12 +110,12 @@ class FillDataBase:
         else:
             return [
                 Joueur(
-                    puuid=self.get_puuid(dta["summonerName"]),
+                    puuid=puuid,
                     name=dta["summonerName"],
                     tier=dta["tier"],
                 )
                 for dta in data[:limit]
-                if self.get_puuid(dta["summonerName"]) is not None
+                if (puuid := self.get_puuid(dta["summonerName"])) is not None
             ]
 
     def getJoueurBySummonerId(self, summonerId, first=True, limit=0):  # Jamais utilisé
@@ -136,7 +136,9 @@ class FillDataBase:
                 for j in data[:limit]
             ]
 
-    def getJoueurMatchInfo(self, match_id: str):
+    def getJoueurMatchInfo(
+        self, match_id: str, include_tier: bool = False
+    ):  # La plus importante
         self.bar.set_description("Chargemnent en cours")
 
         url = (
@@ -153,9 +155,13 @@ class FillDataBase:
                 player_info = data["info"]["participants"][player_k]
 
                 joueur = Joueur(
-                    player_info["puuid"],
-                    player_info["summonerName"],
-                    self.get_tier(puuid=None, summoner_id=player_info["summonerId"]),
+                    puuid=player_info["puuid"],
+                    name=player_info["summonerName"],
+                    tier=self.get_tier(
+                        puuid=None, summoner_id=player_info["summonerId"]
+                    )
+                    if include_tier
+                    else None,
                 )
 
                 JoueurDao().creer(joueur)
@@ -242,8 +248,6 @@ class FillDataBase:
             self.getJoueurMatchInfo(match_id)
 
     def initiate(self, first_game=0, last_game=20, limit=2, page=1):
-
-
         iter_necessaire = (
             len(list_TIER) * len(list_DIVISION) * limit * (last_game - first_game) * 10
         )
@@ -251,14 +255,16 @@ class FillDataBase:
         self.bar.total = iter_necessaire
 
         print("")
-        print("Temps prévu :", round((iter_necessaire / 89) * 2), "minutes")
+        print(
+            "Temps prévu :", round((iter_necessaire / 660) * 2), "minutes"
+        )  # aproximation
         print("")
         print("")
 
         for tier in list_TIER:
             for division in list_DIVISION:
                 list_joueurs_league = self.getJoueurByLeague(
-                    tier, division, first=False, limit=limit, page = page
+                    tier, division, first=False, limit=limit, page=page
                 )
 
                 for joueur in list_joueurs_league:

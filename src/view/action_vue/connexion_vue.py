@@ -35,13 +35,13 @@ class ConnexionVue(VueAbstraite):
             password=answers["mdp"], salt=answers["pseudo"]
         )
 
-        message = ""
-        session = Session()
-        if session.user :
+        if hashed_password == hashed_answer_password:
+            session = Session()
+
             session.user = user.name
             session.role = user.role
             session.joueur = user.joueur
-            
+
             if session.role == "Admin":
                 message = f"Administrateur : Vous êtes connectés sous le profil de {session.user.upper()}"
                 from view.menu.menu_admin_vue import MenuAdminVue

@@ -1,5 +1,5 @@
 class Joueur:
-    def __init__(self, puuid, name=None, tier=None):
+    def __init__(self, puuid:str, name:str=None,tier:str=None):
         self.puuid = puuid
         self.name = name
         self.tier = tier
