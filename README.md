@@ -1,4 +1,4 @@
-# Outil analyse LoL
+# ViewerOnLoL
 
 ```
  _      ______          _____ _    _ ______          __   _      ______ _____ ______ _   _ _____   _____ 
@@ -12,42 +12,54 @@
 
 
 ## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+ViewerOnLoL is a  tool designed for League of Legends players looking to deepen their understanding of the game. Whether you're a beginner seeking to improve your skills or a veteran looking to fine-tune your strategy, ViewerOnLoL provides a detailed analysis of your profile and your matches.
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+- Python
+- GitBash
+
+- A Database (we used SQLite)
+- A Riot API Key
+
 
 ### Installation
+1. Get an API Key at [https://developer.riotgames.com/](https://developer.riotgames.com/) (_Must have an Riot Games account_)
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
-1. Get a free API Key at [https://example.com](https://example.com)
 2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+   ```bash
+   git clone https://gitlab.com/projet-info-2a-groupe-11/outil-analyse-lol
    ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+3. Install all the necessary libraries
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Enter your API & Database Access in `.env`
+   ```js
+   HOST_WEBSERVICE_EUW1 = https://euw1.api.riotgames.com
+   HOST_WEBSERVICE_EUROPA = https://europe.api.riotgames.com
+   API_KEY = RGAPI-e6747bea-8be1-485f-aa91-3da5d892b425
+
+   HOST=sgbd-eleves.domensai.ecole
+   PORT=5432
+   DATABASE=id2321
+   USER=id2321
+   PASSWORD=id2321
+   ```
+
+5. Execute the script
+
+   ```sh
+   python "src/__main__.py" 
+   ```
 
 
 
