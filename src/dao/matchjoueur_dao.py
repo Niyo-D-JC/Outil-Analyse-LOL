@@ -38,8 +38,14 @@ class MatchJoueurDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO projet.matchjoueur(match_id,puuid,lane_id,champion_id,team_id,total_damage_dealt,total_damage_take,total_heal,kills,deaths,assists,creeps, total_gold, win) VALUES "
-                        "(%(match_id)s, %(puuid)s, %(lane_id)s, %(champion_id)s, %(team_id)s, %(total_damage_dealt)s, %(total_damage_take)s, %(total_heal)s,  %(kills)s, %(deaths)s, %(assists)s, %(creeps)s,  %(total_gold)s, %(win)s)",
+                        "INSERT INTO projet.matchjoueur(match_id,puuid,lane_id, "
+                        " champion_id,team_id,total_damage_dealt,total_damage_take, "
+                        " total_heal,kills,deaths,assists,creeps, total_gold, win) "
+                        " VALUES "
+                        " (%(match_id)s, %(puuid)s, %(lane_id)s, %(champion_id)s, "
+                        " %(team_id)s, %(total_damage_dealt)s, %(total_damage_take)s, "
+                        " %(total_heal)s,  %(kills)s, %(deaths)s, %(assists)s, "
+                        " %(creeps)s,  %(total_gold)s, %(win)s)",
                         {
                             "match_id": match.match_id,
                             "puuid": match.joueur.puuid,
