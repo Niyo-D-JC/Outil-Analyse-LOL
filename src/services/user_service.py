@@ -242,7 +242,7 @@ class UserService(InviteService):
                 round(stats["deaths_avg"], 2),
                 round(stats["assists_avg"], 2),
                 round(stats["cs_avg"], 2),
-                stats["nombre_de_matchs"], 
+                stats["nombre_de_matchs"],
             )
             print(row)
 

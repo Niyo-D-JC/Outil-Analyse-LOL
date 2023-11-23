@@ -386,15 +386,11 @@ class FillDataBase:
         else:  # No Data
             return "UNRANKED"
 
-    def add_matches_for_user(self, user: User, n_matches=9):
-        # Faire une requete DAO pour check
+    def add_matches_for_user(self, user: User, n_matches=90):
+        # Imporation des 20 derniers matchs de l'utilisateur
 
-        df = MatchJoueurDao().get_match_list_bypuuid(user.joueur.puuid)
-        if len(df) < n_matches:
-            self.bar.total = n_matches * 10
-            self.getAllMatchesInfo(
-                joueur=user.joueur, first_game=0, last_game=n_matches
-            )
+        self.bar.total = n_matches * 10
+        self.getAllMatchesInfo(joueur=user.joueur, first_game=0, last_game=n_matches)
 
 
 if __name__ == "__main__":
