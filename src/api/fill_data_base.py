@@ -47,37 +47,38 @@ class FillDataBase:
         self.champions = json.load(open("data/champion.json", "r", encoding="utf-8"))
 
     def reqLimit(self, url, key_=None):
-        response = requests.get(url)
-
-        if response.status_code == 200:  # tout va bien
-            return response.json()
-
-        elif response.status_code == 429:  # Trop de requetes
-            self.bar.set_description(
-                "Limit Rate Requests Atteint :  Attendre 1 seconde"
-            )
-            time.sleep(1)
-
+        try:
             response = requests.get(url)
 
-            if response.status_code == 429:
+            if response.status_code == 200:  # tout va bien
+                return response.json()
+
+            elif response.status_code == 429:  # Trop de requetes
                 self.bar.set_description(
-                    "Limit Rate Requests Atteint : Attendre 2 minutes"
+                    "Limit Rate Requests Atteint :  Attendre 1 seconde"
                 )
-                time.sleep(121)
+                time.sleep(1)
 
                 response = requests.get(url)
-                if response.status_code == 200:  # apres les 2 mins d'attente
+
+                if response.status_code == 429:
+                    self.bar.set_description(
+                        "Limit Rate Requests Atteint : Attendre 2 minutes"
+                    )
+                    time.sleep(121)
+
+                    response = requests.get(url)
+                    if response.status_code == 200:  # apres les 2 mins d'attente, OK
+                        return response.json()
+                    else:
+                        pass
+
+                elif response.status_code == 200:  # après la seconde d'attente
                     return response.json()
                 else:
                     pass
 
-            elif response.status_code == 200:  # après 2 sec d'attente
-                return response.json()
-            else:
-                pass
-
-        else:  # si ce n'est pas ok et que ce n'est pas à cause du limitRate
+        except:  # si ce n'est pas ok et que ce n'est pas à cause du limitRate
             pass
 
     def getJoueurByLeague(self, tier, div, first=True, limit=0, page=1):
@@ -397,7 +398,7 @@ if __name__ == "__main__":
     # ResetDatabase().lancer()
     # FillDataBase().initiate(0, 2, 5)
 
-    puuid = FillDataBase().get_puuid("Hifoly")
+    puuid = FillDataBase().get_puuid("KC NEXT ADKING")
     print("puuid", puuid)
 
     summonerid = FillDataBase().get_summonerId(puuid)

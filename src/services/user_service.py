@@ -8,7 +8,7 @@ from business_object.user.joueur import Joueur
 from business_object.user.user import User
 from business_object.battle.matchjoueur import MatchJoueur
 from business_object.stats.stat_joueur import StatJoueur
-from business_object.stats.stat_match import StatMatch
+from services.stat_match import StatMatch
 
 from dao.matchjoueur_dao import MatchJoueurDao
 from services.invite_service import InviteService
