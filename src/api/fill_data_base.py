@@ -47,37 +47,38 @@ class FillDataBase:
         self.champions = json.load(open("data/champion.json", "r", encoding="utf-8"))
 
     def reqLimit(self, url, key_=None):
-        response = requests.get(url)
-
-        if response.status_code == 200:  # tout va bien
-            return response.json()
-
-        elif response.status_code == 429:  # Trop de requetes
-            self.bar.set_description(
-                "Limit Rate Requests Atteint :  Attendre 1 seconde"
-            )
-            time.sleep(1)
-
+        try:
             response = requests.get(url)
 
-            if response.status_code == 429:
+            if response.status_code == 200:  # tout va bien
+                return response.json()
+
+            elif response.status_code == 429:  # Trop de requetes
                 self.bar.set_description(
-                    "Limit Rate Requests Atteint : Attendre 2 minutes"
+                    "Limit Rate Requests Atteint :  Attendre 1 seconde"
                 )
-                time.sleep(121)
+                time.sleep(1)
 
                 response = requests.get(url)
-                if response.status_code == 200:  # apres les 2 mins d'attente
+
+                if response.status_code == 429:
+                    self.bar.set_description(
+                        "Limit Rate Requests Atteint : Attendre 2 minutes"
+                    )
+                    time.sleep(121)
+
+                    response = requests.get(url)
+                    if response.status_code == 200:  # apres les 2 mins d'attente, OK
+                        return response.json()
+                    else:
+                        pass
+
+                elif response.status_code == 200:  # après la seconde d'attente
                     return response.json()
                 else:
                     pass
 
-            elif response.status_code == 200:  # après 2 sec d'attente
-                return response.json()
-            else:
-                pass
-
-        else:  # si ce n'est pas ok et que ce n'est pas à cause du limitRate
+        except:  # si ce n'est pas ok et que ce n'est pas à cause du limitRate
             pass
 
     def getJoueurByLeague(self, tier, div, first=True, limit=0, page=1):
@@ -110,12 +111,12 @@ class FillDataBase:
         else:
             return [
                 Joueur(
-                    puuid=self.get_puuid(dta["summonerName"]),
+                    puuid=puuid,
                     name=dta["summonerName"],
                     tier=dta["tier"],
                 )
                 for dta in data[:limit]
-                if self.get_puuid(dta["summonerName"]) is not None
+                if (puuid := self.get_puuid(dta["summonerName"])) is not None
             ]
 
     def getJoueurBySummonerId(self, summonerId, first=True, limit=0):  # Jamais utilisé
@@ -136,7 +137,9 @@ class FillDataBase:
                 for j in data[:limit]
             ]
 
-    def getJoueurMatchInfo(self, match_id: str):
+    def getJoueurMatchInfo(
+        self, match_id: str, include_tier: bool = False
+    ):  # La plus importante
         self.bar.set_description("Chargemnent en cours")
 
         url = (
@@ -153,9 +156,13 @@ class FillDataBase:
                 player_info = data["info"]["participants"][player_k]
 
                 joueur = Joueur(
-                    player_info["puuid"],
-                    player_info["summonerName"],
-                    self.get_tier(puuid=None, summoner_id=player_info["summonerId"]),
+                    puuid=player_info["puuid"],
+                    name=player_info["summonerName"],
+                    tier=self.get_tier(
+                        puuid=None, summoner_id=player_info["summonerId"]
+                    )
+                    if include_tier
+                    else None,
                 )
 
                 JoueurDao().creer(joueur)
@@ -242,8 +249,6 @@ class FillDataBase:
             self.getJoueurMatchInfo(match_id)
 
     def initiate(self, first_game=0, last_game=20, limit=2, page=1):
-
-
         iter_necessaire = (
             len(list_TIER) * len(list_DIVISION) * limit * (last_game - first_game) * 10
         )
@@ -251,14 +256,16 @@ class FillDataBase:
         self.bar.total = iter_necessaire
 
         print("")
-        print("Temps prévu :", round((iter_necessaire / 89) * 2), "minutes")
+        print(
+            "Temps prévu :", round((iter_necessaire / 660) * 2), "minutes"
+        )  # aproximation
         print("")
         print("")
 
         for tier in list_TIER:
             for division in list_DIVISION:
                 list_joueurs_league = self.getJoueurByLeague(
-                    tier, division, first=False, limit=limit, page = page
+                    tier, division, first=False, limit=limit, page=page
                 )
 
                 for joueur in list_joueurs_league:
@@ -380,22 +387,18 @@ class FillDataBase:
         else:  # No Data
             return "UNRANKED"
 
-    def add_matches_for_user(self, user: User, n_matches=9):
-        # Faire une requete DAO pour check
+    def add_matches_for_user(self, user: User, n_matches=90):
+        # Imporation des 20 derniers matchs de l'utilisateur
 
-        df = MatchJoueurDao().get_match_list_bypuuid(user.joueur.puuid)
-        if len(df) < n_matches:
-            self.bar.total = n_matches * 10
-            self.getAllMatchesInfo(
-                joueur=user.joueur, first_game=0, last_game=n_matches
-            )
+        self.bar.total = n_matches * 10
+        self.getAllMatchesInfo(joueur=user.joueur, first_game=0, last_game=n_matches)
 
 
 if __name__ == "__main__":
     # ResetDatabase().lancer()
     # FillDataBase().initiate(0, 2, 5)
 
-    puuid = FillDataBase().get_puuid("Hifoly")
+    puuid = FillDataBase().get_puuid("KC NEXT ADKING")
     print("puuid", puuid)
 
     summonerid = FillDataBase().get_summonerId(puuid)

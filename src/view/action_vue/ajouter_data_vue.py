@@ -43,9 +43,13 @@ class AjouterDataVue(VueAbstraite):
             return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
 
         elif reponse["choix"] == "Peu de données (environ 20 mins)":
-            FillDataBase().initiate(0,2,2,2)
+            FillDataBase().initiate(0,2,2,4)
+            print("")
+            print("--------------------------- Retour à la page précédente ---------------------------")
             return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
 
-        elif reponse["choix"] == "Beaucoup de données (environ 2h)":
+        elif reponse["choix"] == "Beaucoup de données (environ 3h)":
             FillDataBase().initiate(0,5,5,3)
+            print("")
+            print("--------------------------- Retour à la page précédente ---------------------------")
             return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")

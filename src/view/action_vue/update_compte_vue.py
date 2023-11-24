@@ -46,8 +46,9 @@ class UpdateCompteVue(VueAbstraite):
         print(
             "-------------------------- Retour sur votre Page ---------------------------"
         )
-        time.sleep(3)
+        time.sleep(2)
         session = Session()
+        
         if session.user:
             if session.role == "Admin":
                 message = f"Administrateur : Vous êtes connectés sous le profil de {session.user.upper()}"

@@ -11,6 +11,8 @@ from utils.singleton import Singleton
 from business_object.battle.matchjoueur import MatchJoueur
 from business_object.stats.stat_joueur import StatJoueur
 from business_object.tools.champion import Champion
+from business_object.tools.lane import Lane
+
 
 import pandas as pd
 
@@ -36,8 +38,14 @@ class MatchJoueurDao(metaclass=Singleton):
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "INSERT INTO projet.matchjoueur(match_id,puuid,lane_id,champion_id,team_id,total_damage_dealt,total_damage_take,total_heal,kills,deaths,assists,creeps, total_gold, win) VALUES "
-                        "(%(match_id)s, %(puuid)s, %(lane_id)s, %(champion_id)s, %(team_id)s, %(total_damage_dealt)s, %(total_damage_take)s, %(total_heal)s,  %(kills)s, %(deaths)s, %(assists)s, %(creeps)s,  %(total_gold)s, %(win)s)",
+                        "INSERT INTO projet.matchjoueur(match_id,puuid,lane_id, "
+                        " champion_id,team_id,total_damage_dealt,total_damage_take, "
+                        " total_heal,kills,deaths,assists,creeps, total_gold, win) "
+                        " VALUES "
+                        " (%(match_id)s, %(puuid)s, %(lane_id)s, %(champion_id)s, "
+                        " %(team_id)s, %(total_damage_dealt)s, %(total_damage_take)s, "
+                        " %(total_heal)s,  %(kills)s, %(deaths)s, %(assists)s, "
+                        " %(creeps)s,  %(total_gold)s, %(win)s)",
                         {
                             "match_id": match.match_id,
                             "puuid": match.joueur.puuid,
@@ -81,8 +89,7 @@ class MatchJoueurDao(metaclass=Singleton):
             return pd.DataFrame(res)
 
     def existe(self, joueur, match_id) -> bool:
-        """Verifier qu'un joueur est dans la base de données
-        """
+        """Verifier qu'un joueur est dans la base de données"""
 
         res = None
 
@@ -93,8 +100,7 @@ class MatchJoueurDao(metaclass=Singleton):
                         "SELECT *                           "
                         "  FROM projet.matchjoueur               "
                         " WHERE puuid = %(puuid)s AND match_id = %(match_id)s;",
-                        {"puuid": joueur.puuid, 
-                         "match_id": match_id},
+                        {"puuid": joueur.puuid, "match_id": match_id},
                     )
                     res = cursor.fetchone()
         except Exception as e:
@@ -104,8 +110,8 @@ class MatchJoueurDao(metaclass=Singleton):
             exist = True
 
         return exist
-        
-    def vue_partie(self, match_id) : 
+
+    def vue_partie(self, match_id):
         res = None
         try:
             with DBConnection().connection as connection:
@@ -239,9 +245,10 @@ class MatchJoueurDao(metaclass=Singleton):
                         "SELECT mj.match_id, mj.puuid, c.name AS champion_name, "
                         " mj.lane_id, mj.team_id, mj.total_damage_dealt, mj.total_damage_take, "
                         " mj.total_heal, mj.kills, mj.deaths, mj.assists, mj.creeps, "
-                        " mj.total_gold, mj.win "
+                        " mj.total_gold, mj.win, mj.champion_id, l.name AS lane_name "
                         " FROM projet.matchjoueur mj "
                         " JOIN projet.champion c ON mj.champion_id = c.champion_id "
+                        " JOIN projet.lane l ON mj.lane_id = l.lane_id"
                         " WHERE mj.puuid = %(puuid)s ; ",
                         {"puuid": joueur.puuid},
                     )
@@ -255,7 +262,8 @@ class MatchJoueurDao(metaclass=Singleton):
             Player_Matches = []
 
             for game in res:  # game est un dictionnaire
-                champion = Champion(0, game["champion_name"])
+                champion = Champion(game["champion_id"], game["champion_name"])
+                lane = Lane(game["lane_id"], game["lane_name"])
                 stat_joueur = StatJoueur(
                     total_damage_dealt=game["total_damage_dealt"],
                     total_damage_take=game["total_damage_take"],
@@ -273,7 +281,7 @@ class MatchJoueurDao(metaclass=Singleton):
                     joueur=None,
                     champion=champion,
                     items=None,
-                    lane=None,
+                    lane=lane,
                     team=None,
                     stat_joueur=stat_joueur,
                 )

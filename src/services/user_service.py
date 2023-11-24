@@ -8,7 +8,7 @@ from business_object.user.joueur import Joueur
 from business_object.user.user import User
 from business_object.battle.matchjoueur import MatchJoueur
 from business_object.stats.stat_joueur import StatJoueur
-from business_object.stats.stat_match import StatMatch
+from services.stat_match import StatMatch
 
 from dao.matchjoueur_dao import MatchJoueurDao
 from services.invite_service import InviteService
@@ -256,7 +256,7 @@ class UserService(InviteService):
                 round(stats["deaths_avg"], 2),
                 round(stats["assists_avg"], 2),
                 round(stats["cs_avg"], 2),
-                stats["nombre_de_matchs"], 
+                stats["nombre_de_matchs"],
             )
             print(row)
 
