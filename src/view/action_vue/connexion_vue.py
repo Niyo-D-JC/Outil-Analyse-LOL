@@ -35,8 +35,9 @@ class ConnexionVue(VueAbstraite):
             password=answers["mdp"], salt=answers["pseudo"]
         )
 
-        message = ""
-        session = Session()
+        if hashed_password == hashed_answer_password:
+            session = Session()
+
         if session.user :
             session.user = user.name
             session.role = user.role

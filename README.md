@@ -58,7 +58,7 @@ ViewerOnLoL is a  tool designed for League of Legends players looking to deepen 
 5. Execute the script
 
    ```sh
-   python "src/__main__.py" 
+   python "src\__main__.py" 
    ```
 
 

@@ -31,6 +31,9 @@ class UserService(InviteService):
     def get_users(self):
         return UserDao().get_users()
 
+    def get_match_list_bypuuid(self, puuid):
+        return MatchJoueurDao().get_match_list_bypuuid(puuid)
+
     def update_puuid(self, puuid, name):
         return UserDao().update_puuid(puuid, name)
 
@@ -40,85 +43,8 @@ class UserService(InviteService):
     def all_parties(self):
         return MatchJoueurDao().all_parties()
 
-    def vue_partie(self, match_id):
-        print("")
-        pd_match = MatchJoueurDao().vue_partie(match_id)
 
-        first_row = pd_match.iloc[0]
-        blue_win = first_row["side"] == "Blue" and first_row["win_lose"] == "Win"
 
-        pd_match_blue = pd_match.iloc[:5].set_index(["side", "win_lose"])
-        pd_match_red = pd_match.iloc[5:].set_index(["side", "win_lose"])
-
-        if blue_win:
-            print("=" * 65, "{ EQUIPE BLEUE : VICTOIRE }", "=" * 65)
-        else:
-            print("=" * 65, "{ EQUIPE BLEUE : DEFAITE }", "=" * 65)
-
-        # Team KDA Blue
-
-        print(
-            "=" * 65 + " {" + " " * 5,
-            StatMatch().kda_team(pd_match_blue),
-            " " * 5 + "} " + "=" * 65,
-        )
-
-        print(
-            tabulate(
-                pd_match_blue,
-                headers="keys",
-                tablefmt="double_outline",
-                showindex=False,
-            )
-        )
-
-        ################ Red Team ################
-        print("")
-
-        if blue_win:
-            print("=" * 65, "{ EQUIPE ROUGE : DEFAITE }", "=" * 65)
-        else:
-            print("=" * 65, "{ EQUIPE ROUGE : VICTOIRE }", "=" * 65)
-
-        # Team KDA Red
-        print(
-            "=" * 65 + " {" + " " * 5,
-            StatMatch().kda_team(pd_match_red),
-            " " * 5 + "} " + "=" * 65,
-        )
-
-        print(
-            tabulate(
-                pd_match_red,
-                headers="keys",
-                tablefmt="double_outline",
-                showindex=False,
-            )
-        )
-
-        print("")
-        print("=" * 15, "{ MVP DU MATCH }", "=" * 15)
-        print(
-            f" 🔪 Assassin : {StatMatch().mvp_by_category(pd_match, 'kills')} (Le plus de kills)"
-        )
-        print(
-            f" 💰 Avare : {StatMatch().mvp_by_category(pd_match, 'golds')} (Le plus de golds accumulés)"
-        )
-
-        print(
-            f" ⚔️ Combattant : {StatMatch().mvp_by_category(pd_match, 'dégats_infligés')} (Le plus de dégats infligés)"
-        )
-        print(
-            f" 🛡️ Montagne : {StatMatch().mvp_by_category(pd_match, 'dégats_subis')} (Le plus de dégats subis)"
-        )
-        print(
-            f" ❤️ Médecin :{StatMatch().mvp_by_category(pd_match, 'soins_totaux')} (Le plus de points de vie soignés)"
-        )
-        print("=" * 45)
-        print("")
-
-    def get_match_list_bypuuid(self, puuid):
-        return MatchJoueurDao().get_match_list_bypuuid(puuid)
 
     def get_stats_by_champ(self, Liste_Match_User):
         """Calcule les statistiques moyennes par champion à partir d'une liste de matchs d'un utilisateur.
@@ -177,6 +103,92 @@ class UserService(InviteService):
 
         return champions_stats
 
+    def vue_partie(self, match_id:str):
+
+
+        """Affiche dans la console le rés
+
+        Cette fonction parcourt la liste de matchs d'un utilisateur, regroupe les statistiques par champion,
+        et calcule les moyennes pour les statistiques telles que les kills, deaths, assists, et creeps (cs).
+
+        Parameters
+        ----------
+        match_id : str
+            Identifiant d'une partie de League of Legends
+
+        """      
+        
+
+        print("")
+        pd_match = MatchJoueurDao().vue_partie(match_id)
+
+        first_row = pd_match.iloc[0]
+        blue_win = first_row["side"] == "Blue" and first_row["win_lose"] == "Win"
+
+        pd_match_blue = pd_match.iloc[:5].set_index(["side", "win_lose"])
+        pd_match_red = pd_match.iloc[5:].set_index(["side", "win_lose"])
+
+        kda_blue_team = "=" * 65 + " {" + " " * 5 + StatMatch().kda_team(pd_match_blue) + " " * 5 + "} " + "=" * 65
+        kda_red_team  = "=" * 65 + " {" + " " * 5 + StatMatch().kda_team(pd_match_red) + " " * 5 + "} " + "=" * 65
+
+        ################ Blue  Team ################
+        if blue_win:
+            print("=" * 65, "{ EQUIPE BLEUE : VICTOIRE }", "=" * 65)
+        else:
+            print("=" * 65, "{ EQUIPE BLEUE : DEFAITE }", "=" * 65)
+
+        print(kda_blue_team)
+
+        print(
+            tabulate(
+                pd_match_blue,
+                headers="keys",
+                tablefmt="double_outline",
+                showindex=False,
+            )
+        )
+
+        ################ Red Team ################
+        print("")
+
+        if blue_win:
+            print("=" * 65, "{ EQUIPE ROUGE : DEFAITE }", "=" * 65)
+        else:
+            print("=" * 65, "{ EQUIPE ROUGE : VICTOIRE }", "=" * 65)
+
+        print(kda_red_team)
+
+        print(
+            tabulate(
+                pd_match_red,
+                headers="keys",
+                tablefmt="double_outline",
+                showindex=False,
+            )
+        )
+
+        print("")
+        print("=" * 15, "{ MVP DU MATCH }", "=" * 15)
+        print(
+            f" 🔪 Assassin : {StatMatch().mvp_by_category(pd_match, 'kills')} (Le plus de kills)"
+        )
+        print(
+            f" 💰 Avare : {StatMatch().mvp_by_category(pd_match, 'golds')} (Le plus de golds accumulés)"
+        )
+
+        print(
+            f" ⚔️ Combattant : {StatMatch().mvp_by_category(pd_match, 'dégats_infligés')} (Le plus de dégats infligés)"
+        )
+        print(
+            f" 🛡️ Montagne : {StatMatch().mvp_by_category(pd_match, 'dégats_subis')} (Le plus de dégats subis)"
+        )
+        print(
+            f" ❤️ Médecin :{StatMatch().mvp_by_category(pd_match, 'soins_totaux')} (Le plus de points de vie soignés)"
+        )
+        print("=" * 45)
+        print("")
+
+
     def get_global_WR(self, Liste_Match_User):
         """Calcule le taux de victoire global d'un utilisateur.
 
@@ -206,10 +218,12 @@ class UserService(InviteService):
         return (total_wins, total_games)
 
     def get_stats_perso(self, user: User):
+        
         Liste_Match_User = MatchJoueurDao().filter_by_Joueur(user.joueur)
-
         total_wins, total_games = self.get_global_WR(Liste_Match_User)
         champions_counts = self.get_stats_by_champ(Liste_Match_User)
+
+
         print(
             "************************** Mon Bilan Personnel ***************************"
         )
