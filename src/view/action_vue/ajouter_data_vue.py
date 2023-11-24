@@ -3,6 +3,7 @@ from InquirerPy import prompt
 from view.utils_vue.vue_abstraite import VueAbstraite
 from api.fill_data_base import FillDataBase
 
+
 class AjouterDataVue(VueAbstraite):
     """Vue du menu du joueur
 
@@ -24,7 +25,12 @@ class AjouterDataVue(VueAbstraite):
                 "type": "list",
                 "name": "choix",
                 "message": " Attention ! Chaqun des ajouts ne peut être executé qu'une seule fois",
-                "choices": [ "Peu de données (environ 20 mins)", "Beaucoup de données (environ 3h)", 'Annuler'],
+                "choices": [
+                    "Ajouter 1000 performances supplémentaires (environ 3 minutes)",
+                    "Ajouter 5000 performances supplémentaires (environ 30 minutes)",
+                    "Ajouter 10000 performances supplémentaires (environ 1h)",
+                    "Annuler",
+                ],
             }
         ]
 
@@ -40,16 +46,21 @@ class AjouterDataVue(VueAbstraite):
 
         if reponse["choix"] == "Annuler":
             from view.utils_vue.accueil_vue import AccueilVue
+
             return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
 
         elif reponse["choix"] == "Peu de données (environ 20 mins)":
-            FillDataBase().initiate(0,2,2,4)
+            FillDataBase().initiate(0, 2, 2, 4)
             print("")
-            print("--------------------------- Retour à la page précédente ---------------------------")
+            print(
+                "--------------------------- Retour à la page précédente ---------------------------"
+            )
             return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
 
         elif reponse["choix"] == "Beaucoup de données (environ 3h)":
-            FillDataBase().initiate(0,5,5,3)
+            FillDataBase().initiate(0, 5, 5, 3)
             print("")
-            print("--------------------------- Retour à la page précédente ---------------------------")
+            print(
+                "--------------------------- Retour à la page précédente ---------------------------"
+            )
             return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")

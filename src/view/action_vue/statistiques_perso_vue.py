@@ -5,6 +5,7 @@ from view.utils_vue.vue_abstraite import VueAbstraite
 from view.session.session import Session
 from business_object.user.user import User
 from services.user_service import UserService
+from dao.matchjoueur_dao import MatchJoueurDao
 import time
 
 
@@ -79,7 +80,10 @@ class StatistiquesPersoVue(VueAbstraite):
             return UpdateCompteVue()
 
         user = User(name=session.user, role=session.role, joueur=session.joueur)
-        FillDataBase().add_matches_for_user(user)
+
+        list_match = MatchJoueurDao().get_match_list_bypuuid(user.joueur.puuid)
+        if len(list_match) <= 10:
+            FillDataBase().add_matches_for_user(user, n_matches=50)
 
         if reponse["choix"] == "Accéder au Bilan Personnel":
             UserService().get_stats_perso(user)
