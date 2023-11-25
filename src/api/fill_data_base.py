@@ -27,9 +27,6 @@ import time
 from tqdm import tqdm
 
 
-from utils.reset_database import ResetDatabase
-
-
 SIDE = {100: "Blue", 200: "Purple"}
 list_TIER = ["DIAMOND", "PLATINUM", "GOLD", "SILVER", "BRONZE", "IRON"]
 list_DIVISION = ["I", "II", "III", "IV"]
@@ -40,8 +37,8 @@ class FillDataBase:
         dotenv.load_dotenv(override=True)
 
         self.bar = tqdm()
-        self.HOST_WEBSERVICE_EUW1 = os.environ["HOST_WEBSERVICE_EUW1"]
-        self.HOST_WEBSERVICE_EUROPA = os.environ["HOST_WEBSERVICE_EUROPA"]
+        self.HOST_WEBSERVICE_EUW1 = "https://euw1.api.riotgames.com"
+        self.HOST_WEBSERVICE_EUROPA = "https://europe.api.riotgames.com"
         self.API_KEY = os.environ["API_KEY"]
         self.items = json.load(open("data/item.json"))
         self.champions = json.load(open("data/champion.json", "r", encoding="utf-8"))
