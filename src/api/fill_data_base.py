@@ -220,7 +220,7 @@ class FillDataBase:
                 print("Importation success")
 
             except:
-                print("ERREUR")
+                print("Importation Error")
 
     def get_matchlist(self, joueur, first_game=0, last_game=20):
         url = (
@@ -248,9 +248,13 @@ class FillDataBase:
 
             self.getJoueurMatchInfo(match_id)
 
-    def initiate(self, first_game=0, last_game=20, limit=2, page=1):
+    def initiate(self, first_game=0, last_game=20, joueur_div=2, page=1):
         iter_necessaire = (
-            len(list_TIER) * len(list_DIVISION) * limit * (last_game - first_game) * 10
+            len(list_TIER)
+            * len(list_DIVISION)
+            * joueur_div
+            * (last_game - first_game)
+            * 10
         )
 
         self.bar.total = iter_necessaire
@@ -265,7 +269,7 @@ class FillDataBase:
         for tier in list_TIER:
             for division in list_DIVISION:
                 list_joueurs_league = self.getJoueurByLeague(
-                    tier, division, first=False, limit=limit, page=page
+                    tier, division, first=False, limit=joueur_div, page=page
                 )
 
                 for joueur in list_joueurs_league:
