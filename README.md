@@ -23,7 +23,7 @@ ViewerOnLoL is a  tool designed for League of Legends players looking to deepen 
 - Python
 - GitBash
 
-- A Database (we used SQLite)
+- A PostGre SQL Database (we used SQLite)
 - A Riot API Key
 
 
@@ -44,8 +44,6 @@ ViewerOnLoL is a  tool designed for League of Legends players looking to deepen 
 
 4. Enter your API & Database Access in `.env`
    ```js
-   HOST_WEBSERVICE_EUW1 = https://euw1.api.riotgames.com
-   HOST_WEBSERVICE_EUROPA = https://europe.api.riotgames.com
    API_KEY = RGAPI-e6747bea-8be1-485f-aa91-3da5d892b425
 
    HOST=sgbd-eleves.domensai.ecole
@@ -61,36 +59,16 @@ ViewerOnLoL is a  tool designed for League of Legends players looking to deepen 
    python "src\__main__.py" 
    ```
 
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 ## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+The developpement of the project is over.
 
-## Contact
+## Authors and acknowledgment
+
+Developped by :
+- AUBERT Hugo 
+- HARWANIMANA NIYODUSHIMA Jules Christian 
+- MARTINEZ Diégo 
+- NEGRIER Thibault 
+- TIO Maxime 
+
+Under the supervision of Aloïs De Oliveira

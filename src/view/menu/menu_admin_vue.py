@@ -5,6 +5,7 @@ from utils.reset_database import ResetDatabase
 from view.utils_vue.accueil_vue import AccueilVue
 from view.session.session import Session
 
+
 class MenuAdminVue(VueAbstraite):
     """Vue du menu de l'admin
 
@@ -23,15 +24,20 @@ class MenuAdminVue(VueAbstraite):
         super().__init__(message)
         session = Session()
         add_ques = []
-        if (not session.joueur):
+        if not session.joueur:
             add_ques.append("Vous n'êtes pas associés à un joueur, Associez maintenant")
         self.questions = [
             {
                 "type": "list",
                 "name": "choix",
                 "message": "Faites votre choix",
-                "choices": add_ques + ["Accéder aux Statistiques Personnelles", "Accéder aux Statistiques Générales",
-                "Gestion de Base de Données", "Se déconnecter"],
+                "choices": add_ques
+                + [
+                    "Accéder aux Statistiques Personnelles",
+                    "Accéder aux Statistiques Générales",
+                    "Gestion de Base de Données",
+                    "Se déconnecter",
+                ],
             }
         ]
 
@@ -47,21 +53,34 @@ class MenuAdminVue(VueAbstraite):
 
         if reponse["choix"] == "Se déconnecter":
             from view.utils_vue.accueil_vue import AccueilVue
+
             session = Session()
-            session.user , session.role = None , None
+            session.user, session.role = None, None
             return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
 
         elif reponse["choix"] == "Accéder aux Statistiques Personnelles":
             from view.action_vue.statistiques_perso_vue import StatistiquesPersoVue
+
             return StatistiquesPersoVue("Bienvenue sur Votre Application ViewerOn LoL")
-        
+
         elif reponse["choix"] == "Accéder aux Statistiques Générales":
             from view.action_vue.statistiques_vue import StatistiquesVue
+
             return StatistiquesVue("Bienvenue sur Votre Application ViewerOn LoL")
 
         elif reponse["choix"] == "Gestion de Base de Données":
             from view.action_vue.gestion_bd_vue import GestionBDVue
+
             return GestionBDVue("Bienvenue sur Votre Application ViewerOn LoL")
+
+        elif (
+            reponse["choix"]
+            == "Vous n'êtes pas associés à un joueur, Associez maintenant"
+        ):
+            from view.action_vue.update_compte_vue import UpdateCompteVue
+
+            return UpdateCompteVue()
+
 
 if __name__ == "__main__":
     pass

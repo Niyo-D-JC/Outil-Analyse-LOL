@@ -24,11 +24,11 @@ class AjouterDataVue(VueAbstraite):
             {
                 "type": "list",
                 "name": "choix",
-                "message": " Attention ! Chaqun des ajouts ne peut être executé qu'une seule fois",
+                "message": " Attention ! Chacun des ajouts ne peut être executé qu'une seule fois",
                 "choices": [
-                    "Ajouter 1000 performances supplémentaires (environ 3 minutes)",
-                    "Ajouter 5000 performances supplémentaires (environ 30 minutes)",
-                    "Ajouter 10000 performances supplémentaires (environ 1h)",
+                    "Ajouter 1000 performances supplémentaires",
+                    "Ajouter 10000 performances supplémentaires",
+                    "Ajouter 20000 performances supplémentaires",
                     "Annuler",
                 ],
             }
@@ -49,16 +49,24 @@ class AjouterDataVue(VueAbstraite):
 
             return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
 
-        elif reponse["choix"] == "Peu de données (environ 20 mins)":
-            FillDataBase().initiate(0, 2, 2, 4)
+        elif reponse["choix"] == "Ajouter 1000 performances supplémentaires":
+            FillDataBase().initiate(0, 2, 2, 2)
             print("")
             print(
                 "--------------------------- Retour à la page précédente ---------------------------"
             )
             return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
 
-        elif reponse["choix"] == "Beaucoup de données (environ 3h)":
-            FillDataBase().initiate(0, 5, 5, 3)
+        elif reponse["choix"] == "Ajouter 10000 performances supplémentaires":
+            FillDataBase().initiate(0, 5, 7, 3)
+            print("")
+            print(
+                "--------------------------- Retour à la page précédente ---------------------------"
+            )
+            return AccueilVue("Bienvenue sur Votre Application ViewerOn LoL")
+
+        elif reponse["choix"] == "Ajouter 20000 performances supplémentaires":
+            FillDataBase().initiate(0, 7, 10, 4)
             print("")
             print(
                 "--------------------------- Retour à la page précédente ---------------------------"

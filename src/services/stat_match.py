@@ -12,7 +12,7 @@ class StatMatch:
         return f"{team_kills} / {team_deaths} / {team_assists}"
 
     def mvp_by_category(self, pd_match, category):
-        best_players = []  # Si jamais il y a plusieurs à égalité
+        best_players = []  # Si jamais il y a plusieurs mvp à égalité
         max = 0
 
         for index, row in pd_match.iterrows():
@@ -25,4 +25,7 @@ class StatMatch:
                     max = var
                     best_players = [row["joueur"]]
 
-        return best_players
+        if len(best_players) == 1:
+            return best_players[0]
+        else:
+            return best_players

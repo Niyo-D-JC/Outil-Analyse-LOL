@@ -15,7 +15,7 @@ if __name__ == "__main__":
     except:
         print("Premiere Ouverture de l'Application")
         ResetDatabase().lancer()
-        FillDataBase().initiate(0, 2, 2)
+        FillDataBase().initiate(0, 2, 4, 1)
 
     vue_courante = AccueilVue(
         "Bienvenue sur votre application d'analyse de League of Legends"

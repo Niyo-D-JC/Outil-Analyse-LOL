@@ -13,42 +13,143 @@ from business_object.tools.lane import Lane
 
 from dao.matchjoueur_dao import MatchJoueurDao
 from services.invite_service import InviteService
-from api.fill_data_base import FillDataBase
 
 
 class UserService(InviteService):
-    def creer(self, user):
+    def creer(self, user: User):
+        """
+        Crée un nouvel utilisateur dans la base de données en utilisant UserDao.
+
+        Parameters:
+        ----------
+        user: User
+            L'objet utilisateur à créer en BDD.
+
+        Returns
+        -------
+        user_id : int
+            L'identifiant en BDD de l'objet créé
+        """
         return UserDao().creer(user)
 
-    def creer_no_puuid(self, user):
+    def creer_no_puuid(self, user: User):
+        """
+        Crée un nouvel utilisateur sans attribut puuid dans la base de données en utilisant UserDao.
+
+        Parameters:
+        ----------
+        user: User
+            L'objet utilisateur à créer en BDD.
+
+        Returns
+        -------
+        user_id : int
+            L'identifiant en BDD de l'objet créé
+        """
+
         return UserDao().creer_no_puuid(user)
 
-    def find_by_name(self, name):
+    def find_by_name(self, name: str):
+        """
+        Recherche un utilisateur par nom dans la base de données en utilisant UserDao.
+
+        Parameters:
+        ----------
+            name: Le nom de l'utilisateur à rechercher.
+
+        Returns:
+        ----------
+            User: Renvoie l'objet User associé au nom choisi
+        """
+
         return UserDao().find_by_name(name)
 
-    def delete_by_name(self, name):
+    def delete_by_name(self, name: str):
+        """
+        Supprime un utilisateur par nom de la base de données en utilisant UserDao.
+
+        Parameters:
+        ----------
+            name: Le nom de l'utilisateur à supprimer.
+
+        Returns:
+        ----------
+        bool
+            Renvoie True si la suppression s'est faite correctement.
+        """
         return UserDao().delete_by_name(name)
 
     def get_users(self):
+        """
+        Récupère tous les utilisateurs de la base de données en utilisant UserDao.
+
+        Returns:
+        ----------
+            pandas.Dataframe: Renvoie le contenu de la table User
+        """
         return UserDao().get_users()
 
-    def get_match_list_bypuuid(self, puuid):
+    def get_match_list_bypuuid(self, puuid: str):
+        """
+        Récupère la liste des matchs pour un utilisateur donné par puuid en utilisant MatchJoueurDao.
+
+        Parameters:
+        ----------
+            puuid: L'identifiant unique de l'utilisateur.
+
+        Returns:
+        ----------
+            pandas.Dataframe: Renvoie le contenu de la table MatchJoueur pour le puuid choisi.
+        """
         return MatchJoueurDao().get_match_list_bypuuid(puuid)
 
-    def update_puuid(self, puuid, name):
-        return UserDao().update_puuid(puuid, name)
+    def update_puuid(self, new_puuid: str, name: str):
+        """
+        Met à jour l'attribut puuid d'un utilisateur dans la base de données en utilisant UserDao.
 
-    def delete_match(self, match_id):
+        Parameters:
+        ----------
+            puuid: Le nouvel identifiant unique de l'utilisateur.
+            name: Le nom de l'utilisateur à mettre à jour.
+
+        Returns:
+        ----------
+        bool
+            Renvoie True si la mise a jour s'est faite correctement.
+        """
+        return UserDao().update_puuid(new_puuid, name)
+
+    def delete_match(self, match_id: str):
+        """
+        Supprime un match par son identifiant de la base de données en utilisant MatchJoueurDao.
+
+        Parameters:
+        ----------
+            match_id: L'identifiant du match à supprimer.
+
+        Returns:
+        ----------
+        bool
+            Renvoie True si la suppression s'est faite correctement.
+        """
         return MatchJoueurDao().delete_match(match_id)
 
     def all_parties(self):
+        """
+        Récupère toutes les parties de la base de données en utilisant MatchJoueurDao.
+
+        Returns:
+        ----------
+        pandas.Dataframe
+            Renvoie le contenu de la table MatchJoueur.
+        """
         return MatchJoueurDao().all_parties()
 
     def vue_partie(self, match_id: str):
         """Affiche dans la console le résumé d'un partie
 
         Cette fonction affiche l'équipe gagnante et la performance de tous les joueurs de la partie.
-        Elle affiche également les MVP de la parties selon 5 critères différents
+        Elle affiche également les MVP de la partie selon 5 critères différents
 
         Parameters
         ----------
@@ -265,6 +366,7 @@ class UserService(InviteService):
         total_wins, total_games = self.get_global_WR(Liste_Match_User)
         lane_stats = self.get_stats_by_lane(Liste_Match_User)
 
+        print("")
         print(
             "************************** Mon Bilan Personnel ***************************"
         )
@@ -289,9 +391,16 @@ class UserService(InviteService):
         # Affichage des données des champions et par lane
         for lane, champions_stats in lane_stats.items():
             if champions_stats != {}:
-                total_wins, total_games = self.get_global_WR(Liste_Match_User)
+                n_games_lane = 0
+                wr_lane = 0
+                for stats in champions_stats.values():
+                    wr_lane += stats["winrate"] * stats["nombre_de_matchs"]
+                    n_games_lane += stats["nombre_de_matchs"]
+
+                wr_lane = round(wr_lane * 100 / n_games_lane, 1)
+
                 print("\n" + separator)
-                print(f"\t\t{lane} STATS (Taux de victoire :%)")
+                print(f"\t\t{lane} STATS (Taux de victoire : {wr_lane}%)")
 
                 # Affichage de l'en-tête et du séparateur
                 print(header)
