@@ -30,7 +30,7 @@ class LaneDao(metaclass=Singleton):
                     )
                     res = True
         except Exception as e:
-            print(e)
+            # print(e)
             res = False
 
         return res
@@ -58,8 +58,10 @@ class LaneDao(metaclass=Singleton):
                         {"id": lane_id},
                     )
                     res = cursor.fetchone()
+
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
         if res:
             lane = Lane(lane_id=lane_id, name=res["name"])

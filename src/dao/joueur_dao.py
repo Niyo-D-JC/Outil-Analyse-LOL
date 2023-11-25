@@ -34,14 +34,13 @@ class JoueurDao(metaclass=Singleton):
                     )
                     res = True
         except Exception as e:
-            print(e)
+            # print(e)
             res = False
 
         return res
 
     def existe(self, joueur) -> bool:
-        """Verifier qu'un joueur est dans la base de données
-        """
+        """Verifier qu'un joueur est dans la base de données"""
 
         res = None
 
@@ -56,14 +55,15 @@ class JoueurDao(metaclass=Singleton):
                     )
                     res = cursor.fetchone()
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
+
         exist = False
         if res:
             exist = True
 
         return exist
 
-        
     def find_by_name(self, name):
         """trouver un utilisateur grace à son nom
 
@@ -87,7 +87,8 @@ class JoueurDao(metaclass=Singleton):
                     )
                     res = cursor.fetchone()
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
         joueur = None
         if res:
@@ -117,8 +118,10 @@ class JoueurDao(metaclass=Singleton):
                         {"puuid": puuid},
                     )
                     res = cursor.fetchone()
+
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
         joueur = None
         if res:

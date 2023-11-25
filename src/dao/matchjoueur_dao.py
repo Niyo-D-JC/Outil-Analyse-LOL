@@ -64,8 +64,11 @@ class MatchJoueurDao(metaclass=Singleton):
                         },
                     )
                     res = True
+
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
+
             res = False
         return res
 
@@ -83,7 +86,8 @@ class MatchJoueurDao(metaclass=Singleton):
                     res = cursor.fetchall()
 
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
         if res:
             return pd.DataFrame(res)
@@ -103,8 +107,11 @@ class MatchJoueurDao(metaclass=Singleton):
                         {"puuid": joueur.puuid, "match_id": match_id},
                     )
                     res = cursor.fetchone()
+
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
+
         exist = False
         if res:
             exist = True
@@ -136,7 +143,8 @@ class MatchJoueurDao(metaclass=Singleton):
                     res = cursor.fetchall()
 
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
         if res:
             import pandas as pd
@@ -152,7 +160,8 @@ class MatchJoueurDao(metaclass=Singleton):
                     res = cursor.fetchall()
 
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
         if res:
             import pandas as pd
@@ -198,7 +207,9 @@ class MatchJoueurDao(metaclass=Singleton):
                     res = cursor.fetchall()
 
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
+
             res = False
 
         if res:
@@ -255,7 +266,9 @@ class MatchJoueurDao(metaclass=Singleton):
                     res = cursor.fetchall()
 
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
+
             res = False
 
         if res:

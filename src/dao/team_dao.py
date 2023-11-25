@@ -29,7 +29,6 @@ class TeamDao(metaclass=Singleton):
                     )
                     res = True
         except Exception as e:
-            print(e)
             res = False
 
         return res

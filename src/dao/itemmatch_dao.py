@@ -40,7 +40,7 @@ class ItemMatchDao(metaclass=Singleton):
                     )
                     res = True
         except Exception as e:
-            print(e)
+            # print(e)
             res = False
         return res
 

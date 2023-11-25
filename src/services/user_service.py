@@ -239,7 +239,7 @@ class UserService(InviteService):
                 f" 🛡️ Montagne : {StatMatch().mvp_by_category(pd_match, 'dégats_subis')} (Le plus de dégats subis)"
             )
             print(
-                f" ❤️ Médecin :{StatMatch().mvp_by_category(pd_match, 'soins_totaux')} (Le plus de points de vie soignés)"
+                f" ❤️ Médecin : {StatMatch().mvp_by_category(pd_match, 'soins_totaux')} (Le plus de points de vie soignés)"
             )
             print("=" * 45)
             print("")
