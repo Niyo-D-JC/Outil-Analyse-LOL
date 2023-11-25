@@ -24,7 +24,7 @@ ViewerOnLoL is a  tool designed for League of Legends players looking to deepen 
 - GitBash
 
 - A PostGre SQL Database (we used SQLite)
-- A Riot API Key
+- A Riot API Key (Sans cela, la première ouverture est impossible ; il y aura des messages d'erreurs.)
 
 
 ### Installation

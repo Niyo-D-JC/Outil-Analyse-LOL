@@ -11,7 +11,7 @@ if __name__ == "__main__":
     # On charge les variables d'envionnement
     dotenv.load_dotenv(override=True)
     try:
-        if UserService().get_users() == None:
+        if UserService().get_users().shape[0] == 0:
             print("Premiere Ouverture de l'Application")
             ResetDatabase().lancer()
             FillDataBase().initiate(0, 2, 4, 1)

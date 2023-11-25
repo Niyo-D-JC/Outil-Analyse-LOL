@@ -34,10 +34,9 @@ class CreerCompteVue(VueAbstraite):
 
         puuid = ""
         user = None
-
-        joueur = JoueurService().create_joueur_object(answers["joueur"])
-
-        print(joueur)
+        joueur = None
+        if answers["joueur"] : 
+            joueur = JoueurService().create_joueur_object(answers["joueur"])
 
         if joueur != None:
             JoueurService().creer(joueur)
