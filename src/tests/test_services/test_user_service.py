@@ -7,7 +7,7 @@ from business_object.battle.matchjoueur import MatchJoueur
 from business_object.stats.stat_joueur import StatJoueur
 
 
-class TestUser(TestCase):
+class TestUserService(TestCase):
     def test_get_coef_damage_type(self):
         # GIVEN
         liste_matchs = [
@@ -103,4 +103,4 @@ class TestUser(TestCase):
 
 if __name__ == "__main__":
     # Run the tests
-    result = TextTestRunner().run(TestLoader().loadTestsFromTestCase(TestUser))
+    result = TextTestRunner().run(TestLoader().loadTestsFromTestCase(TestUserService))
