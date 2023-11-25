@@ -22,15 +22,17 @@ class SupprimerCompteVue(VueAbstraite):
     def __init__(self, message="") -> None:
         super().__init__(message)
         session = Session()
+
         add_ques = []
         if session:
             df = UserService().get_users()
+
             df.sort_values(by="role", ascending=False).reset_index(drop=True)
             df["Role : Name"] = df["role"] + " : " + df["name"]
 
-            df = df.drop(df[df['Name'] == "admin"].index)
-
+            df = df.drop(df[df["name"] == "admin"].index)
             add_ques = add_ques + list(df["Role : Name"].unique())
+
         self.questions = [
             {
                 "type": "list",
