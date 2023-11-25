@@ -25,4 +25,7 @@ class StatMatch:
                     max = var
                     best_players = [row["joueur"]]
 
-        return best_players
+        if len(best_players) == 1:
+            return best_players[0]
+        else:
+            return best_players

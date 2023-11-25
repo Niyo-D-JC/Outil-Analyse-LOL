@@ -265,6 +265,7 @@ class UserService(InviteService):
         total_wins, total_games = self.get_global_WR(Liste_Match_User)
         lane_stats = self.get_stats_by_lane(Liste_Match_User)
 
+        print("")
         print(
             "************************** Mon Bilan Personnel ***************************"
         )
@@ -289,9 +290,16 @@ class UserService(InviteService):
         # Affichage des données des champions et par lane
         for lane, champions_stats in lane_stats.items():
             if champions_stats != {}:
-                total_wins, total_games = self.get_global_WR(Liste_Match_User)
+                n_games_lane = 0
+                wr_lane = 0
+                for stats in champions_stats.values():
+                    wr_lane += stats["winrate"] * stats["nombre_de_matchs"]
+                    n_games_lane += stats["nombre_de_matchs"]
+
+                wr_lane = round(wr_lane * 100 / n_games_lane, 1)
+
                 print("\n" + separator)
-                print(f"\t\t{lane} STATS (Taux de victoire :%)")
+                print(f"\t\t{lane} STATS (Taux de victoire : {wr_lane}%)")
 
                 # Affichage de l'en-tête et du séparateur
                 print(header)

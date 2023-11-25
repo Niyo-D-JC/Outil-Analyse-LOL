@@ -82,8 +82,10 @@ class StatistiquesPersoVue(VueAbstraite):
         user = User(name=session.user, role=session.role, joueur=session.joueur)
 
         list_match = MatchJoueurDao().get_match_list_bypuuid(user.joueur.puuid)
-        if len(list_match) <= 10:
+        if list_match is None:
             FillDataBase().add_matches_for_user(user, n_matches=50)
+        elif list_match is not None and len(list_match) <= 40:
+            FillDataBase().add_matches_for_user(user, n_matches=80)
 
         if reponse["choix"] == "Accéder au Bilan Personnel":
             UserService().get_stats_perso(user)
