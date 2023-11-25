@@ -30,7 +30,7 @@ class ChampionDao(metaclass=Singleton):
                     )
                     res = True
         except Exception as e:
-            print(e)
+            # print(e)
             res = False
         return res
 
@@ -59,7 +59,8 @@ class ChampionDao(metaclass=Singleton):
                     )
                     res = cursor.fetchone()
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
         if res:
             champion = Champion(champion_id=id, name=res["name"])
@@ -80,7 +81,8 @@ class ChampionDao(metaclass=Singleton):
                     )
                     res = cursor.fetchall()
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
         if res:
             return res

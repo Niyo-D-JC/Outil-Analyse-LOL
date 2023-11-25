@@ -95,8 +95,9 @@ class FillDataBase:
 
         if first or limit <= 0:
             dta = data[0]
-            print("")
-            print(dta)
+
+            # print("")
+            # print(dta)
 
             if self.get_puuid(dta["summonerName"]) is not None:
                 puuid = self.get_puuid(dta["summonerName"])
@@ -164,8 +165,8 @@ class FillDataBase:
 
                 JoueurDao().creer(joueur)
 
-                print("")
-                print(joueur)
+                # print("")
+                # print(joueur)
 
                 champion = Champion(
                     player_info["championId"], player_info["championName"]
@@ -213,8 +214,8 @@ class FillDataBase:
                         match_id, joueur.puuid, item_.tools_id, item_.item_position
                     )
 
-                print("")
-                print("Importation success")
+                # print("")
+                # print("Importation success")
 
             except:
                 print("Importation Error")
@@ -239,9 +240,9 @@ class FillDataBase:
     def getAllMatchesInfo(self, joueur, first_game, last_game):
         list_match_id = self.get_matchlist(joueur, first_game, last_game)
         for match_id in list_match_id:
-            print("")
-            print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
-            print("MATCH ID :", match_id)
+            # print("")
+            # print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+            # print("MATCH ID :", match_id)
 
             self.getJoueurMatchInfo(match_id)
 
@@ -270,19 +271,19 @@ class FillDataBase:
                 )
 
                 for joueur in list_joueurs_league:
-                    print("")
-                    print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
-                    print("IIIIIIIIIIIII JOUEUR DE REFERENCE IIIIIIIIIIIII")
-                    print(joueur)
+                    # print("")
+                    # print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+                    # print("IIIIIIIIIIIII JOUEUR DE REFERENCE IIIIIIIIIIIII")
+                    # print(joueur)
 
                     if joueur:
                         self.getAllMatchesInfo(
                             joueur, first_game=first_game, last_game=last_game
                         )
 
-        print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
-        print("IIIIIIIIIIIII FINI IIIIIIIIIIIII")
-        print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+        # print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+        # print("IIIIIIIIIIIII FINI IIIIIIIIIIIII")
+        # print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
 
         UserDao().creer_no_puuid(User("admin", "admin", "Admin"))  # faille de sécurité
         self.bar.close()

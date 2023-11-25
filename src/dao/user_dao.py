@@ -40,62 +40,14 @@ class UserDao(metaclass=Singleton):
                     )
                     res = cursor.fetchone()
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
         # created = False
         # if res:
         #     created = True
 
         return res["user_id"]
-
-    def get_users(self):
-        res = None
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        " SELECT *                           "
-                        " FROM projet.user               "
-                    )
-                    res = cursor.fetchall()
-
-        except Exception as e:
-            print(e)
-
-        if res:
-            import pandas as pd
-
-            return pd.DataFrame(res)
-
-    def delete_by_name(self, name):
-        """
-        Mettre à jour le puuid d'un joueur
-
-        Parameters
-        ----------
-        puuid : str
-
-        Returns
-        -------
-        """
-
-        deleted = None
-
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        " DELETE FROM projet.user " " WHERE name = %(name)s; ",
-                        {
-                            "name": name,
-                        },
-                    )
-                    deleted = True
-        except Exception as e:
-            print(e)
-            deleted = False
-
-        return deleted
 
     def creer_no_puuid(self, user):
         """Creation d'un utilisateur dans la base de données
@@ -130,13 +82,64 @@ class UserDao(metaclass=Singleton):
                     )
                     res = cursor.fetchone()
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
         created = False
         if res:
             created = True
 
         return res["user_id"]
+
+    def get_users(self):
+        res = None
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        " SELECT *                           "
+                        " FROM projet.user               "
+                    )
+                    res = cursor.fetchall()
+
+        except Exception as e:
+            # print(e)
+            pass
+
+        if res:
+            import pandas as pd
+
+            return pd.DataFrame(res)
+
+    def delete_by_name(self, name):
+        """
+        Mettre à jour le puuid d'un joueur
+
+        Parameters
+        ----------
+        puuid : str
+
+        Returns
+        -------
+        """
+
+        deleted = None
+
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        " DELETE FROM projet.user " " WHERE name = %(name)s; ",
+                        {
+                            "name": name,
+                        },
+                    )
+                    deleted = True
+        except Exception as e:
+            # print(e)
+            deleted = False
+
+        return deleted
 
     def find_by_name(self, name):
         """trouver un utilisateur grace à son nom
@@ -209,14 +212,13 @@ class UserDao(metaclass=Singleton):
                     )
                     created = True
         except Exception as e:
-            print(e)
+            # print(e)
             created = False
 
         return created
 
     def add_matches(self, user: User):
         """
-        ???
 
         Parameters
         ----------
@@ -236,13 +238,13 @@ class UserDao(metaclass=Singleton):
                         " SET puuid = %(puuid)s "
                         " WHERE name = %(name)s ;",
                         {
-                            "puuid": puuid,
-                            "name": name,
+                            "puuid": user.joueur.puuid,
+                            "name": user.name,
                         },
                     )
                     created = True
         except Exception as e:
-            print(e)
+            # print(e)
             created = False
 
         return created
