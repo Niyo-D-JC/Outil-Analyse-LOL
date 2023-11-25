@@ -11,7 +11,10 @@ if __name__ == "__main__":
     # On charge les variables d'envionnement
     dotenv.load_dotenv(override=True)
     try:
-        UserService().find_by_name("admin").name
+        if UserService().get_users() == None:
+            print("Premiere Ouverture de l'Application")
+            ResetDatabase().lancer()
+            FillDataBase().initiate(0, 2, 4, 1)
     except:
         print("Premiere Ouverture de l'Application")
         ResetDatabase().lancer()
