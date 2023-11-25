@@ -5,6 +5,8 @@ from view.action_vue.creer_admin_vue import CreerAdminVue
 from view.action_vue.supprimer_compte_vue import SupprimerCompteVue
 from view.action_vue.supprimer_match_vue import SupprimerMatchVue
 from view.action_vue.ajouter_partie_vue import AjouterPartieVue
+from view.session.session import Session
+
 
 class GestionBDVue(VueAbstraite):
     """Vue du menu du joueur
@@ -27,7 +29,13 @@ class GestionBDVue(VueAbstraite):
                 "type": "list",
                 "name": "choix",
                 "message": "Faites votre choix",
-                "choices": ["Ajouter des Parties", "Ajouter un Administrateur", "Supprimer un Compte",  "Supprimer un Match", "Retour"],
+                "choices": [
+                    "Ajouter des Parties",
+                    "Ajouter un Administrateur",
+                    "Supprimer un Compte",
+                    "Supprimer un Match",
+                    "Retour",
+                ],
             }
         ]
 
@@ -43,8 +51,8 @@ class GestionBDVue(VueAbstraite):
 
         if reponse["choix"] == "Retour":
             session = Session()
-            if (session.user):
-                if session.role == "Admin" :
+            if session.user:
+                if session.role == "Admin":
                     message = f"Administrateur : Vous êtes connectés sous le profil de {session.user.upper()}"
                     from view.menu.menu_admin_vue import MenuAdminVue
 
@@ -55,9 +63,12 @@ class GestionBDVue(VueAbstraite):
                     from view.menu.menu_user_vue import MenuUserVue
 
                     return MenuUserVue(message)
-            else : 
+            else:
                 from view.menu.menu_invite_vue import MenuInviteVue
-                return MenuInviteVue("Invité : Bienvenue sur Votre Application ViewerOn LoL")
+
+                return MenuInviteVue(
+                    "Invité : Bienvenue sur Votre Application ViewerOn LoL"
+                )
 
         elif reponse["choix"] == "Ajouter un Administrateur":
             return CreerAdminVue()
@@ -67,6 +78,6 @@ class GestionBDVue(VueAbstraite):
 
         elif reponse["choix"] == "Supprimer un Compte":
             return SupprimerCompteVue("Bienvenue sur Votre Application ViewerOn LoL")
-        
+
         elif reponse["choix"] == "Supprimer un Match":
             return SupprimerMatchVue("Bienvenue sur Votre Application ViewerOn LoL")
