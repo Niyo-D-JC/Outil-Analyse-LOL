@@ -46,11 +46,11 @@ ViewerOnLoL is a  tool designed for League of Legends players looking to deepen 
    ```js
    API_KEY = RGAPI-e6747bea-8be1-485f-aa91-3da5d892b425
 
-   HOST=sgbd-eleves.domensai.ecole
+   HOST=sgbd
    PORT=5432
-   DATABASE=id2321
-   USER=id2321
-   PASSWORD=id2321
+   DATABASE=id
+   USER=id2
+   PASSWORD=id
    ```
 
 5. Execute the script
