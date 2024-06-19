@@ -162,6 +162,7 @@ class UserDao(metaclass=Singleton):
 
             return pd.DataFrame(res)
         else :
+            import pandas as pd
             return pd.DataFrame([])
 
     def delete_by_name(self, name):
